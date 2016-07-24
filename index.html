@@ -77,6 +77,7 @@ ga('send', 'pageview');
                             <ul class="main-nav-list">
                                 <li class="main-nav-list-item"><a class="main-nav-list-link" href="#">愛科技</a>
                                     <ul class="main-nav-list-child">
+                                        <li class="main-nav-list-item"><a class="main-nav-list-link" href="/categories/Odoo/">Odoo</a></li>
                                         <li class="main-nav-list-item"><a class="main-nav-list-link" href="/categories/Learning/Learning-Highcharts/">Learning Highcharts</a></li>
                                         <li class="main-nav-list-item"><a class="main-nav-list-link" href="/categories/WEB2-0/">WEB2.0</a></li>
                                         <li class="main-nav-list-item"><a class="main-nav-list-link" href="/categories/Oracle/">Oracle</a></li>
@@ -127,6 +128,63 @@ ga('send', 'pageview');
 
     
     
+        
+        
+        <section class="archives-wrap">
+            <div class="archive-year-wrap">
+                <a href="/archives/2016" class="archive-year"><i class="icon fa fa-calendar-o"></i>2016</a>
+            </div>
+            <div class="archives">
+    
+    
+    
+        <div class="article-row">
+    
+        <article class="article article-summary">
+    <div class="article-summary-inner">
+        
+        <a href="/Odoo/hello-odoo/" class="thumbnail">
+    
+    
+        <span style="background-image:url(/images/post/pexels-photo-69432.jpeg)" alt="Hello Odoo" class="thumbnail-image"></span>
+    
+    
+        
+<span class="comment-counter">
+    <i class="fa fa-comments-o"></i>
+    
+        <span class="disqus-comment-count" data-disqus-url="http://www.retailscm.com/Odoo/hello-odoo/">0</span>
+    
+</span>
+
+    
+</a>
+        
+        <div class="article-meta">
+            <p class="category">
+            <a class="article-category-link" href="/categories/Odoo/">Odoo</a>
+            </p>
+            <p class="date"><time datetime="2016-07-24T10:41:46.000Z" itemprop="datePublished">2016-07-24</time></p>
+        </div>
+        
+    
+        <h1 class="article-title" itemprop="name">
+        <a href="/Odoo/hello-odoo/">Hello Odoo</a>
+        </h1>
+    
+
+        <p class="article-excerpt">
+            在半年前我選擇了一個未來相當一段時間自己所會選擇的產品，并將在這個產品上學習與發展，這個產品就是Opensource的ERP產品Odoo。
+為此去申請了一個Amazon的主機，後來為了更快速使用還買了一台小主機，在熟悉到了一定程度之後，我知道單純靠自己自學已經沒有辦法滿足我的求知慾了，於是就開始尋找是否有合適的工作是可以讓我以Odoo為主。但是Odoo在台灣這個市場上的普及度并不高，尋找的過程沒有
+        </p>
+    </div>
+</article>
+    
+
+    
+    
+        
+            </div></section>
         
         
         <section class="archives-wrap">
@@ -613,66 +671,6 @@ series: [{
 </article>
     
 
-    
-    
-    
-    
-        <article class="article article-summary">
-    <div class="article-summary-inner">
-        
-        <a href="/Learning/Learning-Highcharts/Bar-and-column-charts/converting-a-single-bar-chart-into-a-horizontal-gauge-chart/" class="thumbnail">
-    
-    
-        <span style="background-image:url(/images/learning_highcharts/chart4-4-1.jpg)" alt="第四章 04.將一個長條圖轉為水平刻度圖" class="thumbnail-image"></span>
-    
-    
-        
-<span class="comment-counter">
-    <i class="fa fa-comments-o"></i>
-    
-        <span class="disqus-comment-count" data-disqus-url="http://www.retailscm.com/Learning/Learning-Highcharts/Bar-and-column-charts/converting-a-single-bar-chart-into-a-horizontal-gauge-chart/">0</span>
-    
-</span>
-
-    
-</a>
-        
-        <div class="article-meta">
-            <p class="category">
-            <a class="article-category-link" href="/categories/Learning/">Learning</a><i class="icon fa fa-angle-right"></i><a class="article-category-link" href="/categories/Learning/Learning-Highcharts/">Learning Highcharts</a>
-            </p>
-            <p class="date"><time datetime="2015-05-16T21:00:00.000Z" itemprop="datePublished">2015-05-17</time></p>
-        </div>
-        
-    
-        <h1 class="article-title" itemprop="name">
-        <a href="/Learning/Learning-Highcharts/Bar-and-column-charts/converting-a-single-bar-chart-into-a-horizontal-gauge-chart/">第四章 04.將一個長條圖轉為水平刻度圖</a>
-        </h1>
-    
-
-        <p class="article-excerpt">
-            科技零售(RetailSCM.com) Learning Highcharts中文教程版權保留，網路轉載請註明來源，謝絕紙質媒體轉載，謝謝。
-將一個長條圖轉為水平刻度圖水平刻度圖通常用於表示當前閥值，因此意味著y軸上的極值是固定在兩端的。另一個特點是x軸上只能顯示當前時間的一個值(一個維度)。
-下面我們會來學習如何將一個長條圖轉換為一個水平刻度圖。基本的概念是將繪圖區域減小到與長條圖為相同大小，因此我們要同時為繪圖區域和長條圖設置固定的大小，並且不要考慮容器的尺寸。為了達成這點，我們需要設定chart.width和chart.height為一些需要的值，然後我們對繪圖區的邊框和背景色美化，使之看起來類似與一個容器壓力表：
-chart: {
-    renderTo: 'container',
-    type: 'bar',
-    plotBorderWidth: 2,
-    plotBackgroundColor: '#D6D6EB',
-    plotBorderColor: '#D8D8D8',
-    plotShadow: true,
-    spacingBottom: 43,
-    width: 350,
-    height: 120
-},
-然後我們設定y軸的標籤為不顯示，並設定一個固定的百分比間隔：
-        </p>
-    </div>
-</article>
-    
-        </div>
-    
-
 
     </div></section>
 
@@ -733,7 +731,7 @@ chart: {
     <div class="widget-wrap widget-list">
         <h3 class="widget-title">分類</h3>
         <div class="widget">
-            <ul class="category-list"><li class="category-list-item"><a class="category-list-link" href="/categories/Learning/">Learning</a><span class="category-list-count">36</span><ul class="category-list-child"><li class="category-list-item"><a class="category-list-link" href="/categories/Learning/Learning-Highcharts/">Learning Highcharts</a><span class="category-list-count">36</span><ul class="category-list-child"><li class="category-list-item"><a class="category-list-link" href="/categories/Learning/Learning-Highcharts/Bar-and-column-charts/">Bar and column charts</a><span class="category-list-count">6</span></li><li class="category-list-item"><a class="category-list-link" href="/categories/Learning/Learning-Highcharts/Highcharts-APIs/">Highcharts APIs</a><span class="category-list-count">3</span></li><li class="category-list-item"><a class="category-list-link" href="/categories/Learning/Learning-Highcharts/Highcharts-configurations/">Highcharts configurations</a><span class="category-list-count">9</span></li><li class="category-list-item"><a class="category-list-link" href="/categories/Learning/Learning-Highcharts/Line-area-and-scatter-charts/">Line area and scatter charts</a><span class="category-list-count">5</span></li><li class="category-list-item"><a class="category-list-link" href="/categories/Learning/Learning-Highcharts/Pie-Charts/">Pie Charts</a><span class="category-list-count">5</span></li><li class="category-list-item"><a class="category-list-link" href="/categories/Learning/Learning-Highcharts/Web-Charts/">Web Charts</a><span class="category-list-count">6</span></li></ul></li></ul></li><li class="category-list-item"><a class="category-list-link" href="/categories/Oracle/">Oracle</a><span class="category-list-count">1</span></li><li class="category-list-item"><a class="category-list-link" href="/categories/WEB2-0/">WEB2.0</a><span class="category-list-count">2</span><ul class="category-list-child"><li class="category-list-item"><a class="category-list-link" href="/categories/WEB2-0/Bootstrap/">Bootstrap</a><span class="category-list-count">1</span></li><li class="category-list-item"><a class="category-list-link" href="/categories/WEB2-0/jQuery/">jQuery</a><span class="category-list-count">1</span></li></ul></li><li class="category-list-item"><a class="category-list-link" href="/categories/Yii/">Yii</a><span class="category-list-count">2</span></li><li class="category-list-item"><a class="category-list-link" href="/categories/業務案例/">業務案例</a><span class="category-list-count">1</span></li><li class="category-list-item"><a class="category-list-link" href="/categories/行業動態/">行業動態</a><span class="category-list-count">2</span></li><li class="category-list-item"><a class="category-list-link" href="/categories/隨筆/">隨筆</a><span class="category-list-count">1</span></li></ul>
+            <ul class="category-list"><li class="category-list-item"><a class="category-list-link" href="/categories/Learning/">Learning</a><span class="category-list-count">36</span><ul class="category-list-child"><li class="category-list-item"><a class="category-list-link" href="/categories/Learning/Learning-Highcharts/">Learning Highcharts</a><span class="category-list-count">36</span><ul class="category-list-child"><li class="category-list-item"><a class="category-list-link" href="/categories/Learning/Learning-Highcharts/Bar-and-column-charts/">Bar and column charts</a><span class="category-list-count">6</span></li><li class="category-list-item"><a class="category-list-link" href="/categories/Learning/Learning-Highcharts/Highcharts-APIs/">Highcharts APIs</a><span class="category-list-count">3</span></li><li class="category-list-item"><a class="category-list-link" href="/categories/Learning/Learning-Highcharts/Highcharts-configurations/">Highcharts configurations</a><span class="category-list-count">9</span></li><li class="category-list-item"><a class="category-list-link" href="/categories/Learning/Learning-Highcharts/Line-area-and-scatter-charts/">Line area and scatter charts</a><span class="category-list-count">5</span></li><li class="category-list-item"><a class="category-list-link" href="/categories/Learning/Learning-Highcharts/Pie-Charts/">Pie Charts</a><span class="category-list-count">5</span></li><li class="category-list-item"><a class="category-list-link" href="/categories/Learning/Learning-Highcharts/Web-Charts/">Web Charts</a><span class="category-list-count">6</span></li></ul></li></ul></li><li class="category-list-item"><a class="category-list-link" href="/categories/Odoo/">Odoo</a><span class="category-list-count">1</span></li><li class="category-list-item"><a class="category-list-link" href="/categories/Oracle/">Oracle</a><span class="category-list-count">1</span></li><li class="category-list-item"><a class="category-list-link" href="/categories/WEB2-0/">WEB2.0</a><span class="category-list-count">2</span><ul class="category-list-child"><li class="category-list-item"><a class="category-list-link" href="/categories/WEB2-0/Bootstrap/">Bootstrap</a><span class="category-list-count">1</span></li><li class="category-list-item"><a class="category-list-link" href="/categories/WEB2-0/jQuery/">jQuery</a><span class="category-list-count">1</span></li></ul></li><li class="category-list-item"><a class="category-list-link" href="/categories/Yii/">Yii</a><span class="category-list-count">2</span></li><li class="category-list-item"><a class="category-list-link" href="/categories/業務案例/">業務案例</a><span class="category-list-count">1</span></li><li class="category-list-item"><a class="category-list-link" href="/categories/行業動態/">行業動態</a><span class="category-list-count">2</span></li><li class="category-list-item"><a class="category-list-link" href="/categories/隨筆/">隨筆</a><span class="category-list-count">1</span></li></ul>
         </div>
     </div>
 
@@ -744,6 +742,25 @@ chart: {
         <h3 class="widget-title">最新文章</h3>
         <div class="widget">
             <ul id="recent-post" class="">
+                
+                    <li>
+                        
+                        <div class="item-thumbnail">
+                            <a href="/Odoo/hello-odoo/" class="thumbnail">
+    
+    
+        <span style="background-image:url(/images/post/pexels-photo-69432.jpeg)" alt="Hello Odoo" class="thumbnail-image"></span>
+    
+    
+</a>
+                        </div>
+                        
+                        <div class="item-inner">
+                            <p class="item-category"><a class="article-category-link" href="/categories/Odoo/">Odoo</a></p>
+                            <p class="item-title"><a href="/Odoo/hello-odoo/" class="title">Hello Odoo</a></p>
+                            <p class="item-date"><time datetime="2016-07-24T10:41:46.000Z" itemprop="datePublished">2016-07-24</time></p>
+                        </div>
+                    </li>
                 
                     <li>
                         
@@ -821,25 +838,6 @@ chart: {
                         </div>
                     </li>
                 
-                    <li>
-                        
-                        <div class="item-thumbnail">
-                            <a href="/Learning/Learning-Highcharts/Pie-Charts/preparing-a-donut-chart-multiple-series/" class="thumbnail">
-    
-    
-        <span style="background-image:url(/images/learning_highcharts/5-6.png)" alt="第五章 04.準備一個甜甜圈圖——複合序列" class="thumbnail-image"></span>
-    
-    
-</a>
-                        </div>
-                        
-                        <div class="item-inner">
-                            <p class="item-category"><a class="article-category-link" href="/categories/Learning/">Learning</a><i class="icon fa fa-angle-right"></i><a class="article-category-link" href="/categories/Learning/Learning-Highcharts/">Learning Highcharts</a></p>
-                            <p class="item-title"><a href="/Learning/Learning-Highcharts/Pie-Charts/preparing-a-donut-chart-multiple-series/" class="title">第五章 04.準備一個甜甜圈圖——複合序列</a></p>
-                            <p class="item-date"><time datetime="2015-05-17T21:00:00.000Z" itemprop="datePublished">2015-05-18</time></p>
-                        </div>
-                    </li>
-                
             </ul>
         </div>
     </div>
@@ -849,7 +847,7 @@ chart: {
     <div class="widget-wrap widget-list">
         <h3 class="widget-title">歸檔</h3>
         <div class="widget">
-            <ul class="archive-list"><li class="archive-list-item"><a class="archive-list-link" href="/archives/2015/05/">五月 2015</a><span class="archive-list-count">35</span></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2013/10/">十月 2013</a><span class="archive-list-count">2</span></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2013/04/">四月 2013</a><span class="archive-list-count">5</span></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2013/03/">三月 2013</a><span class="archive-list-count">3</span></li></ul>
+            <ul class="archive-list"><li class="archive-list-item"><a class="archive-list-link" href="/archives/2016/07/">七月 2016</a><span class="archive-list-count">1</span></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2015/05/">五月 2015</a><span class="archive-list-count">35</span></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2013/10/">十月 2013</a><span class="archive-list-count">2</span></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2013/04/">四月 2013</a><span class="archive-list-count">5</span></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2013/03/">三月 2013</a><span class="archive-list-count">3</span></li></ul>
         </div>
     </div>
 

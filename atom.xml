@@ -4,7 +4,7 @@
   <subtitle><![CDATA[PP Studio]]></subtitle>
   <link href="/atom.xml" rel="self"/>
   <link href="http://www.retailscm.com/"/>
-  <updated>2015-05-17T08:10:03.000Z</updated>
+  <updated>2016-07-24T11:22:52.000Z</updated>
   <id>http://www.retailscm.com/</id>
   
   <author>
@@ -13,6 +13,27 @@
   </author>
   
   <generator uri="http://hexo.io/">Hexo</generator>
+  
+  <entry>
+    <title><![CDATA[Hello Odoo]]></title>
+    <link href="http://www.retailscm.com/Odoo/hello-odoo/"/>
+    <id>http://www.retailscm.com/Odoo/hello-odoo/</id>
+    <published>2016-07-24T10:41:46.000Z</published>
+    <updated>2016-07-24T11:22:52.000Z</updated>
+    <content type="html"><![CDATA[<p>在半年前我選擇了一個未來相當一段時間自己所會選擇的產品，并將在這個產品上學習與發展，這個產品就是Opensource的ERP產品Odoo。</p>
+<p>為此去申請了一個Amazon的主機，後來為了更快速使用還買了一台小主機，在熟悉到了一定程度之後，我知道單純靠自己自學已經沒有辦法滿足我的求知慾了，於是就開始尋找是否有合適的工作是可以讓我以Odoo為主。但是Odoo在台灣這個市場上的普及度并不高，尋找的過程沒有想象中那麼順利，求職網站搜索出來結果都是0，Google找一下，也是不知道的什麼公司看起來也沒有在主推的方向。</p>
+<p>因緣際會之下某一天竟然真的在104上找到了一家公司招聘Odoo顧問，就聯繫了他們想要過去聊一下，至少可以看看在別人公司內是怎麼樣導入Odoo以及對它的評價如何。沒想到後面一整個聯繫和面談的過程都十分順利，之後又多花了2個月的時間盡量把在特力的工作交接完成之後，我就過去新公司啦──為了Odoo :D</p>
+<p>到新公司至目前已經快3個月了，學習了很多，也還有很多要學習，一直想要開個分類來記錄一下學習的過程，可惜我的Macbook被老婆拿去用了，所以一直還沒有機會把RetailSCM的Source code拿過來可以寫Blog，今天老婆也想要看下Odoo就順便把RetailSCM的整個code copy了過來，順便upgrade了一下hexo，來開出Odoo的專版。</p>
+<p><a href="/images/post/pexels-photo-69432.jpeg"><img src="/images/post/pexels-photo-69432.jpeg" alt="Hello Odoo"></a></p>
+]]></content>
+    <summary type="html">
+    <![CDATA[<p>在半年前我選擇了一個未來相當一段時間自己所會選擇的產品，并將在這個產品上學習與發展，這個產品就是Opensource的ERP產品Odoo。</p>
+<p>為此去申請了一個Amazon的主機，後來為了更快速使用還買了一台小主機，在熟悉到了一定程度之後，我知道單純靠自己自學已經]]>
+    </summary>
+    
+      <category term="Odoo" scheme="http://www.retailscm.com/categories/Odoo/"/>
+    
+  </entry>
   
   <entry>
     <title><![CDATA[第七章 02.使用Highcharts APIs]]></title>
@@ -2603,84 +2624,6 @@ series: <span class="preprocessor">[</span>{
       <category term="Learning Highcharts" scheme="http://www.retailscm.com/categories/Learning/Learning-Highcharts/"/>
     
       <category term="Line area and scatter charts" scheme="http://www.retailscm.com/categories/Learning/Learning-Highcharts/Line-area-and-scatter-charts/"/>
-    
-  </entry>
-  
-  <entry>
-    <title><![CDATA[第二章 08.擴展色彩漸變(colors with gradients)]]></title>
-    <link href="http://www.retailscm.com/Learning/Learning-Highcharts/Highcharts-configurations/expanding-colors-with-gradients/"/>
-    <id>http://www.retailscm.com/Learning/Learning-Highcharts/Highcharts-configurations/expanding-colors-with-gradients/</id>
-    <published>2015-05-14T06:00:00.000Z</published>
-    <updated>2015-05-17T07:53:09.000Z</updated>
-    <content type="html"><![CDATA[<h1 id="科技零售(RetailSCM-com)_Learning_Highcharts中文教程">科技零售(RetailSCM.com) Learning Highcharts中文教程</h1><p><em><span style="color: #808080;">版權保留，網路轉載請註明來源，謝絕紙質媒體轉載，謝謝。</span></em></p>
-<h2 id="擴展色彩漸變(colors_with_gradients)">擴展色彩漸變(colors with gradients)</h2><p>Highcharts不僅支持一種顏色，同時也允許複雜的色彩漸變定義。Highcharts支持線性的色彩漸變可以是單一方向的色彩漸變也可以是輻射（或圓形）的色彩漸變，在本節中，我們嘗試驗線性的漸變，而輻射漸變會在第六章中再討論。</p>
-<p>在Highcharts中色彩的漸變是基於SVG的線性色彩漸變標準來實現的，它由以下兩種組合所構成：</p>
-<ul>
-<li>linearGradient：給出了x和y軸兩套坐標的顏色範圍作為漸變的方向，比率在0到1之間，或者為一個百分數</li>
-<li>stops：給出一組顏色的序列來填充他們在漸變方向的某一位置</li>
-</ul>
-<p>我們使用前面股市的例子中交易量的series，並重新定義yAxis.alternateGridColor，如下：</p>
-<a id="more"></a>
-<pre><code><span class="atom">yAxis</span>: [{
-    <span class="atom">title</span>: { <span class="atom">text</span>: <span class="string">'Nasdaq index'</span> },
-    ....
-    <span class="atom">alternateGridColor</span>: {
-        <span class="atom">linearGradient</span>: [ <span class="number">10</span>, <span class="number">250</span>, <span class="number">400</span>, <span class="number">250</span> ],
-        <span class="atom">stops</span>:  [
-                [ <span class="number">0</span>, <span class="string">'red'</span> ],
-                [ <span class="number">0.2</span>, <span class="string">'orange'</span> ],
-                [ <span class="number">0.5</span>, <span class="string">'yellow'</span> ] ,
-                [ <span class="number">0.8</span>, <span class="string">'green'</span> ] ,
-                [ <span class="number">1</span>, <span class="string">'lime'</span> ] ]
-    }
-</code></pre><p>linearGradient是一個坐標值數據，被指定在x1,y1,x2,y2。這些值可以使用固定的定位來表示也可以使用百分比來表示，差別是固定的值可能會被圖表大小影響而百分比則不會。</p>
-<p><em>固定位置的設定已經不建議使用了，因為他們在SVG和VML中無法正常使用。並且也與不同大小的圖表無法很好的配合。</em></p>
-<p>stops屬性有一個元素集數組，第一個值是0～1的位移範圍，第二個值是顏色的定義。位移和顏色的值定義為顏色在範圍中的位置，如[0, ‘red’ ] 和[0.2, ‘orange’ ]意味著從紅色開始然橫向後漸變橘色，方向朝向的位置是x = 80 (0.2 * 400)，然後從 x = 80到 x = 200的地方顏色由橘色變為黃色等，下圖為多色漸變：</p>
-<p><a href="/images/learning_highcharts/chart2-8-1.jpg"><img src="/images/learning_highcharts/chart2-8-1.jpg" alt="chart2-8-1"></a></p>
-<p>如果我們所看到的，紅色和橘色並為顯示在圖表中，因為顏色漸變是依據坐標，因而受到圖表大小的影響，x軸在這個例子中的位置已經超出了紅色和橘色的坐標。另一種方法，我們可以指定linearGradient為一個百分比的範圍，如下：</p>
-<pre><code><span class="rule"><span class="attribute">linearGradient</span>:<span class="value"> [ <span class="string">'20%'</span>, <span class="number">250</span>, <span class="string">'90%'</span>, <span class="number">250</span> ]</span></span>
-</code></pre><p>這意味著linearGradient從20%的寬度部分延伸90%的地方，所以色帶不會再受限與圖表的大小，下圖為新的linearGradient設定後的效果：</p>
-<p><a href="/images/learning_highcharts/chart2-8-2.jpg"><img src="/images/learning_highcharts/chart2-8-2.jpg" alt="chart2-8-2"></a></p>
-<p>這個圖表的背景現在已經有完整的色彩區域，用於指定0～1之間的比率時linearGradient必須定義一個樣式對象，否則這些值會被作為坐標來看待。注意這些值只有使用在繪圖的區域內，而不是全局的設定。</p>
-<pre><code><span class="tag">linearGradient</span>: { <span class="attribute">x1</span>: <span class="number">0</span>, <span class="attribute">y1</span>: <span class="number">0</span>, <span class="attribute">x2</span>: <span class="number">1</span>, <span class="attribute">y2</span>: <span class="number">0</span> }
-</code></pre><p>此設定是另一種設定橫向色彩漸變的方式：</p>
-<p><a href="/images/learning_highcharts/chart2-8-3.jpg"><img src="/images/learning_highcharts/chart2-8-3.jpg" alt="chart2-8-3"></a></p>
-<p>下面的代碼會調整為縱向的色彩漸變：</p>
-<pre><code><span class="tag">linearGradient</span>: { <span class="attribute">x1</span>: <span class="number">0</span>, <span class="attribute">y1</span>: <span class="number">0</span>, <span class="attribute">x2</span>: <span class="number">0</span>, <span class="attribute">y2</span>: <span class="number">1</span> }
-</code></pre><p>它會將背景的色彩漸變調整為縱向的方向，我們可以將’Jan’ 和 ‘Jul’的數據點設置為point object，並使用線性的方式實現縱向陰影漸變。</p>
-<p><a href="/images/learning_highcharts/chart2-8-4.jpg"><img src="/images/learning_highcharts/chart2-8-4.jpg" alt="chart2-8-4"></a></p>
-<p>此外，我們可以通過Highcharts的標準顏色來觸發series上的色彩漸變，它可以讓圖表看起來類似3D圖表的效果，在畫圖表之間，我們需要先覆蓋默認的series顏色為一個漸變色彩，下面的代碼片段使用一個藍色的漸變陰影來替代原本的series顏色，注意漸變的比率數值在本例中參考了柱圖的寬度：</p>
-<pre><code>$(<span class="built_in">document</span>).ready(<span class="function"><span class="keyword">function</span><span class="params">()</span> </span>{
-    Highcharts.getOptions().colors[<span class="number">0</span>] = {
-        linearGradient: { x1: <span class="number">0</span>, y1: <span class="number">0</span>, x2: <span class="number">1</span>, y2: <span class="number">0</span> },
-        stops:  [ [ <span class="number">0</span>, <span class="string">'#4572A7'</span> ],
-                [ <span class="number">0.7</span>, <span class="string">'#CCFFFF'</span> ],
-                [ <span class="number">1</span>, <span class="string">'#4572A7'</span> ] ]
-    };
-    <span class="keyword">var</span> chart = <span class="keyword">new</span> Highcharts.Chart({ ...
-</code></pre><p>下圖為使用了色彩陰影漸變的柱圖：</p>
-<p><a href="/images/learning_highcharts/chart2-8-5.jpg"><img src="/images/learning_highcharts/chart2-8-5.jpg" alt="chart2-8-5"></a></p>
-<h2 id="總結">總結</h2><p>在本章，我們使用案例來討論及試驗了重要的組件設定。現在我們應該可以知道如何繪製一些基礎的圖形及應用對應的樣式。在下一章中，我們會了解Highcharts的折線圖，區域圖，散點圖，我們會在這一章中了解及學到series-specific樣式選項的配置來繪製一些有精美樣式的圖表。</p>
-]]></content>
-    <summary type="html">
-    <![CDATA[<h1 id="科技零售(RetailSCM-com)_Learning_Highcharts中文教程">科技零售(RetailSCM.com) Learning Highcharts中文教程</h1><p><em><span style="color: #808080;">版權保留，網路轉載請註明來源，謝絕紙質媒體轉載，謝謝。</span></em></p>
-<h2 id="擴展色彩漸變(colors_with_gradients)">擴展色彩漸變(colors with gradients)</h2><p>Highcharts不僅支持一種顏色，同時也允許複雜的色彩漸變定義。Highcharts支持線性的色彩漸變可以是單一方向的色彩漸變也可以是輻射（或圓形）的色彩漸變，在本節中，我們嘗試驗線性的漸變，而輻射漸變會在第六章中再討論。</p>
-<p>在Highcharts中色彩的漸變是基於SVG的線性色彩漸變標準來實現的，它由以下兩種組合所構成：</p>
-<ul>
-<li>linearGradient：給出了x和y軸兩套坐標的顏色範圍作為漸變的方向，比率在0到1之間，或者為一個百分數</li>
-<li>stops：給出一組顏色的序列來填充他們在漸變方向的某一位置</li>
-</ul>
-<p>我們使用前面股市的例子中交易量的series，並重新定義yAxis.alternateGridColor，如下：</p>]]>
-    
-    </summary>
-    
-      <category term="Highcharts" scheme="http://www.retailscm.com/tags/Highcharts/"/>
-    
-      <category term="Learning" scheme="http://www.retailscm.com/categories/Learning/"/>
-    
-      <category term="Learning Highcharts" scheme="http://www.retailscm.com/categories/Learning/Learning-Highcharts/"/>
-    
-      <category term="Highcharts configurations" scheme="http://www.retailscm.com/categories/Learning/Learning-Highcharts/Highcharts-configurations/"/>
     
   </entry>
   
