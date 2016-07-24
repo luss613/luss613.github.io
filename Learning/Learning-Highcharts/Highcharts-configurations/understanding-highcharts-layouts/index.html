@@ -1,0 +1,711 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <meta charset="utf-8">
+    
+    <title>第二章 02.了解圖表佈局(layout) | 科技零售</title>
+    <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1">
+    
+        <meta name="keywords" content="Highcharts" />
+    
+    <meta name="description" content="科技零售(RetailSCM.com) Learning Highcharts中文教程版權保留，網路轉載請註明來源，謝絕紙質媒體轉載，謝謝。
+了解圖表佈局(layout)在我們開始學習Highcharts佈局如何工作之前，我們需要事先了解一些基礎的概念。為此，讓我們先來重新找出來第一章 網頁圖表中用過的例子並且給它設定一對邊框。首先來給圖形區域周圍設定一組邊框，為了設定，我們需要在chart中設定">
+<meta property="og:type" content="article">
+<meta property="og:title" content="第二章 02.了解圖表佈局(layout)">
+<meta property="og:url" content="http://www.retailscm.com/Learning/Learning-Highcharts/Highcharts-configurations/understanding-highcharts-layouts/index.html">
+<meta property="og:site_name" content="科技零售">
+<meta property="og:description" content="科技零售(RetailSCM.com) Learning Highcharts中文教程版權保留，網路轉載請註明來源，謝絕紙質媒體轉載，謝謝。
+了解圖表佈局(layout)在我們開始學習Highcharts佈局如何工作之前，我們需要事先了解一些基礎的概念。為此，讓我們先來重新找出來第一章 網頁圖表中用過的例子並且給它設定一對邊框。首先來給圖形區域周圍設定一組邊框，為了設定，我們需要在chart中設定">
+<meta property="og:image" content="/images/learning_highcharts/understanding_highchart_layout1.jpg">
+<meta name="twitter:card" content="summary">
+<meta name="twitter:title" content="第二章 02.了解圖表佈局(layout)">
+<meta name="twitter:description" content="科技零售(RetailSCM.com) Learning Highcharts中文教程版權保留，網路轉載請註明來源，謝絕紙質媒體轉載，謝謝。
+了解圖表佈局(layout)在我們開始學習Highcharts佈局如何工作之前，我們需要事先了解一些基礎的概念。為此，讓我們先來重新找出來第一章 網頁圖表中用過的例子並且給它設定一對邊框。首先來給圖形區域周圍設定一組邊框，為了設定，我們需要在chart中設定">
+    
+
+    
+
+    
+
+    <link rel="stylesheet" href="/vendor/font-awesome/css/font-awesome.min.css" type="text/css">
+    <link rel="stylesheet" href="/vendor/titillium-web/styles.css" type="text/css">
+    <link rel="stylesheet" href="/vendor/source-code-pro/styles.css" type="text/css">
+
+    <link rel="stylesheet" href="/css/style.css" type="text/css">
+
+    <script src="/vendor/jquery/2.0.3/jquery.min.js" type="text/javascript"></script>
+    
+    
+        <link rel="stylesheet" href="/vendor/fancybox/jquery.fancybox.css" type="text/css">
+    
+    
+        <link rel="stylesheet" href="/vendor/scrollLoading/style.css" type="text/css">
+    
+    
+        <script type="text/javascript">
+(function(i,s,o,g,r,a,m) {i['GoogleAnalyticsObject']=r;i[r]=i[r]||function() {
+(i[r].q=i[r].q||[]).push(arguments)},i[r].l=1*new Date();a=s.createElement(o),
+m=s.getElementsByTagName(o)[0];a.async=1;a.src=g;m.parentNode.insertBefore(a,m)
+})(window,document,'script','//www.google-analytics.com/analytics.js','ga');
+
+ga('create', 'UA-3707575-5', 'auto');
+ga('send', 'pageview');
+
+</script>
+    
+    
+
+</head>
+
+<body>
+    <div id="wrap">
+        <header id="header">
+    <div id="header-outer" class="outer">
+        <div class="container">
+            <div class="container-inner">
+                <div id="header-title">
+                    <h1 class="logo-wrap">
+                        <a href="/" class="logo"></a>
+                    </h1>
+                    
+                        <h2 class="subtitle-wrap">
+                            <p class="subtitle">PP Studio</p>
+                        </h2>
+                    
+                </div>
+                <div id="header-inner" class="nav-container">
+                    <a id="main-nav-toggle" class="nav-icon fa fa-bars"></a>
+                    <div class="nav-container-inner">
+                      <ul id="main-nav">
+                            <li class="main-nav-list-item">
+                                <a class="main-nav-list-link" href="/">主頁</a>
+                            </li>
+                            <ul class="main-nav-list">
+                                <li class="main-nav-list-item"><a class="main-nav-list-link" href="#">愛科技</a>
+                                    <ul class="main-nav-list-child">
+                                        <li class="main-nav-list-item"><a class="main-nav-list-link" href="/categories/Learning/Learning-Highcharts/">Learning Highcharts</a></li>
+                                        <li class="main-nav-list-item"><a class="main-nav-list-link" href="/categories/WEB2-0/">WEB2.0</a></li>
+                                        <li class="main-nav-list-item"><a class="main-nav-list-link" href="/categories/Oracle/">Oracle</a></li>
+                                    </ul>
+                                </li>
+                                <li class="main-nav-list-item"><a class="main-nav-list-link" href="#">愛應用</a>
+                                    <ul class="main-nav-list-child">
+                                        <li class="main-nav-list-item"><a class="main-nav-list-link" href="/categories/業務案例/">業務案例</a></li>
+                                        <li class="main-nav-list-item"><a class="main-nav-list-link" href="/categories/行業動態/">行業動態</a></li>
+                                    </ul>
+                                </li>
+                                <li class="main-nav-list-item"><a class="main-nav-list-link" href="#">愛生活</a>
+                                    <ul class="main-nav-list-child">
+                                        <li class="main-nav-list-item"><a class="main-nav-list-link" href="/categories/隨筆/">隨筆</a></li>
+                                        <li class="main-nav-list-item"><a class="main-nav-list-link" href="/categories/閱讀/">閱讀</a></li>
+                                    </ul>
+                                </li>
+                            </ul>
+                            <li class="main-nav-list-item">
+                                <a class="main-nav-list-link" href="/about">關於</a>
+                            </li>
+                        </ul>
+                        <nav id="sub-nav">
+                            <div id="search-form-wrap">
+
+    <form action="//google.com/search" method="get" accept-charset="UTF-8" class="search-form"><input type="search" name="q" results="0" class="search-form-input" placeholder="查詢"><input type="hidden" name="q" value="site:http://www.retailscm.com"></form>
+
+</div>
+                        </nav>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</header>
+        <div class="container">
+            <div class="main-body container-inner">
+                <div class="main-body-inner">
+                    <section id="main">
+                        <div class="main-body-header">
+    <h1 class="header">
+    
+    <a class="page-title-link" href="/categories/Learning/">Learning</a><i class="icon fa fa-angle-right"></i><a class="page-title-link" href="/categories/Learning/Learning-Highcharts/">Learning Highcharts</a><i class="icon fa fa-angle-right"></i><a class="page-title-link" href="/categories/Learning/Learning-Highcharts/Highcharts-configurations/">Highcharts configurations</a>
+    </h1>
+</div>
+                        <div class="main-body-content">
+                            <article id="post-understanding-highcharts-layouts" class="article article-single article-type-post" itemscope itemprop="blogPost">
+    <div class="article-inner">
+        
+            <header class="article-header">
+                
+    
+        <h1 class="article-title" itemprop="name">
+        第二章 02.了解圖表佈局(layout)
+        </h1>
+    
+
+            </header>
+        
+        <div class="article-subtitle">
+            <a href="/Learning/Learning-Highcharts/Highcharts-configurations/understanding-highcharts-layouts/" class="article-date">
+    <time datetime="2015-05-13T12:56:33.000Z" itemprop="datePublished">2015-05-13</time>
+</a>
+            
+    <ul class="article-tag-list"><li class="article-tag-list-item"><a class="article-tag-list-link" href="/tags/Highcharts/">Highcharts</a></li></ul>
+
+        </div>
+        <div class="article-entry" itemprop="articleBody">
+            <h1 id="科技零售(RetailSCM-com)_Learning_Highcharts中文教程">科技零售(RetailSCM.com) Learning Highcharts中文教程</h1><p><em><span style="color: #808080;">版權保留，網路轉載請註明來源，謝絕紙質媒體轉載，謝謝。</span></em></p>
+<h2 id="了解圖表佈局(layout)">了解圖表佈局(layout)</h2><p>在我們開始學習Highcharts佈局如何工作之前，我們需要事先了解一些基礎的概念。為此，讓我們先來重新找出來第一章 網頁圖表中用過的例子並且給它設定一對邊框。首先來給圖形區域周圍設定一組邊框，為了設定，我們需要在chart中設定plotBorderWidth和plotBorderColor選項，如下：</p>
+<pre><code><span class="tag">chart</span>: {
+  <span class="attribute">renderTo</span>: <span class="string">'container'</span>,
+  <span class="attribute">type</span>: <span class="string">'spline'</span>,
+  <span class="attribute">plotBorderWidth</span>: <span class="number">1</span>,
+  <span class="attribute">plotBorderColor</span>: <span class="string">'#3F4044'</span>
+},
+</code></pre><p>第二組邊框我們設定它圍繞著圖表的container標籤，所以我們擴展前面chart的部分增加額外的設定：</p>
+<a id="more"></a>
+<pre><code><span class="tag">chart</span>: {
+  <span class="attribute">renderTo</span>: <span class="string">'container'</span>,
+  ....
+  <span class="attribute">borderColor</span>: <span class="string">'#a1a1a1'</span>,
+  <span class="attribute">borderWidth</span>: <span class="number">2</span>,
+  <span class="attribute">borderRadius</span>: <span class="number">3</span>
+},
+</code></pre><p>基本上，這部分會將container標籤的邊框設定為2個像素的寬度及半徑為3個像素的圓角表格。</p>
+<p>如我們所看到，這個邊框在container容器的外圍，這個邊框也是Highcharts所有元素所處的範圍邊界。</p>
+<p><a href="/images/learning_highcharts/understanding_highchart_layout1.jpg"><img src="/images/learning_highcharts/understanding_highchart_layout1.jpg" alt="understanding_highchart_layout1"></a></p>
+<p>默認情況下，Highcharts會顯示3個區域——間隔區域，標籤區域，圖表區域。圖表區域是在最內層的矩形部分，包含了所有的圖表的圖樣。標籤區域則是在圖表區域的外圍，它包含了標題，副標題，軸標題，圖例說明及版權說明的部分。間隔區域則是在容器的內部及標籤區域外部的這個部分，下面的圖示標註了三種不同的區域，用灰色的虛線來區分間隔區域和標籤區域。</p>
+<p><a href="/images/learning_highcharts/chart2-2.jpg"><img src="/images/learning_highcharts/chart2-2.jpg" alt="chart2-2"></a></p>
+<p>每一個標籤的定位都可以使用下面的兩種佈局來處理：</p>
+<ul>
+<li>自動佈局：Highcharts會依據標籤在標籤區域的位置來自動調整圖表區域的大小，這意味著標籤無法顯示在圖表區域內（無法達成將標籤與圖表重疊的效果），自動佈局是一種很簡單的配置方式，但是對圖表的調整程度比較低。自動佈局是Highcharts的默認佈局方式。</li>
+<li>固定佈局：這種佈局中不再存在標籤區域這個區域，圖表標籤是指定固定的位置，使標籤顯示在圖表區域最上層。換句話說，圖表區域並不會依據標籤的位置來進行自動調整，這種方式可以讓我們完全的控制圖表應如何呈現。</li>
+</ul>
+<p>間隔區域控制著Highcharts在各邊界的偏移量。間隔區域是全局變量，如果圖表沒有定義邊界大小(margin)，則增加和減少間隔區域會影響全部佈局（自動或固定佈局）。</p>
+<h2 id="圖表邊界(margin)與間隔(spacing)">圖表邊界(margin)與間隔(spacing)</h2><p>在這一節中我們會看到設定邊界與間隔在圖表中所表現出來的效果。圖表邊界可以在屬性margin, marginTop, marginLeft, marginRight和marginBottom中設定，默認狀況下邊界的屬性並不會被設定。設定圖表的margin屬性在整個圖表區域中是作為全局變量出現的。</p>
+<p>margin屬性可以是一個數組，比較類似css的方法，從上面開始順時針計算其他的位置。此外margin的優先級比直接指定方向的margin優先級要低，優先級也不會因為在chart中出現的順序比較靠前而提高。</p>
+<p>Spacing的設定會在設定任何一個方向的spacing時自動開啟，如設定屬性spacingTop, spacingLeft, spacingBottom或spacingRight。</p>
+<p>在本例中我們會為每一條邊來增加或修改margin或spacing屬性並觀察其效果，下面是設定：</p>
+<pre><code><span class="tag">chart</span>: {
+  <span class="attribute">renderTo</span>: <span class="string">'container'</span>,
+  <span class="attribute">type</span>: ...
+  <span class="attribute">marginTop</span>: <span class="number">10</span>,
+  <span class="attribute">marginRight</span>: <span class="number">0</span>,
+  <span class="attribute">spacingLeft</span>: <span class="number">30</span>,
+  <span class="attribute">spacingBottom</span>: <span class="number">0</span>
+},
+</code></pre><p>下面是觀察到的圖表樣子：</p>
+<p><a href="/images/learning_highcharts/chart2-4.jpg"><img src="/images/learning_highcharts/chart2-4.jpg" alt="chart2-4"></a></p>
+<p>marginTop屬性固定了圖表區域的上邊界距離容器的邊框為10個像素的距離，同時它也使得佈局變為了固定佈局，因而圖表的標題與副標題都會重疊顯示在圖表區域上了。spacingLeft屬性增加了左邊的間隔區域距離，因此可以進一步調整Y軸標籤，這裡因為是自動佈局（沒有聲明marginLeft），所以也同步調整了左邊的圖表邊框。設置marginRight為0則會覆蓋右邊的spacing屬性，並將佈局調整為固定佈局模式。最後，設定spacingBottom為0讓圖例的部分放置到容器的底部。雖然spacingBottom設置為0，但是這部分仍然是自動佈局，因此圖表區域也會自動隨著圖例區域而延伸。</p>
+<h2 id="圖表標籤屬性">圖表標籤屬性</h2><p>圖表標籤如xAxis.title（X軸標籤）, yAxis.title（Y軸標籤）, legend（圖例）, title（標題）, subtitle（副標題）, credits（網站說明，類似與power by的概念）公用一些相同的屬性名，如下：</p>
+<ul>
+<li>align: 水平對齊標籤，屬性內容有left, center, right，在軸標籤則有low, middle, high</li>
+<li>floating: 讓標籤具有在圖表區域浮動(floating effect)顯示。</li>
+<li>Margin: 邊界設定，只有某些標籤有此選項，用來設定標籤到圖表邊界的距離。</li>
+<li>verticalAlign: 垂直對齊標籤，屬性內容有top, middle, bottom</li>
+<li>x: 水平對齊中的定位</li>
+<li>y: 垂直對齊中的定位</li>
+</ul>
+<p>在標籤的x和y的定位，是用來調整標籤在對齊中的位置，因此通常不會用在表達圖表中的絕對定位。下圖表示坐標的方向，圖中間位置為標籤的地方：</p>
+<p><a href="/images/learning_highcharts/chart2-3.jpg"><img src="/images/learning_highcharts/chart2-3.jpg" alt="chart2-3"></a></p>
+<p>我們可以在一個簡單的例子，如將圖表中的標題與副標題放置在相鄰的位置，以此來試驗一下align屬性和y的定位設定。</p>
+<p>標題使用align設定為left，將其移動到左側，然後將副標題align設定為right，將其移動到右側。為了讓標題與副標題可以在同一行顯示，我們還要調整副標題的y定位屬性到15，使之與標題默認的y定位呈現相同的高度。</p>
+<pre><code>title: {
+  <span class="keyword">text</span>: <span class="string">'Web browsers ...'</span>,
+  <span class="keyword">align</span>: <span class="string">'left'</span>
+},
+subtitle: {
+  <span class="keyword">text</span>: <span class="string">'From 2008 to present'</span>,
+  <span class="keyword">align</span>: <span class="string">'right'</span>,
+  y: <span class="number">15</span>
+},
+</code></pre><p>下圖為標題與副標題在同一行上的效果：</p>
+<p><a href="/images/learning_highcharts/chart2-5.jpg"><img src="/images/learning_highcharts/chart2-5.jpg" alt="chart2-5"></a></p>
+<p>在下面的一節中，我們會繼續嘗試修改各個不同的對象的標籤來觀察其對應的效果。</p>
+<h2 id="標題和副標題的對齊">標題和副標題的對齊</h2><p>標題和副標題具有相同的屬性設定，唯一的差別為默認狀況下標題具有margin的設定值。指定verticalAlign可以改變默認的自動佈局為固定佈局（內部會自動將floating修改為true）。然而手動設定副標題的floating屬性為false並不會將其修改回自動佈局，下面的例子是將標題設置為自動佈局而副標題設置為固定佈局：</p>
+<pre><code>title: {
+  text: <span class="symbol">'Web</span> browsers statistics'
+},
+subtitle: {
+  text: <span class="symbol">'From</span> <span class="number">2008</span> <span class="keyword">to</span> present',
+  verticalAlign: <span class="symbol">'top'</span>,
+  y: <span class="number">60</span> 
+},
+</code></pre><p>副標題verticalAlign屬性被設置為top，所以副標題的佈局被轉換為固定佈局，並且將y定位設置為60個像素的高度，於是副標題的定位被向下移動。在此例中，標題仍然為自動佈局，所以還在圖表區域的上方，但副標題因為為固定佈局，並且設定了固定位置為距離上邊距60像素，因此它浮動於圖表區域並重疊顯示：</p>
+<p><a href="/images/learning_highcharts/chart2-6.jpg"><img src="/images/learning_highcharts/chart2-6.jpg" alt="chart2-6"></a></p>
+<p><em>目前如果標題與副標題全部使用verticalAlign對齊時，highcharts還有一個bug，</em><br><em>可以參考官網的bug報告</em><br><em><a href="http://github.com/highslide-software/highcharts.com/issues/962" target="_blank" rel="external">http://github.com/highslide-software/highcharts.com/issues/962</a>.</em></p>
+<h2 id="圖例（legend）對齊">圖例（legend）對齊</h2><p>圖例對verticalAlign和align這兩種屬性具有不同的設置。除了設置對齊方式為center之外，其他的對齊方式設定仍為自動定位，下面使用一個圖例靠右的例子，verticalAlign屬性設置為middle，align設置為right</p>
+<pre><code><span class="tag">legend</span>: {
+  <span class="attribute">align</span>: <span class="string">'right'</span>,
+  <span class="attribute">verticalAlign</span>: <span class="string">'middle'</span>,
+  <span class="attribute">layout</span>: <span class="string">'vertical'</span>,
+},
+</code></pre><p>Layout的屬性設定為vertical則圖例框中的元素都是垂直顯示，如下圖，圖表區域已經自動重設了圖例框的尺寸：</p>
+<p><a href="/images/learning_highcharts/chart2-7.jpg"><img src="/images/learning_highcharts/chart2-7.jpg" alt="chart2-7"></a></p>
+<h2 id="軸標題對齊">軸標題對齊</h2><p>軸標題無法使用verticalAlign屬性，它使用align屬性，即使屬性的內容為low, middle或high(y軸的align)。軸標題的邊界設定是設定軸標題和軸線之間的距離，下面的例子中會展示y軸的標題由垂直設定轉為水平設定（默認情況下），會將軸標題顯示在軸線的上面而不是邊上，此外，我們使用y屬性來調整標題的位置：</p>
+<pre><code><span class="tag">yAxis</span>: {
+  <span class="tag">title</span>: {
+    <span class="attribute">text</span>: <span class="string">'Percentage %'</span>,
+    <span class="attribute">rotation</span>: <span class="number">0</span>,
+    <span class="attribute">y</span>: -<span class="number">15</span>,
+    <span class="attribute">margin</span>: -<span class="number">70</span>,
+    <span class="attribute">align</span>: <span class="string">'high'</span>
+  },
+  <span class="attribute">min</span>: <span class="number">0</span>
+},
+</code></pre><p>下面圖中的左上角可以看到圖表中y軸的標題已經從邊上移動到了y軸的上面，另一種方法為我們可以使用offset選項來代替margin達到相同的結果。</p>
+<p><a href="/images/learning_highcharts/chart2-8.jpg"><img src="/images/learning_highcharts/chart2-8.jpg" alt="chart2-8"></a></p>
+<h2 id="credits（網站說明，類似與power_by的概念）對齊">credits（網站說明，類似與power by的概念）對齊</h2><p>credits與其他標籤元素的設定有一些不同，它只支持align, verticalAlign, x和y這四種屬性在credits.position中(比較簡單的寫法為credits:{position:…})，同時它也不支持任何spacing的設定。假設我們有一個沒有圖例的圖表，並且我們要移動credits到圖表左下的部分，下面為我們的做法：</p>
+<pre><code><span class="tag">legend</span>: {
+  <span class="tag">enabled</span>: <span class="tag">false</span>
+},
+<span class="tag">credits</span>: {
+  <span class="tag">position</span>: {
+    <span class="attribute">align</span>: <span class="string">'left'</span>
+  },
+  <span class="attribute">text</span>: <span class="string">'RetailSCM'</span>,
+  <span class="attribute">href</span>: <span class="string">'http://www.retailscm.com'</span>
+},
+</code></pre><p>然而，credits的text部分已經超出了圖表的邊界，如下圖所示：</p>
+<p><a href="/images/learning_highcharts/chart2-9.jpg"><img src="/images/learning_highcharts/chart2-9.jpg" alt="chart2-9"></a></p>
+<p>即使我們將credits標籤移動到右邊並設定x定位，但是標籤還是有一些太過靠近x軸標籤或x軸標題，我們在這裡要特別額外介紹spacingBottom來在標籤中設定間隔的部分，如下：</p>
+<pre><code><span class="tag">chart</span>: {
+  <span class="tag">spacingBottom</span>: <span class="tag">30</span>,
+  ....
+},
+<span class="tag">credits</span>: {
+  <span class="tag">position</span>: {
+    <span class="attribute">align</span>: <span class="string">'left'</span>,
+    <span class="attribute">x</span>: <span class="number">20</span>,
+    <span class="attribute">y</span>: -<span class="number">7</span>
+  },
+</code></pre><p>下圖為調整之後的結果：</p>
+<p><a href="/images/learning_highcharts/chart2-10.jpg"><img src="/images/learning_highcharts/chart2-10.jpg" alt="chart2-10"></a></p>
+<h2 id="嘗試自動佈局">嘗試自動佈局</h2><p>在這一節中，我們會測試自動佈局的特性，在這個看起來比較簡單的例子中，我們開始將圖表標題與圖表不在設定spacing的值：</p>
+<pre><code><span class="symbol">chart:</span> {
+  <span class="symbol">renderTo:</span> <span class="string">'container'</span>,
+  <span class="regexp">//</span> border <span class="keyword">and</span> plotBorder settings
+  .....
+},
+<span class="symbol">title:</span> {
+  <span class="symbol">text:</span> <span class="string">'Web browsers statistics,
+},</span>
+</code></pre><p>從前面的例子中，圖表的標題應該如預期般出現在容器與圖表區域之間的部分</p>
+<p><a href="/images/learning_highcharts/chart2-11.jpg"><img src="/images/learning_highcharts/chart2-11.jpg" alt="chart2-11"></a></p>
+<p>標題和容器頂端邊框的部分默認設定spacingTop為10像素高，標題和圖表區域頂端邊框的高度在默認設置title.margin為15個像素高。</p>
+<p>如果設定spacingTop為0，則圖表的標題會向上移動到容器的頂端邊框，因此圖表區域也會自動向上延展，如下圖：</p>
+<p><a href="/images/learning_highcharts/chart2-12.jpg"><img src="/images/learning_highcharts/chart2-12.jpg" alt="chart2-12"></a></p>
+<p>我們接著再將title.margin設置為0，於是圖表的邊框也向上移動，圖表區域也會對應變得更高，如下圖：</p>
+<p><a href="/images/learning_highcharts/chart2-13.jpg"><img src="/images/learning_highcharts/chart2-13.jpg" alt="chart2-13"></a></p>
+<p>你也許有注意到了，目前頂部的邊框和圖表標題時間還是有幾個像素的差距，這其實是因為標題上默認15個像素高度的y定位設定，足夠默認大小字體的高度設定。</p>
+<p>下面圖表設定中設定了的容器與圖表區域之間的大小為0</p>
+<pre><code><span class="string">chart:</span> {
+<span class="label">  renderTo:</span> <span class="string">'container'</span>,
+  <span class="comment">// border and plotBorder settings</span>
+  .....
+<span class="label">  spacingTop:</span> <span class="number">0</span>
+},
+<span class="string">title:</span> {
+<span class="label">  text:</span> <span class="string">'Web browsers statistics'</span>,
+<span class="label">  margin:</span> <span class="number">0</span>,
+<span class="label">  y:</span> <span class="number">0</span>
+}
+</code></pre><p>如果我們設定title.y為0，圖表頂端的邊界和容器頂端的邊界將重合，下面圖為最終效果，圖表的標題已經因為移到了容器邊框之外，所以已經看不到了。</p>
+<p><a href="/images/learning_highcharts/chart2-14.jpg"><img src="/images/learning_highcharts/chart2-14.jpg" alt="chart2-14"></a></p>
+<p>有趣的是，如果我們回到第一個例子中，圖表區域頂邊與容器頂邊默認的距離是按照如下公式計算的：</p>
+<p>spacingTop + title.margin + title.y = 10 + 15 + 15 = 40</p>
+<p>因此改變任何這三個變量中的一個都會使圖表區自動調整與容器頂邊的距離。這些偏移量在自動佈局中都有他們不同的作用。</p>
+<p>Spacing是用來控制容器與圖表之間的距離，如果我們希望控制圖表具有比較大的空間，就可以使用這個屬性來控制。同樣，如果我們希望改變標籤字體的大小，則應該考慮調整y定位屬性。設定標籤在圖表中的這些屬性並不會影響到其他的組件。</p>
+<h2 id="嘗試固定佈局">嘗試固定佈局</h2><p>在上一節中我們了解到如何讓圖表進行動態的自動調整，在這一節中我們會來看一下如何手動調整圖表標籤的位置。首先，我們再拿上一節的示例代碼來使用，並將其中圖表標籤的verticalAlign屬性修改為bottom，如下：</p>
+<pre><code><span class="string">chart:</span> {
+<span class="label">  renderTo:</span> <span class="string">'container'</span>,
+  <span class="comment">// border and plotBorder settings </span>
+  .....
+},
+<span class="string">title:</span> {
+<span class="label">  text:</span> <span class="string">'Web browsers statistics'</span>,
+<span class="label">  verticalAlign:</span> <span class="string">'bottom'</span>
+},
+</code></pre><p>圖表標題移動到了圖表的底部，緊貼著容器的底邊。注意此設定會將標題修改為floating模式，其他更重要的設定在圖表區域中則仍然保持為自動佈局：</p>
+<p><a href="/images/learning_highcharts/chart2-15.jpg"><img src="/images/learning_highcharts/chart2-15.jpg" alt="chart2-15"></a></p>
+<p>要注意的是我們並沒有設置spacingBottom屬性，但是會默認設定15個像素的高度，因為在title.y的默認值是15，這也意味著標題和容器底邊會有15個像素的距離。按照之間圖表標籤屬性一節中所提到的例圖中，y的正值會將標題向容器底部方向執行位移。</p>
+<p>讓我們來將y的位移做一個大一點的設定，這樣我們就可以看到verticalAlign的設定使標題浮動在圖表上。</p>
+<pre><code><span class="tag">title</span>: {
+  <span class="attribute">text</span>: <span class="string">'Web browsers statistics'</span>,
+  <span class="attribute">verticalAlign</span>: <span class="string">'bottom'</span>,
+  <span class="attribute">y</span>: -<span class="number">90</span>
+},
+</code></pre><p>y的負值會將標題向容器頂部的方向進行位移，如圖：</p>
+<p><a href="/images/learning_highcharts/chart2-16.jpg"><img src="/images/learning_highcharts/chart2-16.jpg" alt="chart2-16"></a></p>
+<p>現在標題和圖表是重疊的，這意味著標籤可以在自動佈局中向圖表移動，這裡我們改變了標籤的y屬性和邊距設定，我們在軸標籤上增加一個距離：</p>
+<pre><code><span class="tag">legend</span>: {
+  <span class="attribute">margin</span>: <span class="number">70</span>,
+  <span class="attribute">y</span>: -<span class="number">10</span>
+},
+</code></pre><p>這樣會向上提升圖表的底邊，然而圖表標題仍然保留為固定佈局並且其在圖表中的位置也沒有因為軸標籤的新設定而做了任何的改變，如圖：</p>
+<p><a href="/images/learning_highcharts/chart2-17.jpg"><img src="/images/learning_highcharts/chart2-17.jpg" alt="chart2-17"></a></p>
+<p>到目前為止，我們已經可以更好的理解如何對標籤元素進行定位及他們的佈局策略與圖表之間的關係了。</p>
+
+        </div>
+        <footer class="article-footer">
+            
+
+
+
+    <a data-url="http://www.retailscm.com/Learning/Learning-Highcharts/Highcharts-configurations/understanding-highcharts-layouts/" data-id="cir0mgfr3003rg1zt33b2hg3c" class="article-share-link"><i class="fa fa-share"></i>分享到</a>
+<script>
+    (function ($) {
+        $('body').on('click', function() {
+            $('.article-share-box.on').removeClass('on');
+        }).on('click', '.article-share-link', function(e) {
+            e.stopPropagation();
+
+            var $this = $(this),
+                url = $this.attr('data-url'),
+                encodedUrl = encodeURIComponent(url),
+                id = 'article-share-box-' + $this.attr('data-id'),
+                offset = $this.offset(),
+                box;
+
+            if ($('#' + id).length) {
+                box = $('#' + id);
+
+                if (box.hasClass('on')){
+                    box.removeClass('on');
+                    return;
+                }
+            } else {
+                var html = [
+                    '<div id="' + id + '" class="article-share-box">',
+                        '<input class="article-share-input" value="' + url + '">',
+                        '<div class="article-share-links">',
+                            '<a href="https://twitter.com/intent/tweet?url=' + encodedUrl + '" class="article-share-twitter" target="_blank" title="Twitter"></a>',
+                            '<a href="https://www.facebook.com/sharer.php?u=' + encodedUrl + '" class="article-share-facebook" target="_blank" title="Facebook"></a>',
+                            '<a href="http://pinterest.com/pin/create/button/?url=' + encodedUrl + '" class="article-share-pinterest" target="_blank" title="Pinterest"></a>',
+                            '<a href="https://plus.google.com/share?url=' + encodedUrl + '" class="article-share-google" target="_blank" title="Google+"></a>',
+                        '</div>',
+                    '</div>'
+                ].join('');
+
+              box = $(html);
+
+              $('body').append(box);
+            }
+
+            $('.article-share-box.on').hide();
+
+            box.css({
+                top: offset.top + 25,
+                left: offset.left
+            }).addClass('on');
+
+        }).on('click', '.article-share-box', function (e) {
+            e.stopPropagation();
+        }).on('click', '.article-share-box-input', function () {
+            $(this).select();
+        }).on('click', '.article-share-box-link', function (e) {
+            e.preventDefault();
+            e.stopPropagation();
+
+            window.open(this.href, 'article-share-box-window-' + Date.now(), 'width=500,height=450');
+        });
+    })(jQuery);
+</script>
+
+        </footer>
+    </div>
+</article>
+
+    <section id="comments">
+    
+        
+    <div id="disqus_thread">
+        <noscript>Please enable JavaScript to view the <a href="//disqus.com/?ref_noscript">comments powered by Disqus.</a></noscript>
+    </div>
+
+    
+    </section>
+
+                        </div>
+                    </section>
+                    <aside id="sidebar">
+    <a class="sidebar-toggle" title="Expand Sidebar"><i class="toggle icon"></i></a>
+    <div class="sidebar-top">
+        <p>關注我 :</p>
+        <ul class="social-links">
+            
+                
+                <li>
+                    <a class="social-tooltip" title="github" href="http://github.com/luss613" target="_blank">
+                        <i class="icon fa fa-github"></i>
+                    </a>
+                </li>
+                
+            
+                
+                <li>
+                    <a class="social-tooltip" title="twitter" href="http://twitter.com/luss613" target="_blank">
+                        <i class="icon fa fa-twitter"></i>
+                    </a>
+                </li>
+                
+            
+                
+                <li>
+                    <a class="social-tooltip" title="facebook" href="https://www.facebook.com/retailscm" target="_blank">
+                        <i class="icon fa fa-facebook"></i>
+                    </a>
+                </li>
+                
+            
+                
+                <li>
+                    <a class="social-tooltip" title="rss" href="/atom.xml" target="_blank">
+                        <i class="icon fa fa-rss"></i>
+                    </a>
+                </li>
+                
+            
+        </ul>
+    </div>
+    
+        
+<nav id="article-nav">
+    
+        <a href="/Learning/Learning-Highcharts/Highcharts-configurations/framing-the-chart-with-axes/" id="article-nav-newer" class="article-nav-link-wrap">
+        <strong class="article-nav-caption">下一篇</strong>
+        <p class="article-nav-title">
+        
+            第二章 03.軸在圖表中的應用
+        
+        </p>
+        <i class="icon fa fa-chevron-right" id="icon-chevron-right"></i>
+    </a>
+    
+    
+        <a href="/Learning/Learning-Highcharts/Highcharts-configurations/configuration-structure/" id="article-nav-older" class="article-nav-link-wrap">
+        <strong class="article-nav-caption">上一篇</strong>
+        <p class="article-nav-title">第二章 01.配置選項</p>
+        <i class="icon fa fa-chevron-left" id="icon-chevron-left"></i>
+        </a>
+    
+</nav>
+
+    
+    <div class="widgets-container">
+        
+            
+                
+    <div class="widget-wrap widget-list">
+        <h3 class="widget-title">分類</h3>
+        <div class="widget">
+            <ul class="category-list"><li class="category-list-item"><a class="category-list-link" href="/categories/Learning/">Learning</a><span class="category-list-count">36</span><ul class="category-list-child"><li class="category-list-item"><a class="category-list-link" href="/categories/Learning/Learning-Highcharts/">Learning Highcharts</a><span class="category-list-count">36</span><ul class="category-list-child"><li class="category-list-item"><a class="category-list-link" href="/categories/Learning/Learning-Highcharts/Bar-and-column-charts/">Bar and column charts</a><span class="category-list-count">6</span></li><li class="category-list-item"><a class="category-list-link" href="/categories/Learning/Learning-Highcharts/Highcharts-APIs/">Highcharts APIs</a><span class="category-list-count">3</span></li><li class="category-list-item"><a class="category-list-link" href="/categories/Learning/Learning-Highcharts/Highcharts-configurations/">Highcharts configurations</a><span class="category-list-count">9</span></li><li class="category-list-item"><a class="category-list-link" href="/categories/Learning/Learning-Highcharts/Line-area-and-scatter-charts/">Line area and scatter charts</a><span class="category-list-count">5</span></li><li class="category-list-item"><a class="category-list-link" href="/categories/Learning/Learning-Highcharts/Pie-Charts/">Pie Charts</a><span class="category-list-count">5</span></li><li class="category-list-item"><a class="category-list-link" href="/categories/Learning/Learning-Highcharts/Web-Charts/">Web Charts</a><span class="category-list-count">6</span></li></ul></li></ul></li><li class="category-list-item"><a class="category-list-link" href="/categories/Oracle/">Oracle</a><span class="category-list-count">1</span></li><li class="category-list-item"><a class="category-list-link" href="/categories/WEB2-0/">WEB2.0</a><span class="category-list-count">2</span><ul class="category-list-child"><li class="category-list-item"><a class="category-list-link" href="/categories/WEB2-0/Bootstrap/">Bootstrap</a><span class="category-list-count">1</span></li><li class="category-list-item"><a class="category-list-link" href="/categories/WEB2-0/jQuery/">jQuery</a><span class="category-list-count">1</span></li></ul></li><li class="category-list-item"><a class="category-list-link" href="/categories/Yii/">Yii</a><span class="category-list-count">2</span></li><li class="category-list-item"><a class="category-list-link" href="/categories/業務案例/">業務案例</a><span class="category-list-count">1</span></li><li class="category-list-item"><a class="category-list-link" href="/categories/行業動態/">行業動態</a><span class="category-list-count">2</span></li><li class="category-list-item"><a class="category-list-link" href="/categories/隨筆/">隨筆</a><span class="category-list-count">1</span></li></ul>
+        </div>
+    </div>
+
+
+            
+                
+    <div class="widget-wrap">
+        <h3 class="widget-title">最新文章</h3>
+        <div class="widget">
+            <ul id="recent-post" class="">
+                
+                    <li>
+                        
+                        <div class="item-thumbnail">
+                            <a href="/Learning/Learning-Highcharts/Highcharts-APIs/using-highcharts-apis/" class="thumbnail">
+    
+    
+        <span style="background-image:url(/images/learning_highcharts/7-2.png)" alt="第七章 02.使用Highcharts APIs" class="thumbnail-image"></span>
+    
+    
+</a>
+                        </div>
+                        
+                        <div class="item-inner">
+                            <p class="item-category"><a class="article-category-link" href="/categories/Learning/">Learning</a><i class="icon fa fa-angle-right"></i><a class="article-category-link" href="/categories/Learning/Learning-Highcharts/">Learning Highcharts</a></p>
+                            <p class="item-title"><a href="/Learning/Learning-Highcharts/Highcharts-APIs/using-highcharts-apis/" class="title">第七章 02.使用Highcharts APIs</a></p>
+                            <p class="item-date"><time datetime="2015-05-18T19:00:00.000Z" itemprop="datePublished">2015-05-19</time></p>
+                        </div>
+                    </li>
+                
+                    <li>
+                        
+                        <div class="item-thumbnail">
+                            <a href="/Learning/Learning-Highcharts/Highcharts-APIs/understanding-the-highcharts-class-model/" class="thumbnail">
+    
+    
+        <span style="background-image:url(/images/learning_highcharts/7-1.jpg)" alt="第七章 01.了解Highcharts類模型" class="thumbnail-image"></span>
+    
+    
+</a>
+                        </div>
+                        
+                        <div class="item-inner">
+                            <p class="item-category"><a class="article-category-link" href="/categories/Learning/">Learning</a><i class="icon fa fa-angle-right"></i><a class="article-category-link" href="/categories/Learning/Learning-Highcharts/">Learning Highcharts</a></p>
+                            <p class="item-title"><a href="/Learning/Learning-Highcharts/Highcharts-APIs/understanding-the-highcharts-class-model/" class="title">第七章 01.了解Highcharts類模型</a></p>
+                            <p class="item-date"><time datetime="2015-05-18T18:00:00.000Z" itemprop="datePublished">2015-05-19</time></p>
+                        </div>
+                    </li>
+                
+                    <li>
+                        
+                        <div class="item-thumbnail">
+                            <a href="/Learning/Learning-Highcharts/Highcharts-APIs/highcharts-apis/" class="thumbnail">
+    
+    
+        <span class="thumbnail-image thumbnail-none"></span>
+    
+    
+</a>
+                        </div>
+                        
+                        <div class="item-inner">
+                            <p class="item-category"><a class="article-category-link" href="/categories/Learning/">Learning</a><i class="icon fa fa-angle-right"></i><a class="article-category-link" href="/categories/Learning/Learning-Highcharts/">Learning Highcharts</a></p>
+                            <p class="item-title"><a href="/Learning/Learning-Highcharts/Highcharts-APIs/highcharts-apis/" class="title">第七章 Highcharts APIs</a></p>
+                            <p class="item-date"><time datetime="2015-05-18T17:00:00.000Z" itemprop="datePublished">2015-05-19</time></p>
+                        </div>
+                    </li>
+                
+                    <li>
+                        
+                        <div class="item-thumbnail">
+                            <a href="/Learning/Learning-Highcharts/Pie-Charts/building-a-chart-with-multiple-series-types/" class="thumbnail">
+    
+    
+        <span style="background-image:url(/images/learning_highcharts/5-9.png)" alt="第五章 05.繪製一個包含多個序列的圖表" class="thumbnail-image"></span>
+    
+    
+</a>
+                        </div>
+                        
+                        <div class="item-inner">
+                            <p class="item-category"><a class="article-category-link" href="/categories/Learning/">Learning</a><i class="icon fa fa-angle-right"></i><a class="article-category-link" href="/categories/Learning/Learning-Highcharts/">Learning Highcharts</a></p>
+                            <p class="item-title"><a href="/Learning/Learning-Highcharts/Pie-Charts/building-a-chart-with-multiple-series-types/" class="title">第五章 05.繪製一個包含多個序列的圖表</a></p>
+                            <p class="item-date"><time datetime="2015-05-17T22:00:00.000Z" itemprop="datePublished">2015-05-18</time></p>
+                        </div>
+                    </li>
+                
+                    <li>
+                        
+                        <div class="item-thumbnail">
+                            <a href="/Learning/Learning-Highcharts/Pie-Charts/preparing-a-donut-chart-multiple-series/" class="thumbnail">
+    
+    
+        <span style="background-image:url(/images/learning_highcharts/5-6.png)" alt="第五章 04.準備一個甜甜圈圖——複合序列" class="thumbnail-image"></span>
+    
+    
+</a>
+                        </div>
+                        
+                        <div class="item-inner">
+                            <p class="item-category"><a class="article-category-link" href="/categories/Learning/">Learning</a><i class="icon fa fa-angle-right"></i><a class="article-category-link" href="/categories/Learning/Learning-Highcharts/">Learning Highcharts</a></p>
+                            <p class="item-title"><a href="/Learning/Learning-Highcharts/Pie-Charts/preparing-a-donut-chart-multiple-series/" class="title">第五章 04.準備一個甜甜圈圖——複合序列</a></p>
+                            <p class="item-date"><time datetime="2015-05-17T21:00:00.000Z" itemprop="datePublished">2015-05-18</time></p>
+                        </div>
+                    </li>
+                
+            </ul>
+        </div>
+    </div>
+
+            
+                
+    <div class="widget-wrap widget-list">
+        <h3 class="widget-title">歸檔</h3>
+        <div class="widget">
+            <ul class="archive-list"><li class="archive-list-item"><a class="archive-list-link" href="/archives/2015/05/">五月 2015</a><span class="archive-list-count">35</span></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2013/10/">十月 2013</a><span class="archive-list-count">2</span></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2013/04/">四月 2013</a><span class="archive-list-count">5</span></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2013/03/">三月 2013</a><span class="archive-list-count">3</span></li></ul>
+        </div>
+    </div>
+
+
+            
+                
+    <div class="widget-wrap widget-list">
+        <h3 class="widget-title">標籤</h3>
+        <div class="widget">
+            <ul class="tag-list"><li class="tag-list-item"><a class="tag-list-link" href="/tags/Highcharts/">Highcharts</a><span class="tag-list-count">36</span></li></ul>
+        </div>
+    </div>
+
+
+            
+                
+    <div class="widget-wrap widget-float">
+        <h3 class="widget-title">標簽雲</h3>
+        <div class="widget tagcloud">
+            <a href="/tags/Highcharts/" style="font-size: NaNpx;">Highcharts</a>
+        </div>
+    </div>
+
+
+            
+                
+    <div class="widget-wrap widget-list">
+        <h3 class="widget-title">連接</h3>
+        <div class="widget">
+            <ul>
+                
+                    <li>
+                        <a href="http://hexo.io">Hexo</a>
+                    </li>
+                
+            </ul>
+        </div>
+    </div>
+
+
+            
+        
+    </div>
+</aside>
+                </div>
+            </div>
+        </div>
+        <footer id="footer">
+    <div class="container">
+        <div class="container-inner">
+            <a id="back-to-top" href="javascript:;"><i class="icon fa fa-angle-up"></i></a>
+            <div class="credit">
+                <h1 class="logo-wrap">
+                    <a href="/" class="logo"></a>
+                </h1>
+                <p>&copy; 2016 Paul Lu</p>
+                <p>Powered by <a href="//hexo.io/" target="_blank">Hexo</a>. Theme by <a href="//github.com/ppoffice" target="_blank">PPOffice</a></p>
+            </div>
+        </div>
+    </div>
+</footer>
+        
+    
+    <script>
+    var disqus_shortname = 'retailscm';
+    
+    
+    var disqus_url = 'http://www.retailscm.com/Learning/Learning-Highcharts/Highcharts-configurations/understanding-highcharts-layouts/';
+    
+    (function() {
+    var dsq = document.createElement('script');
+    dsq.type = 'text/javascript';
+    dsq.async = true;
+    dsq.src = '//' + disqus_shortname + '.disqus.com/embed.js';
+    (document.getElementsByTagName('head')[0] || document.getElementsByTagName('body')[0]).appendChild(dsq);
+    })();
+    </script>
+
+
+
+    
+        <script src="/vendor/fancybox/jquery.fancybox.pack.js" type="text/javascript"></script>
+    
+
+    
+        <script src="/vendor/scrollLoading/jquery.scrollLoading.js" type="text/javascript"></script>
+        <script src="/vendor/scrollLoading/main.js" type="text/javascript"></script>
+    
+
+
+<!-- Custom Scripts -->
+<script src="/js/main.js" type="text/javascript"></script>
+
+    </div>
+</body>
+</html>

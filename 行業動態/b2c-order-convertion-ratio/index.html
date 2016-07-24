@@ -1,0 +1,525 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <meta charset="utf-8">
+    
+    <title>B2C电子商务网站之订单转化率 | 科技零售</title>
+    <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1">
+    
+        <meta name="keywords" content="" />
+    
+    <meta name="description" content="做电子商务，一般有三种思路：互联网、零售和供应链。
+把转化率等同于网站体验的，一般是互联网出身的设计师或产品经理，他们特别强调网站的视觉效果，交互的友好性；
+把电子商务理解为零售渠道的，一般是做传统零售出身，他们喜欢处处开店，比如入驻天猫、拍拍、当当等，然后经常性搞一些打折促销；
+把电子商务理解成供应链的，典型如亚马逊，它的界面设计毫无美感(虽然很好用)，没有促销氛围，就如同一个人孤零零地在一个大">
+<meta property="og:type" content="website">
+<meta property="og:title" content="B2C电子商务网站之订单转化率">
+<meta property="og:url" content="http://www.retailscm.com/行業動態/b2c-order-convertion-ratio/index.html">
+<meta property="og:site_name" content="科技零售">
+<meta property="og:description" content="做电子商务，一般有三种思路：互联网、零售和供应链。
+把转化率等同于网站体验的，一般是互联网出身的设计师或产品经理，他们特别强调网站的视觉效果，交互的友好性；
+把电子商务理解为零售渠道的，一般是做传统零售出身，他们喜欢处处开店，比如入驻天猫、拍拍、当当等，然后经常性搞一些打折促销；
+把电子商务理解成供应链的，典型如亚马逊，它的界面设计毫无美感(虽然很好用)，没有促销氛围，就如同一个人孤零零地在一个大">
+<meta property="og:image" content="/images/post/B2C_Conversion.png">
+<meta name="twitter:card" content="summary">
+<meta name="twitter:title" content="B2C电子商务网站之订单转化率">
+<meta name="twitter:description" content="做电子商务，一般有三种思路：互联网、零售和供应链。
+把转化率等同于网站体验的，一般是互联网出身的设计师或产品经理，他们特别强调网站的视觉效果，交互的友好性；
+把电子商务理解为零售渠道的，一般是做传统零售出身，他们喜欢处处开店，比如入驻天猫、拍拍、当当等，然后经常性搞一些打折促销；
+把电子商务理解成供应链的，典型如亚马逊，它的界面设计毫无美感(虽然很好用)，没有促销氛围，就如同一个人孤零零地在一个大">
+    
+
+    
+
+    
+
+    <link rel="stylesheet" href="/vendor/font-awesome/css/font-awesome.min.css" type="text/css">
+    <link rel="stylesheet" href="/vendor/titillium-web/styles.css" type="text/css">
+    <link rel="stylesheet" href="/vendor/source-code-pro/styles.css" type="text/css">
+
+    <link rel="stylesheet" href="/css/style.css" type="text/css">
+
+    <script src="/vendor/jquery/2.0.3/jquery.min.js" type="text/javascript"></script>
+    
+    
+        <link rel="stylesheet" href="/vendor/fancybox/jquery.fancybox.css" type="text/css">
+    
+    
+        <link rel="stylesheet" href="/vendor/scrollLoading/style.css" type="text/css">
+    
+    
+        <script type="text/javascript">
+(function(i,s,o,g,r,a,m) {i['GoogleAnalyticsObject']=r;i[r]=i[r]||function() {
+(i[r].q=i[r].q||[]).push(arguments)},i[r].l=1*new Date();a=s.createElement(o),
+m=s.getElementsByTagName(o)[0];a.async=1;a.src=g;m.parentNode.insertBefore(a,m)
+})(window,document,'script','//www.google-analytics.com/analytics.js','ga');
+
+ga('create', 'UA-3707575-5', 'auto');
+ga('send', 'pageview');
+
+</script>
+    
+    
+
+</head>
+
+<body>
+    <div id="wrap">
+        <header id="header">
+    <div id="header-outer" class="outer">
+        <div class="container">
+            <div class="container-inner">
+                <div id="header-title">
+                    <h1 class="logo-wrap">
+                        <a href="/" class="logo"></a>
+                    </h1>
+                    
+                        <h2 class="subtitle-wrap">
+                            <p class="subtitle">PP Studio</p>
+                        </h2>
+                    
+                </div>
+                <div id="header-inner" class="nav-container">
+                    <a id="main-nav-toggle" class="nav-icon fa fa-bars"></a>
+                    <div class="nav-container-inner">
+                      <ul id="main-nav">
+                            <li class="main-nav-list-item">
+                                <a class="main-nav-list-link" href="/">主頁</a>
+                            </li>
+                            <ul class="main-nav-list">
+                                <li class="main-nav-list-item"><a class="main-nav-list-link" href="#">愛科技</a>
+                                    <ul class="main-nav-list-child">
+                                        <li class="main-nav-list-item"><a class="main-nav-list-link" href="/categories/Learning/Learning-Highcharts/">Learning Highcharts</a></li>
+                                        <li class="main-nav-list-item"><a class="main-nav-list-link" href="/categories/WEB2-0/">WEB2.0</a></li>
+                                        <li class="main-nav-list-item"><a class="main-nav-list-link" href="/categories/Oracle/">Oracle</a></li>
+                                    </ul>
+                                </li>
+                                <li class="main-nav-list-item"><a class="main-nav-list-link" href="#">愛應用</a>
+                                    <ul class="main-nav-list-child">
+                                        <li class="main-nav-list-item"><a class="main-nav-list-link" href="/categories/業務案例/">業務案例</a></li>
+                                        <li class="main-nav-list-item"><a class="main-nav-list-link" href="/categories/行業動態/">行業動態</a></li>
+                                    </ul>
+                                </li>
+                                <li class="main-nav-list-item"><a class="main-nav-list-link" href="#">愛生活</a>
+                                    <ul class="main-nav-list-child">
+                                        <li class="main-nav-list-item"><a class="main-nav-list-link" href="/categories/隨筆/">隨筆</a></li>
+                                        <li class="main-nav-list-item"><a class="main-nav-list-link" href="/categories/閱讀/">閱讀</a></li>
+                                    </ul>
+                                </li>
+                            </ul>
+                            <li class="main-nav-list-item">
+                                <a class="main-nav-list-link" href="/about">關於</a>
+                            </li>
+                        </ul>
+                        <nav id="sub-nav">
+                            <div id="search-form-wrap">
+
+    <form action="//google.com/search" method="get" accept-charset="UTF-8" class="search-form"><input type="search" name="q" results="0" class="search-form-input" placeholder="查詢"><input type="hidden" name="q" value="site:http://www.retailscm.com"></form>
+
+</div>
+                        </nav>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</header>
+        <div class="container">
+            <div class="main-body container-inner">
+                <div class="main-body-inner">
+                    <section id="main">
+                        <div class="main-body-header">
+    <h1 class="header">
+    
+    <em class="page-title-link" data-url="/行業動態/b2c-order-convertion-ratio/">B2C电子商务网站之订单转化率</em>
+    </h1>
+</div>
+                        <div class="main-body-content">
+                            <article id="post-b2c-order-convertion-ratio" class="article article-single article-type-post" itemscope itemprop="blogPost">
+    <div class="article-inner">
+        
+            <header class="article-header">
+                
+    
+        <h1 class="article-title" itemprop="name">
+        B2C电子商务网站之订单转化率
+        </h1>
+    
+
+            </header>
+        
+        <div class="article-subtitle">
+            <a href="/行業動態/b2c-order-convertion-ratio/" class="article-date">
+    <time datetime="2013-04-04T09:46:44.000Z" itemprop="datePublished">2013-04-04</time>
+</a>
+            
+        </div>
+        <div class="article-entry" itemprop="articleBody">
+            <p>做电子商务，一般有三种思路：互联网、零售和供应链。</p>
+<p>把转化率等同于网站体验的，一般是互联网出身的设计师或产品经理，他们特别强调网站的视觉效果，交互的友好性；</p>
+<p>把电子商务理解为零售渠道的，一般是做传统零售出身，他们喜欢处处开店，比如入驻天猫、拍拍、当当等，然后经常性搞一些打折促销；</p>
+<p>把电子商务理解成供应链的，典型如亚马逊，它的界面设计毫无美感(虽然很好用)，没有促销氛围，就如同一个人孤零零地在一个大仓库里面选东西，但它的供应链做得非常到位，在网站随处都突出商品的库存、送达时间。</p>
+<p>我们究竟该选择哪一种思路？有一个原则，那就是用户转化率，即用户进店后有多少人掏腰包。</p>
+<p>用户最终是否下单，是一种整体体验，如果用户不知道该网站，而第一次进入发现界面很简陋，自然会没有安全感，所以，我们应该关注网站的视觉风格。</p>
+<p>如果是老用户，其实是不太关注界面视觉效果的，更关注选购、下单的便捷性以及品类和物流；所以我认为，亚马逊是专注于老用户的，我第一次下单是我知道它两年后，用过一次我就觉得它是我最喜欢的电子商务网站。我当初之所以不在它上面买冰箱，因为我根本不相信这么冰冷的网站会为我提供快捷的上门安装服务，所以我选择了京东。</p>
+<p>我们究竟该强化网站的哪一方面？决定于用户的诉求点和公司的竞争优势。像亚马逊，由于已经有海量有粘性的用户，以及强大的智能运营系统(自动化的商品推荐和备货补货机制)，可以将运营成本降到最低，从而提供天天低价服务(无需浓重的促销氛围)，而供应链是这类忠诚用户的关注核心。</p>
+<p>其它方面，我就不展开了。下图是转化率的核心影响因素。</p>
+<p><a href="/images/post/B2C_Conversion.png"><img src="/images/post/B2C_Conversion.png" alt="B2C_Conversion"></a></p>
+<p>转化率是一个综合影响因素，需要公司各部门协作解决。我相信很多产品经理都深有挫折感：为什么我这么自信的网站改版，转化率才提升0.5个百分点。如果网站的产品价格普遍提升5%，或者竞争对手一下子降价8%，你看吧，你的网站转化率一下子会降多少，如果这件事正好发生在新版上线，你作为产品经理就等着冤吧，要是你的老板不懂上面这个图。</p>
+<p>在网站上线后，作为产品经理当时的设计直觉，就要通过运营数据来验证了。同时，运营经理就要考虑如何来提升转化率了。</p>
+<p>我认为，运营经理=提升运营效率 + 提升转化率。</p>
+<p>提升转化率的第一步，就是监测转化率。而监测转化率的第一步是流量细分，它主要从两个维度来细分：流量来源和流量衰减率(购买漏斗)。</p>
+<p>流量来源决定了流量的质量，也就是流进来的用户的需求和网站商品的关联度。如果你在一个驴友论坛去推广母婴用户，转化率肯定惨不忍睹。如果你在一个知名博客，如左岸阅读上推广当当图书，估计这个转化率不错。</p>
+<p>流量来源是转化率第一个核心因素。</p>
+<p>当将用户流量细分后，我们该细分站内流量了，比如图书B2C，走搜索的用户和走频道首页的用户，用户行为完全不一样，一个是有明确购买意图的主动型用户，一个是有购书欲望但没有明确购买意图的被动型用户，比如他有20元优惠券快到期了，但不知该买啥。比如后面这类用户，你给他图书排行榜或是图书专题，他可能就下手了。</p>
+<p><a href="/images/post/insite_entry.png"><img src="/images/post/insite_entry.png" alt="insite_entry"></a></p>
+<p>在将流量通过入站来源和站内流量细分后，就应该开始关注其购买衰减率了，即每一步的放弃率，找出其核心影响因素。比如购物车的放弃率达到了45%，是因为注册阻力还是因为只是将购物车作为比价工具呢？对于一次购买10本图书的用户，真正有意义的，是比较各购书网站的购物车价格，而不是单本书。这就要看放弃购物车的用户，有多少点击过“去收银台”，因为点击“去收银台”后就有一个巨大阻力：需要注册。这就需要监控点击“去收银台”的流量了。</p>
+<p>下图就是我们需要监测的细化指标。</p>
+<p><a href="/images/post/shopping_renounce.png"><img src="/images/post/shopping_renounce.png" alt="shopping_renounce"></a></p>
+<p>其实，产品经理和运营经理，都是对同一件事情负责：网站转化率。上线前，是产品经理根据直觉和定性分析来设计网站，网站上线后，更多是来自运营经理的运营数据，来定量指导网站的进一步优化。</p>
+<p>根据以上监测统计到的数据，就要开始从流量来源、网站着陆页、新老用户等这些维度去权衡网站的设计了。比如像亚马逊，如果老用户占到了70%，网站布局和视觉风格就不能大动了(或者保留老网站入口)，因为会很影响老用户的浏览习惯。</p>
+<p>(來源：<a href="http://zwchen.iteye.com/blog/1402820" target="_blank" rel="external">B2C电子商务网站之订单转化率</a>)</p>
+
+        </div>
+        <footer class="article-footer">
+            
+
+
+
+    <a data-url="http://www.retailscm.com/行業動態/b2c-order-convertion-ratio/" data-id="cir0mgfs0005lg1ztuvwuy8mm" class="article-share-link"><i class="fa fa-share"></i>分享到</a>
+<script>
+    (function ($) {
+        $('body').on('click', function() {
+            $('.article-share-box.on').removeClass('on');
+        }).on('click', '.article-share-link', function(e) {
+            e.stopPropagation();
+
+            var $this = $(this),
+                url = $this.attr('data-url'),
+                encodedUrl = encodeURIComponent(url),
+                id = 'article-share-box-' + $this.attr('data-id'),
+                offset = $this.offset(),
+                box;
+
+            if ($('#' + id).length) {
+                box = $('#' + id);
+
+                if (box.hasClass('on')){
+                    box.removeClass('on');
+                    return;
+                }
+            } else {
+                var html = [
+                    '<div id="' + id + '" class="article-share-box">',
+                        '<input class="article-share-input" value="' + url + '">',
+                        '<div class="article-share-links">',
+                            '<a href="https://twitter.com/intent/tweet?url=' + encodedUrl + '" class="article-share-twitter" target="_blank" title="Twitter"></a>',
+                            '<a href="https://www.facebook.com/sharer.php?u=' + encodedUrl + '" class="article-share-facebook" target="_blank" title="Facebook"></a>',
+                            '<a href="http://pinterest.com/pin/create/button/?url=' + encodedUrl + '" class="article-share-pinterest" target="_blank" title="Pinterest"></a>',
+                            '<a href="https://plus.google.com/share?url=' + encodedUrl + '" class="article-share-google" target="_blank" title="Google+"></a>',
+                        '</div>',
+                    '</div>'
+                ].join('');
+
+              box = $(html);
+
+              $('body').append(box);
+            }
+
+            $('.article-share-box.on').hide();
+
+            box.css({
+                top: offset.top + 25,
+                left: offset.left
+            }).addClass('on');
+
+        }).on('click', '.article-share-box', function (e) {
+            e.stopPropagation();
+        }).on('click', '.article-share-box-input', function () {
+            $(this).select();
+        }).on('click', '.article-share-box-link', function (e) {
+            e.preventDefault();
+            e.stopPropagation();
+
+            window.open(this.href, 'article-share-box-window-' + Date.now(), 'width=500,height=450');
+        });
+    })(jQuery);
+</script>
+
+        </footer>
+    </div>
+</article>
+
+    <section id="comments">
+    
+        
+    <div id="disqus_thread">
+        <noscript>Please enable JavaScript to view the <a href="//disqus.com/?ref_noscript">comments powered by Disqus.</a></noscript>
+    </div>
+
+    
+    </section>
+
+                        </div>
+                    </section>
+                    <aside id="sidebar">
+    <a class="sidebar-toggle" title="Expand Sidebar"><i class="toggle icon"></i></a>
+    <div class="sidebar-top">
+        <p>關注我 :</p>
+        <ul class="social-links">
+            
+                
+                <li>
+                    <a class="social-tooltip" title="github" href="http://github.com/luss613" target="_blank">
+                        <i class="icon fa fa-github"></i>
+                    </a>
+                </li>
+                
+            
+                
+                <li>
+                    <a class="social-tooltip" title="twitter" href="http://twitter.com/luss613" target="_blank">
+                        <i class="icon fa fa-twitter"></i>
+                    </a>
+                </li>
+                
+            
+                
+                <li>
+                    <a class="social-tooltip" title="facebook" href="https://www.facebook.com/retailscm" target="_blank">
+                        <i class="icon fa fa-facebook"></i>
+                    </a>
+                </li>
+                
+            
+                
+                <li>
+                    <a class="social-tooltip" title="rss" href="/atom.xml" target="_blank">
+                        <i class="icon fa fa-rss"></i>
+                    </a>
+                </li>
+                
+            
+        </ul>
+    </div>
+    
+    <div class="widgets-container">
+        
+            
+                
+    <div class="widget-wrap widget-list">
+        <h3 class="widget-title">分類</h3>
+        <div class="widget">
+            <ul class="category-list"><li class="category-list-item"><a class="category-list-link" href="/categories/Learning/">Learning</a><span class="category-list-count">36</span><ul class="category-list-child"><li class="category-list-item"><a class="category-list-link" href="/categories/Learning/Learning-Highcharts/">Learning Highcharts</a><span class="category-list-count">36</span><ul class="category-list-child"><li class="category-list-item"><a class="category-list-link" href="/categories/Learning/Learning-Highcharts/Bar-and-column-charts/">Bar and column charts</a><span class="category-list-count">6</span></li><li class="category-list-item"><a class="category-list-link" href="/categories/Learning/Learning-Highcharts/Highcharts-APIs/">Highcharts APIs</a><span class="category-list-count">3</span></li><li class="category-list-item"><a class="category-list-link" href="/categories/Learning/Learning-Highcharts/Highcharts-configurations/">Highcharts configurations</a><span class="category-list-count">9</span></li><li class="category-list-item"><a class="category-list-link" href="/categories/Learning/Learning-Highcharts/Line-area-and-scatter-charts/">Line area and scatter charts</a><span class="category-list-count">5</span></li><li class="category-list-item"><a class="category-list-link" href="/categories/Learning/Learning-Highcharts/Pie-Charts/">Pie Charts</a><span class="category-list-count">5</span></li><li class="category-list-item"><a class="category-list-link" href="/categories/Learning/Learning-Highcharts/Web-Charts/">Web Charts</a><span class="category-list-count">6</span></li></ul></li></ul></li><li class="category-list-item"><a class="category-list-link" href="/categories/Oracle/">Oracle</a><span class="category-list-count">1</span></li><li class="category-list-item"><a class="category-list-link" href="/categories/WEB2-0/">WEB2.0</a><span class="category-list-count">2</span><ul class="category-list-child"><li class="category-list-item"><a class="category-list-link" href="/categories/WEB2-0/Bootstrap/">Bootstrap</a><span class="category-list-count">1</span></li><li class="category-list-item"><a class="category-list-link" href="/categories/WEB2-0/jQuery/">jQuery</a><span class="category-list-count">1</span></li></ul></li><li class="category-list-item"><a class="category-list-link" href="/categories/Yii/">Yii</a><span class="category-list-count">2</span></li><li class="category-list-item"><a class="category-list-link" href="/categories/業務案例/">業務案例</a><span class="category-list-count">1</span></li><li class="category-list-item"><a class="category-list-link" href="/categories/行業動態/">行業動態</a><span class="category-list-count">2</span></li><li class="category-list-item"><a class="category-list-link" href="/categories/隨筆/">隨筆</a><span class="category-list-count">1</span></li></ul>
+        </div>
+    </div>
+
+
+            
+                
+    <div class="widget-wrap">
+        <h3 class="widget-title">最新文章</h3>
+        <div class="widget">
+            <ul id="recent-post" class="">
+                
+                    <li>
+                        
+                        <div class="item-thumbnail">
+                            <a href="/Learning/Learning-Highcharts/Highcharts-APIs/using-highcharts-apis/" class="thumbnail">
+    
+    
+        <span style="background-image:url(/images/learning_highcharts/7-2.png)" alt="第七章 02.使用Highcharts APIs" class="thumbnail-image"></span>
+    
+    
+</a>
+                        </div>
+                        
+                        <div class="item-inner">
+                            <p class="item-category"><a class="article-category-link" href="/categories/Learning/">Learning</a><i class="icon fa fa-angle-right"></i><a class="article-category-link" href="/categories/Learning/Learning-Highcharts/">Learning Highcharts</a></p>
+                            <p class="item-title"><a href="/Learning/Learning-Highcharts/Highcharts-APIs/using-highcharts-apis/" class="title">第七章 02.使用Highcharts APIs</a></p>
+                            <p class="item-date"><time datetime="2015-05-18T19:00:00.000Z" itemprop="datePublished">2015-05-19</time></p>
+                        </div>
+                    </li>
+                
+                    <li>
+                        
+                        <div class="item-thumbnail">
+                            <a href="/Learning/Learning-Highcharts/Highcharts-APIs/understanding-the-highcharts-class-model/" class="thumbnail">
+    
+    
+        <span style="background-image:url(/images/learning_highcharts/7-1.jpg)" alt="第七章 01.了解Highcharts類模型" class="thumbnail-image"></span>
+    
+    
+</a>
+                        </div>
+                        
+                        <div class="item-inner">
+                            <p class="item-category"><a class="article-category-link" href="/categories/Learning/">Learning</a><i class="icon fa fa-angle-right"></i><a class="article-category-link" href="/categories/Learning/Learning-Highcharts/">Learning Highcharts</a></p>
+                            <p class="item-title"><a href="/Learning/Learning-Highcharts/Highcharts-APIs/understanding-the-highcharts-class-model/" class="title">第七章 01.了解Highcharts類模型</a></p>
+                            <p class="item-date"><time datetime="2015-05-18T18:00:00.000Z" itemprop="datePublished">2015-05-19</time></p>
+                        </div>
+                    </li>
+                
+                    <li>
+                        
+                        <div class="item-thumbnail">
+                            <a href="/Learning/Learning-Highcharts/Highcharts-APIs/highcharts-apis/" class="thumbnail">
+    
+    
+        <span class="thumbnail-image thumbnail-none"></span>
+    
+    
+</a>
+                        </div>
+                        
+                        <div class="item-inner">
+                            <p class="item-category"><a class="article-category-link" href="/categories/Learning/">Learning</a><i class="icon fa fa-angle-right"></i><a class="article-category-link" href="/categories/Learning/Learning-Highcharts/">Learning Highcharts</a></p>
+                            <p class="item-title"><a href="/Learning/Learning-Highcharts/Highcharts-APIs/highcharts-apis/" class="title">第七章 Highcharts APIs</a></p>
+                            <p class="item-date"><time datetime="2015-05-18T17:00:00.000Z" itemprop="datePublished">2015-05-19</time></p>
+                        </div>
+                    </li>
+                
+                    <li>
+                        
+                        <div class="item-thumbnail">
+                            <a href="/Learning/Learning-Highcharts/Pie-Charts/building-a-chart-with-multiple-series-types/" class="thumbnail">
+    
+    
+        <span style="background-image:url(/images/learning_highcharts/5-9.png)" alt="第五章 05.繪製一個包含多個序列的圖表" class="thumbnail-image"></span>
+    
+    
+</a>
+                        </div>
+                        
+                        <div class="item-inner">
+                            <p class="item-category"><a class="article-category-link" href="/categories/Learning/">Learning</a><i class="icon fa fa-angle-right"></i><a class="article-category-link" href="/categories/Learning/Learning-Highcharts/">Learning Highcharts</a></p>
+                            <p class="item-title"><a href="/Learning/Learning-Highcharts/Pie-Charts/building-a-chart-with-multiple-series-types/" class="title">第五章 05.繪製一個包含多個序列的圖表</a></p>
+                            <p class="item-date"><time datetime="2015-05-17T22:00:00.000Z" itemprop="datePublished">2015-05-18</time></p>
+                        </div>
+                    </li>
+                
+                    <li>
+                        
+                        <div class="item-thumbnail">
+                            <a href="/Learning/Learning-Highcharts/Pie-Charts/preparing-a-donut-chart-multiple-series/" class="thumbnail">
+    
+    
+        <span style="background-image:url(/images/learning_highcharts/5-6.png)" alt="第五章 04.準備一個甜甜圈圖——複合序列" class="thumbnail-image"></span>
+    
+    
+</a>
+                        </div>
+                        
+                        <div class="item-inner">
+                            <p class="item-category"><a class="article-category-link" href="/categories/Learning/">Learning</a><i class="icon fa fa-angle-right"></i><a class="article-category-link" href="/categories/Learning/Learning-Highcharts/">Learning Highcharts</a></p>
+                            <p class="item-title"><a href="/Learning/Learning-Highcharts/Pie-Charts/preparing-a-donut-chart-multiple-series/" class="title">第五章 04.準備一個甜甜圈圖——複合序列</a></p>
+                            <p class="item-date"><time datetime="2015-05-17T21:00:00.000Z" itemprop="datePublished">2015-05-18</time></p>
+                        </div>
+                    </li>
+                
+            </ul>
+        </div>
+    </div>
+
+            
+                
+    <div class="widget-wrap widget-list">
+        <h3 class="widget-title">歸檔</h3>
+        <div class="widget">
+            <ul class="archive-list"><li class="archive-list-item"><a class="archive-list-link" href="/archives/2015/05/">五月 2015</a><span class="archive-list-count">35</span></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2013/10/">十月 2013</a><span class="archive-list-count">2</span></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2013/04/">四月 2013</a><span class="archive-list-count">5</span></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2013/03/">三月 2013</a><span class="archive-list-count">3</span></li></ul>
+        </div>
+    </div>
+
+
+            
+                
+    <div class="widget-wrap widget-list">
+        <h3 class="widget-title">標籤</h3>
+        <div class="widget">
+            <ul class="tag-list"><li class="tag-list-item"><a class="tag-list-link" href="/tags/Highcharts/">Highcharts</a><span class="tag-list-count">36</span></li></ul>
+        </div>
+    </div>
+
+
+            
+                
+    <div class="widget-wrap widget-float">
+        <h3 class="widget-title">標簽雲</h3>
+        <div class="widget tagcloud">
+            <a href="/tags/Highcharts/" style="font-size: NaNpx;">Highcharts</a>
+        </div>
+    </div>
+
+
+            
+                
+    <div class="widget-wrap widget-list">
+        <h3 class="widget-title">連接</h3>
+        <div class="widget">
+            <ul>
+                
+                    <li>
+                        <a href="http://hexo.io">Hexo</a>
+                    </li>
+                
+            </ul>
+        </div>
+    </div>
+
+
+            
+        
+    </div>
+</aside>
+                </div>
+            </div>
+        </div>
+        <footer id="footer">
+    <div class="container">
+        <div class="container-inner">
+            <a id="back-to-top" href="javascript:;"><i class="icon fa fa-angle-up"></i></a>
+            <div class="credit">
+                <h1 class="logo-wrap">
+                    <a href="/" class="logo"></a>
+                </h1>
+                <p>&copy; 2016 Paul Lu</p>
+                <p>Powered by <a href="//hexo.io/" target="_blank">Hexo</a>. Theme by <a href="//github.com/ppoffice" target="_blank">PPOffice</a></p>
+            </div>
+        </div>
+    </div>
+</footer>
+        
+    
+    <script>
+    var disqus_shortname = 'retailscm';
+    
+    
+    var disqus_url = 'http://www.retailscm.com/行業動態/b2c-order-convertion-ratio/';
+    
+    (function() {
+    var dsq = document.createElement('script');
+    dsq.type = 'text/javascript';
+    dsq.async = true;
+    dsq.src = '//' + disqus_shortname + '.disqus.com/embed.js';
+    (document.getElementsByTagName('head')[0] || document.getElementsByTagName('body')[0]).appendChild(dsq);
+    })();
+    </script>
+
+
+
+    
+        <script src="/vendor/fancybox/jquery.fancybox.pack.js" type="text/javascript"></script>
+    
+
+    
+        <script src="/vendor/scrollLoading/jquery.scrollLoading.js" type="text/javascript"></script>
+        <script src="/vendor/scrollLoading/main.js" type="text/javascript"></script>
+    
+
+
+<!-- Custom Scripts -->
+<script src="/js/main.js" type="text/javascript"></script>
+
+    </div>
+</body>
+</html>

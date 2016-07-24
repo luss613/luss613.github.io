@@ -1,0 +1,623 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <meta charset="utf-8">
+    
+    <title>第五章 02.繪製一個簡單的餅圖——單序列 | 科技零售</title>
+    <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1">
+    
+        <meta name="keywords" content="Highcharts" />
+    
+    <meta name="description" content="科技零售(RetailSCM.com) Learning Highcharts中文教程版權保留，網路轉載請註明來源，謝絕紙質媒體轉載，謝謝。
+繪製一個簡單的餅圖——單序列在本章中我們會使用vgchartz (www.vgchartz.com)提供的電視遊戲公司數據。下面所使用的餅圖設定及數據是2011年溝通遊戲公司所販售的前100名的遊戲，Wii Sports會剔除在外，因為它是搭配Wii手柄免費">
+<meta property="og:type" content="article">
+<meta property="og:title" content="第五章 02.繪製一個簡單的餅圖——單序列">
+<meta property="og:url" content="http://www.retailscm.com/Learning/Learning-Highcharts/Pie-Charts/plotting-simple-pie-charts-single-series/index.html">
+<meta property="og:site_name" content="科技零售">
+<meta property="og:description" content="科技零售(RetailSCM.com) Learning Highcharts中文教程版權保留，網路轉載請註明來源，謝絕紙質媒體轉載，謝謝。
+繪製一個簡單的餅圖——單序列在本章中我們會使用vgchartz (www.vgchartz.com)提供的電視遊戲公司數據。下面所使用的餅圖設定及數據是2011年溝通遊戲公司所販售的前100名的遊戲，Wii Sports會剔除在外，因為它是搭配Wii手柄免費">
+<meta property="og:image" content="/images/learning_highcharts/5-1.png">
+<meta name="twitter:card" content="summary">
+<meta name="twitter:title" content="第五章 02.繪製一個簡單的餅圖——單序列">
+<meta name="twitter:description" content="科技零售(RetailSCM.com) Learning Highcharts中文教程版權保留，網路轉載請註明來源，謝絕紙質媒體轉載，謝謝。
+繪製一個簡單的餅圖——單序列在本章中我們會使用vgchartz (www.vgchartz.com)提供的電視遊戲公司數據。下面所使用的餅圖設定及數據是2011年溝通遊戲公司所販售的前100名的遊戲，Wii Sports會剔除在外，因為它是搭配Wii手柄免費">
+    
+
+    
+
+    
+
+    <link rel="stylesheet" href="/vendor/font-awesome/css/font-awesome.min.css" type="text/css">
+    <link rel="stylesheet" href="/vendor/titillium-web/styles.css" type="text/css">
+    <link rel="stylesheet" href="/vendor/source-code-pro/styles.css" type="text/css">
+
+    <link rel="stylesheet" href="/css/style.css" type="text/css">
+
+    <script src="/vendor/jquery/2.0.3/jquery.min.js" type="text/javascript"></script>
+    
+    
+        <link rel="stylesheet" href="/vendor/fancybox/jquery.fancybox.css" type="text/css">
+    
+    
+        <link rel="stylesheet" href="/vendor/scrollLoading/style.css" type="text/css">
+    
+    
+        <script type="text/javascript">
+(function(i,s,o,g,r,a,m) {i['GoogleAnalyticsObject']=r;i[r]=i[r]||function() {
+(i[r].q=i[r].q||[]).push(arguments)},i[r].l=1*new Date();a=s.createElement(o),
+m=s.getElementsByTagName(o)[0];a.async=1;a.src=g;m.parentNode.insertBefore(a,m)
+})(window,document,'script','//www.google-analytics.com/analytics.js','ga');
+
+ga('create', 'UA-3707575-5', 'auto');
+ga('send', 'pageview');
+
+</script>
+    
+    
+
+</head>
+
+<body>
+    <div id="wrap">
+        <header id="header">
+    <div id="header-outer" class="outer">
+        <div class="container">
+            <div class="container-inner">
+                <div id="header-title">
+                    <h1 class="logo-wrap">
+                        <a href="/" class="logo"></a>
+                    </h1>
+                    
+                        <h2 class="subtitle-wrap">
+                            <p class="subtitle">PP Studio</p>
+                        </h2>
+                    
+                </div>
+                <div id="header-inner" class="nav-container">
+                    <a id="main-nav-toggle" class="nav-icon fa fa-bars"></a>
+                    <div class="nav-container-inner">
+                      <ul id="main-nav">
+                            <li class="main-nav-list-item">
+                                <a class="main-nav-list-link" href="/">主頁</a>
+                            </li>
+                            <ul class="main-nav-list">
+                                <li class="main-nav-list-item"><a class="main-nav-list-link" href="#">愛科技</a>
+                                    <ul class="main-nav-list-child">
+                                        <li class="main-nav-list-item"><a class="main-nav-list-link" href="/categories/Learning/Learning-Highcharts/">Learning Highcharts</a></li>
+                                        <li class="main-nav-list-item"><a class="main-nav-list-link" href="/categories/WEB2-0/">WEB2.0</a></li>
+                                        <li class="main-nav-list-item"><a class="main-nav-list-link" href="/categories/Oracle/">Oracle</a></li>
+                                    </ul>
+                                </li>
+                                <li class="main-nav-list-item"><a class="main-nav-list-link" href="#">愛應用</a>
+                                    <ul class="main-nav-list-child">
+                                        <li class="main-nav-list-item"><a class="main-nav-list-link" href="/categories/業務案例/">業務案例</a></li>
+                                        <li class="main-nav-list-item"><a class="main-nav-list-link" href="/categories/行業動態/">行業動態</a></li>
+                                    </ul>
+                                </li>
+                                <li class="main-nav-list-item"><a class="main-nav-list-link" href="#">愛生活</a>
+                                    <ul class="main-nav-list-child">
+                                        <li class="main-nav-list-item"><a class="main-nav-list-link" href="/categories/隨筆/">隨筆</a></li>
+                                        <li class="main-nav-list-item"><a class="main-nav-list-link" href="/categories/閱讀/">閱讀</a></li>
+                                    </ul>
+                                </li>
+                            </ul>
+                            <li class="main-nav-list-item">
+                                <a class="main-nav-list-link" href="/about">關於</a>
+                            </li>
+                        </ul>
+                        <nav id="sub-nav">
+                            <div id="search-form-wrap">
+
+    <form action="//google.com/search" method="get" accept-charset="UTF-8" class="search-form"><input type="search" name="q" results="0" class="search-form-input" placeholder="查詢"><input type="hidden" name="q" value="site:http://www.retailscm.com"></form>
+
+</div>
+                        </nav>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</header>
+        <div class="container">
+            <div class="main-body container-inner">
+                <div class="main-body-inner">
+                    <section id="main">
+                        <div class="main-body-header">
+    <h1 class="header">
+    
+    <a class="page-title-link" href="/categories/Learning/">Learning</a><i class="icon fa fa-angle-right"></i><a class="page-title-link" href="/categories/Learning/Learning-Highcharts/">Learning Highcharts</a><i class="icon fa fa-angle-right"></i><a class="page-title-link" href="/categories/Learning/Learning-Highcharts/Pie-Charts/">Pie Charts</a>
+    </h1>
+</div>
+                        <div class="main-body-content">
+                            <article id="post-plotting-simple-pie-charts-single-series" class="article article-single article-type-post" itemscope itemprop="blogPost">
+    <div class="article-inner">
+        
+            <header class="article-header">
+                
+    
+        <h1 class="article-title" itemprop="name">
+        第五章 02.繪製一個簡單的餅圖——單序列
+        </h1>
+    
+
+            </header>
+        
+        <div class="article-subtitle">
+            <a href="/Learning/Learning-Highcharts/Pie-Charts/plotting-simple-pie-charts-single-series/" class="article-date">
+    <time datetime="2015-05-17T19:00:00.000Z" itemprop="datePublished">2015-05-18</time>
+</a>
+            
+    <ul class="article-tag-list"><li class="article-tag-list-item"><a class="article-tag-list-link" href="/tags/Highcharts/">Highcharts</a></li></ul>
+
+        </div>
+        <div class="article-entry" itemprop="articleBody">
+            <h1 id="科技零售(RetailSCM-com)_Learning_Highcharts中文教程">科技零售(RetailSCM.com) Learning Highcharts中文教程</h1><p><em><span style="color: #808080;">版權保留，網路轉載請註明來源，謝絕紙質媒體轉載，謝謝。</span></em></p>
+<h2 id="繪製一個簡單的餅圖——單序列">繪製一個簡單的餅圖——單序列</h2><p>在本章中我們會使用vgchartz (www.vgchartz.com)提供的電視遊戲公司數據。下面所使用的餅圖設定及數據是2011年溝通遊戲公司所販售的前100名的遊戲，Wii Sports會剔除在外，因為它是搭配Wii手柄免費提供的。</p>
+<pre><code><span class="atom">chart</span>: {
+    <span class="atom">renderTo</span>: <span class="string">'container'</span>,
+    <span class="atom">type</span>: <span class="string">'pie'</span>,
+    <span class="atom">borderWidth</span>: <span class="number">1</span>
+},
+<span class="atom">title</span>: {
+    <span class="atom">text</span>: <span class="string">'Number of Software Games Sold in 2011 Grouped by Publishers'</span>,
+},
+<span class="atom">credits</span>: {
+        ...
+},
+<span class="atom">series</span>: [{
+    <span class="atom">data</span>: [
+        [<span class="string">'Nintendo'</span>, <span class="number">54030288</span>],
+        [<span class="string">'Electronic Arts'</span>, <span class="number">31367739</span>],
+        ...
+    ]
+}]
+</code></pre><p>這是一個簡單的餅圖，順時鐘來看，第一個數據節點是任天堂，並且第一個數據結點的位置總是從12點的位置開始，這個沒有辦法設定。</p>
+<a id="more"></a>
+<p><a href="/images/learning_highcharts/5-1.png"><img src="/images/learning_highcharts/5-1.png" alt="5-1"></a></p>
+<h2 id="切出一個餅圖的數據序列應如何配置">切出一個餅圖的數據序列應如何配置</h2><p>我們可以改善一下上面的餅圖，讓他包含一個標籤來顯示數值的部分，將一些名字太長的遊戲公司的名稱來折行顯示。為了重新定義dataLabels.formatter選項，我們可以事先定義一個method: formatWithLineBreaks並植入在formatter選項中，這樣我們也可以在其他的例子中複用它。</p>
+<pre><code><span class="function"><span class="keyword">function</span> <span class="title">formatWithLineBreaks</span><span class="params">(str)</span> </span>{
+    <span class="keyword">var</span> words = str.split(<span class="string">' '</span>);
+    <span class="keyword">var</span> lines = [];
+    <span class="keyword">var</span> line = <span class="string">''</span>;
+    $.each(words, <span class="function"><span class="keyword">function</span><span class="params">(idx, word)</span> </span>{
+        <span class="keyword">if</span> (line.length + word.length &amp;gt; <span class="number">25</span>) {
+            lines.push(line);
+            line = <span class="string">''</span>;
+        }
+        line += word + <span class="string">' '</span>;
+    });
+    lines.push(line);
+    <span class="keyword">return</span> lines.join(<span class="string">'
+'</span>);
+}
+</code></pre><p>下面的餅圖設定是對餅圖的序列使用allowPointSelect，可以允許使用者通過點擊餅圖的數據節點來實現互動，如餅圖的序列中可以切出一個區域。slicedOffset選項是調整切出的餅圖需要切出多遠的參數。</p>
+<pre><code>plotOptions: {
+    pie: {
+        slicedOffset: <span class="number">20</span>,
+        allowPointSelect: <span class="literal">true</span>,
+        dataLabels: {
+            formatter: <span class="function"><span class="keyword">function</span><span class="params">()</span> </span>{
+                <span class="keyword">var</span> str = <span class="keyword">this</span>.point.name + <span class="string">': '</span> +
+                    Highcharts.numberFormat(<span class="keyword">this</span>.y, <span class="number">0</span>);
+                <span class="keyword">return</span> formatWithLineBreaks(str);
+            }
+        }
+    }
+},
+</code></pre><p>另外，也許我們想要在餅圖載入的時候就將其中對大的一個數據序列切出，讓他的標籤顯示為粗體以便更加醒目。要做到這個效果，我們需要調整最大的數據節點對象的設定，我們將sliced屬性增加到對象中並修改它的預設值為true，然後我們將dataLabels屬性中的fontWeight設定為bold來替換原來的設定：</p>
+<pre><code><span class="atom">series</span>: [{
+    <span class="atom">data</span>: [{
+            <span class="atom">name</span>: <span class="string">'Nintendo'</span>,
+            <span class="atom">y</span>: <span class="number">54030288</span>,
+            <span class="atom">sliced</span>: <span class="atom">true</span>,
+            <span class="atom">dataLabels</span>: {
+                <span class="atom">style</span>: {
+                    <span class="atom">fontWeight</span>: <span class="string">'bold'</span>
+                }
+            }
+        },
+        [<span class="string">'Electronic Arts'</span>, <span class="number">31367739</span>],
+        [<span class="string">'Activision'</span>, <span class="number">30230170</span>], ....
+    ]
+}]
+</code></pre><p>下圖即為我們重新定義後的圖表</p>
+<p><a href="/images/learning_highcharts/5-2.png"><img src="/images/learning_highcharts/5-2.png" alt="5-2"></a></p>
+<p>前面有提到過slicedOffset參數可以控制切出的部分可以被切出多遠，預設是10個圖元，這個選項是應用到全部的被切出的部分，我們沒有辦法單獨控制某一個部分使用特別的切出距離，另一個不好的消息是連接線（連接切出部分和數據標籤的連線）看起來會變歪了。在下面的例子中，我們會演示sliced屬性可以被應用到多個數據節點上，並且會移除slicedOffset選項回到原始的預設狀態。</p>
+<p>下圖是3個序列都使用任天堂的數據節點設定來將他們來從餅圖中切出。</p>
+<p><a href="/images/learning_highcharts/5-3.png"><img src="/images/learning_highcharts/5-3.png" alt="5-3"></a></p>
+<p>我們注意到了連接線已經恢復為平滑的連線，而且sliced選項還有另外一個有趣的行為，這些切片的sliced屬性預設都是false，他們中只有一個切片會被切出。例如使用者任意點了屬性為false的一個切片，這個切片會被切出，然後在點Activision公司這個數據節點，Activision會切出，但是之前的切片會縮回到餅圖中，而三個設定了sliced為true的部分仍然會保留他們切出的位置，換句話說就是當我們將sliced設定為true時，能保持他們的狀態獨立與其他設定為false的部分。</p>
+<h2 id="在一個餅圖上應用圖例">在一個餅圖上應用圖例</h2><p>到目前為止圖表上我們包含了很多的數字，但用數字來表示對我們理解每個切片到底應該佔多大其實很難理解，我們需要在切片中列出各切片的百分比。讓我們將所有的遊戲公司名稱列入在圖例中並將其對應的百分佔比顯示在切片中。</p>
+<p>為了開啟圖例，我們需要將showInLegend參數設定為true，然後我們設定字體顯示為白色的粗體字，然後將formatter函數設定為this.percentage，這個設定只能使用在餅圖上。distance選項是數據標籤和餅圖外邊界之間的距離設定，正數表示距離餅圖外邊界向外延展的距離，負數則是反方向的距離。</p>
+<pre><code>plotOptions: {
+    pie: {
+        showInLegend: <span class="literal">true</span>,
+        dataLabels: {
+            distance: -<span class="number">24</span>,
+            color: <span class="string">'white'</span>,
+            style: {
+                fontWeight: <span class="string">'bold'</span>
+            },
+            formatter: <span class="function"><span class="keyword">function</span><span class="params">()</span> </span>{
+                <span class="keyword">return</span> Highcharts.numberFormat(<span class="keyword">this</span>.percentage) + <span class="string">'%'</span>;
+            }
+        }
+    }
+},
+</code></pre><p>下面是圖例的設定，我們設定一下邊界的並將圖例框設定距離餅圖更近一些，如下：</p>
+<pre><code><span class="tag">legend</span>: {
+    <span class="attribute">align</span>: <span class="string">'right'</span>,
+    <span class="attribute">layout</span>: <span class="string">'vertical'</span>,
+    <span class="attribute">verticalAlign</span>: <span class="string">'middle'</span>,
+    <span class="attribute">itemMarginBottom</span>: <span class="number">4</span>,
+    <span class="attribute">itemMarginTop</span>: <span class="number">4</span>,
+    <span class="attribute">x</span>: -<span class="number">40</span>
+},
+</code></pre><p>下面就是另外一個餅圖的呈現方式了。</p>
+<p><a href="/images/learning_highcharts/5-4.png"><img src="/images/learning_highcharts/5-4.png" alt="5-4"></a></p>
+
+        </div>
+        <footer class="article-footer">
+            
+
+
+
+    <a data-url="http://www.retailscm.com/Learning/Learning-Highcharts/Pie-Charts/plotting-simple-pie-charts-single-series/" data-id="cir0mgfpq000qg1ztbjaejk43" class="article-share-link"><i class="fa fa-share"></i>分享到</a>
+<script>
+    (function ($) {
+        $('body').on('click', function() {
+            $('.article-share-box.on').removeClass('on');
+        }).on('click', '.article-share-link', function(e) {
+            e.stopPropagation();
+
+            var $this = $(this),
+                url = $this.attr('data-url'),
+                encodedUrl = encodeURIComponent(url),
+                id = 'article-share-box-' + $this.attr('data-id'),
+                offset = $this.offset(),
+                box;
+
+            if ($('#' + id).length) {
+                box = $('#' + id);
+
+                if (box.hasClass('on')){
+                    box.removeClass('on');
+                    return;
+                }
+            } else {
+                var html = [
+                    '<div id="' + id + '" class="article-share-box">',
+                        '<input class="article-share-input" value="' + url + '">',
+                        '<div class="article-share-links">',
+                            '<a href="https://twitter.com/intent/tweet?url=' + encodedUrl + '" class="article-share-twitter" target="_blank" title="Twitter"></a>',
+                            '<a href="https://www.facebook.com/sharer.php?u=' + encodedUrl + '" class="article-share-facebook" target="_blank" title="Facebook"></a>',
+                            '<a href="http://pinterest.com/pin/create/button/?url=' + encodedUrl + '" class="article-share-pinterest" target="_blank" title="Pinterest"></a>',
+                            '<a href="https://plus.google.com/share?url=' + encodedUrl + '" class="article-share-google" target="_blank" title="Google+"></a>',
+                        '</div>',
+                    '</div>'
+                ].join('');
+
+              box = $(html);
+
+              $('body').append(box);
+            }
+
+            $('.article-share-box.on').hide();
+
+            box.css({
+                top: offset.top + 25,
+                left: offset.left
+            }).addClass('on');
+
+        }).on('click', '.article-share-box', function (e) {
+            e.stopPropagation();
+        }).on('click', '.article-share-box-input', function () {
+            $(this).select();
+        }).on('click', '.article-share-box-link', function (e) {
+            e.preventDefault();
+            e.stopPropagation();
+
+            window.open(this.href, 'article-share-box-window-' + Date.now(), 'width=500,height=450');
+        });
+    })(jQuery);
+</script>
+
+        </footer>
+    </div>
+</article>
+
+    <section id="comments">
+    
+        
+    <div id="disqus_thread">
+        <noscript>Please enable JavaScript to view the <a href="//disqus.com/?ref_noscript">comments powered by Disqus.</a></noscript>
+    </div>
+
+    
+    </section>
+
+                        </div>
+                    </section>
+                    <aside id="sidebar">
+    <a class="sidebar-toggle" title="Expand Sidebar"><i class="toggle icon"></i></a>
+    <div class="sidebar-top">
+        <p>關注我 :</p>
+        <ul class="social-links">
+            
+                
+                <li>
+                    <a class="social-tooltip" title="github" href="http://github.com/luss613" target="_blank">
+                        <i class="icon fa fa-github"></i>
+                    </a>
+                </li>
+                
+            
+                
+                <li>
+                    <a class="social-tooltip" title="twitter" href="http://twitter.com/luss613" target="_blank">
+                        <i class="icon fa fa-twitter"></i>
+                    </a>
+                </li>
+                
+            
+                
+                <li>
+                    <a class="social-tooltip" title="facebook" href="https://www.facebook.com/retailscm" target="_blank">
+                        <i class="icon fa fa-facebook"></i>
+                    </a>
+                </li>
+                
+            
+                
+                <li>
+                    <a class="social-tooltip" title="rss" href="/atom.xml" target="_blank">
+                        <i class="icon fa fa-rss"></i>
+                    </a>
+                </li>
+                
+            
+        </ul>
+    </div>
+    
+        
+<nav id="article-nav">
+    
+        <a href="/Learning/Learning-Highcharts/Pie-Charts/plotting-multiple-pies-in-a-chart-multiple-series/" id="article-nav-newer" class="article-nav-link-wrap">
+        <strong class="article-nav-caption">下一篇</strong>
+        <p class="article-nav-title">
+        
+            第五章 03.在一個圖表中繪製多個餅圖——複合序列
+        
+        </p>
+        <i class="icon fa fa-chevron-right" id="icon-chevron-right"></i>
+    </a>
+    
+    
+        <a href="/Learning/Learning-Highcharts/Pie-Charts/pie-charts/" id="article-nav-older" class="article-nav-link-wrap">
+        <strong class="article-nav-caption">上一篇</strong>
+        <p class="article-nav-title">第五章 餅圖</p>
+        <i class="icon fa fa-chevron-left" id="icon-chevron-left"></i>
+        </a>
+    
+</nav>
+
+    
+    <div class="widgets-container">
+        
+            
+                
+    <div class="widget-wrap widget-list">
+        <h3 class="widget-title">分類</h3>
+        <div class="widget">
+            <ul class="category-list"><li class="category-list-item"><a class="category-list-link" href="/categories/Learning/">Learning</a><span class="category-list-count">36</span><ul class="category-list-child"><li class="category-list-item"><a class="category-list-link" href="/categories/Learning/Learning-Highcharts/">Learning Highcharts</a><span class="category-list-count">36</span><ul class="category-list-child"><li class="category-list-item"><a class="category-list-link" href="/categories/Learning/Learning-Highcharts/Bar-and-column-charts/">Bar and column charts</a><span class="category-list-count">6</span></li><li class="category-list-item"><a class="category-list-link" href="/categories/Learning/Learning-Highcharts/Highcharts-APIs/">Highcharts APIs</a><span class="category-list-count">3</span></li><li class="category-list-item"><a class="category-list-link" href="/categories/Learning/Learning-Highcharts/Highcharts-configurations/">Highcharts configurations</a><span class="category-list-count">9</span></li><li class="category-list-item"><a class="category-list-link" href="/categories/Learning/Learning-Highcharts/Line-area-and-scatter-charts/">Line area and scatter charts</a><span class="category-list-count">5</span></li><li class="category-list-item"><a class="category-list-link" href="/categories/Learning/Learning-Highcharts/Pie-Charts/">Pie Charts</a><span class="category-list-count">5</span></li><li class="category-list-item"><a class="category-list-link" href="/categories/Learning/Learning-Highcharts/Web-Charts/">Web Charts</a><span class="category-list-count">6</span></li></ul></li></ul></li><li class="category-list-item"><a class="category-list-link" href="/categories/Oracle/">Oracle</a><span class="category-list-count">1</span></li><li class="category-list-item"><a class="category-list-link" href="/categories/WEB2-0/">WEB2.0</a><span class="category-list-count">2</span><ul class="category-list-child"><li class="category-list-item"><a class="category-list-link" href="/categories/WEB2-0/Bootstrap/">Bootstrap</a><span class="category-list-count">1</span></li><li class="category-list-item"><a class="category-list-link" href="/categories/WEB2-0/jQuery/">jQuery</a><span class="category-list-count">1</span></li></ul></li><li class="category-list-item"><a class="category-list-link" href="/categories/Yii/">Yii</a><span class="category-list-count">2</span></li><li class="category-list-item"><a class="category-list-link" href="/categories/業務案例/">業務案例</a><span class="category-list-count">1</span></li><li class="category-list-item"><a class="category-list-link" href="/categories/行業動態/">行業動態</a><span class="category-list-count">2</span></li><li class="category-list-item"><a class="category-list-link" href="/categories/隨筆/">隨筆</a><span class="category-list-count">1</span></li></ul>
+        </div>
+    </div>
+
+
+            
+                
+    <div class="widget-wrap">
+        <h3 class="widget-title">最新文章</h3>
+        <div class="widget">
+            <ul id="recent-post" class="">
+                
+                    <li>
+                        
+                        <div class="item-thumbnail">
+                            <a href="/Learning/Learning-Highcharts/Highcharts-APIs/using-highcharts-apis/" class="thumbnail">
+    
+    
+        <span style="background-image:url(/images/learning_highcharts/7-2.png)" alt="第七章 02.使用Highcharts APIs" class="thumbnail-image"></span>
+    
+    
+</a>
+                        </div>
+                        
+                        <div class="item-inner">
+                            <p class="item-category"><a class="article-category-link" href="/categories/Learning/">Learning</a><i class="icon fa fa-angle-right"></i><a class="article-category-link" href="/categories/Learning/Learning-Highcharts/">Learning Highcharts</a></p>
+                            <p class="item-title"><a href="/Learning/Learning-Highcharts/Highcharts-APIs/using-highcharts-apis/" class="title">第七章 02.使用Highcharts APIs</a></p>
+                            <p class="item-date"><time datetime="2015-05-18T19:00:00.000Z" itemprop="datePublished">2015-05-19</time></p>
+                        </div>
+                    </li>
+                
+                    <li>
+                        
+                        <div class="item-thumbnail">
+                            <a href="/Learning/Learning-Highcharts/Highcharts-APIs/understanding-the-highcharts-class-model/" class="thumbnail">
+    
+    
+        <span style="background-image:url(/images/learning_highcharts/7-1.jpg)" alt="第七章 01.了解Highcharts類模型" class="thumbnail-image"></span>
+    
+    
+</a>
+                        </div>
+                        
+                        <div class="item-inner">
+                            <p class="item-category"><a class="article-category-link" href="/categories/Learning/">Learning</a><i class="icon fa fa-angle-right"></i><a class="article-category-link" href="/categories/Learning/Learning-Highcharts/">Learning Highcharts</a></p>
+                            <p class="item-title"><a href="/Learning/Learning-Highcharts/Highcharts-APIs/understanding-the-highcharts-class-model/" class="title">第七章 01.了解Highcharts類模型</a></p>
+                            <p class="item-date"><time datetime="2015-05-18T18:00:00.000Z" itemprop="datePublished">2015-05-19</time></p>
+                        </div>
+                    </li>
+                
+                    <li>
+                        
+                        <div class="item-thumbnail">
+                            <a href="/Learning/Learning-Highcharts/Highcharts-APIs/highcharts-apis/" class="thumbnail">
+    
+    
+        <span class="thumbnail-image thumbnail-none"></span>
+    
+    
+</a>
+                        </div>
+                        
+                        <div class="item-inner">
+                            <p class="item-category"><a class="article-category-link" href="/categories/Learning/">Learning</a><i class="icon fa fa-angle-right"></i><a class="article-category-link" href="/categories/Learning/Learning-Highcharts/">Learning Highcharts</a></p>
+                            <p class="item-title"><a href="/Learning/Learning-Highcharts/Highcharts-APIs/highcharts-apis/" class="title">第七章 Highcharts APIs</a></p>
+                            <p class="item-date"><time datetime="2015-05-18T17:00:00.000Z" itemprop="datePublished">2015-05-19</time></p>
+                        </div>
+                    </li>
+                
+                    <li>
+                        
+                        <div class="item-thumbnail">
+                            <a href="/Learning/Learning-Highcharts/Pie-Charts/building-a-chart-with-multiple-series-types/" class="thumbnail">
+    
+    
+        <span style="background-image:url(/images/learning_highcharts/5-9.png)" alt="第五章 05.繪製一個包含多個序列的圖表" class="thumbnail-image"></span>
+    
+    
+</a>
+                        </div>
+                        
+                        <div class="item-inner">
+                            <p class="item-category"><a class="article-category-link" href="/categories/Learning/">Learning</a><i class="icon fa fa-angle-right"></i><a class="article-category-link" href="/categories/Learning/Learning-Highcharts/">Learning Highcharts</a></p>
+                            <p class="item-title"><a href="/Learning/Learning-Highcharts/Pie-Charts/building-a-chart-with-multiple-series-types/" class="title">第五章 05.繪製一個包含多個序列的圖表</a></p>
+                            <p class="item-date"><time datetime="2015-05-17T22:00:00.000Z" itemprop="datePublished">2015-05-18</time></p>
+                        </div>
+                    </li>
+                
+                    <li>
+                        
+                        <div class="item-thumbnail">
+                            <a href="/Learning/Learning-Highcharts/Pie-Charts/preparing-a-donut-chart-multiple-series/" class="thumbnail">
+    
+    
+        <span style="background-image:url(/images/learning_highcharts/5-6.png)" alt="第五章 04.準備一個甜甜圈圖——複合序列" class="thumbnail-image"></span>
+    
+    
+</a>
+                        </div>
+                        
+                        <div class="item-inner">
+                            <p class="item-category"><a class="article-category-link" href="/categories/Learning/">Learning</a><i class="icon fa fa-angle-right"></i><a class="article-category-link" href="/categories/Learning/Learning-Highcharts/">Learning Highcharts</a></p>
+                            <p class="item-title"><a href="/Learning/Learning-Highcharts/Pie-Charts/preparing-a-donut-chart-multiple-series/" class="title">第五章 04.準備一個甜甜圈圖——複合序列</a></p>
+                            <p class="item-date"><time datetime="2015-05-17T21:00:00.000Z" itemprop="datePublished">2015-05-18</time></p>
+                        </div>
+                    </li>
+                
+            </ul>
+        </div>
+    </div>
+
+            
+                
+    <div class="widget-wrap widget-list">
+        <h3 class="widget-title">歸檔</h3>
+        <div class="widget">
+            <ul class="archive-list"><li class="archive-list-item"><a class="archive-list-link" href="/archives/2015/05/">五月 2015</a><span class="archive-list-count">35</span></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2013/10/">十月 2013</a><span class="archive-list-count">2</span></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2013/04/">四月 2013</a><span class="archive-list-count">5</span></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2013/03/">三月 2013</a><span class="archive-list-count">3</span></li></ul>
+        </div>
+    </div>
+
+
+            
+                
+    <div class="widget-wrap widget-list">
+        <h3 class="widget-title">標籤</h3>
+        <div class="widget">
+            <ul class="tag-list"><li class="tag-list-item"><a class="tag-list-link" href="/tags/Highcharts/">Highcharts</a><span class="tag-list-count">36</span></li></ul>
+        </div>
+    </div>
+
+
+            
+                
+    <div class="widget-wrap widget-float">
+        <h3 class="widget-title">標簽雲</h3>
+        <div class="widget tagcloud">
+            <a href="/tags/Highcharts/" style="font-size: NaNpx;">Highcharts</a>
+        </div>
+    </div>
+
+
+            
+                
+    <div class="widget-wrap widget-list">
+        <h3 class="widget-title">連接</h3>
+        <div class="widget">
+            <ul>
+                
+                    <li>
+                        <a href="http://hexo.io">Hexo</a>
+                    </li>
+                
+            </ul>
+        </div>
+    </div>
+
+
+            
+        
+    </div>
+</aside>
+                </div>
+            </div>
+        </div>
+        <footer id="footer">
+    <div class="container">
+        <div class="container-inner">
+            <a id="back-to-top" href="javascript:;"><i class="icon fa fa-angle-up"></i></a>
+            <div class="credit">
+                <h1 class="logo-wrap">
+                    <a href="/" class="logo"></a>
+                </h1>
+                <p>&copy; 2016 Paul Lu</p>
+                <p>Powered by <a href="//hexo.io/" target="_blank">Hexo</a>. Theme by <a href="//github.com/ppoffice" target="_blank">PPOffice</a></p>
+            </div>
+        </div>
+    </div>
+</footer>
+        
+    
+    <script>
+    var disqus_shortname = 'retailscm';
+    
+    
+    var disqus_url = 'http://www.retailscm.com/Learning/Learning-Highcharts/Pie-Charts/plotting-simple-pie-charts-single-series/';
+    
+    (function() {
+    var dsq = document.createElement('script');
+    dsq.type = 'text/javascript';
+    dsq.async = true;
+    dsq.src = '//' + disqus_shortname + '.disqus.com/embed.js';
+    (document.getElementsByTagName('head')[0] || document.getElementsByTagName('body')[0]).appendChild(dsq);
+    })();
+    </script>
+
+
+
+    
+        <script src="/vendor/fancybox/jquery.fancybox.pack.js" type="text/javascript"></script>
+    
+
+    
+        <script src="/vendor/scrollLoading/jquery.scrollLoading.js" type="text/javascript"></script>
+        <script src="/vendor/scrollLoading/main.js" type="text/javascript"></script>
+    
+
+
+<!-- Custom Scripts -->
+<script src="/js/main.js" type="text/javascript"></script>
+
+    </div>
+</body>
+</html>

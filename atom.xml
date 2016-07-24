@@ -1,0 +1,2687 @@
+<?xml version="1.0" encoding="utf-8"?>
+<feed xmlns="http://www.w3.org/2005/Atom">
+  <title><![CDATA[科技零售]]></title>
+  <subtitle><![CDATA[PP Studio]]></subtitle>
+  <link href="/atom.xml" rel="self"/>
+  <link href="http://www.retailscm.com/"/>
+  <updated>2015-05-17T08:10:03.000Z</updated>
+  <id>http://www.retailscm.com/</id>
+  
+  <author>
+    <name><![CDATA[Paul Lu]]></name>
+    
+  </author>
+  
+  <generator uri="http://hexo.io/">Hexo</generator>
+  
+  <entry>
+    <title><![CDATA[第七章 02.使用Highcharts APIs]]></title>
+    <link href="http://www.retailscm.com/Learning/Learning-Highcharts/Highcharts-APIs/using-highcharts-apis/"/>
+    <id>http://www.retailscm.com/Learning/Learning-Highcharts/Highcharts-APIs/using-highcharts-apis/</id>
+    <published>2015-05-18T19:00:00.000Z</published>
+    <updated>2015-05-17T08:10:03.000Z</updated>
+    <content type="html"><![CDATA[<h1 id="科技零售(RetailSCM-com)_Learning_Highcharts中文教程">科技零售(RetailSCM.com) Learning Highcharts中文教程</h1><p><em><span style="color: #808080;">版權保留，網路轉載請註明來源，謝絕紙質媒體轉載，謝謝。</span></em></p>
+<h2 id="使用Highcharts_APIs">使用Highcharts APIs</h2><p>在這一節，我們會通過使用jQuery, jQuery UI及Highcharts建立一個例子來探索每一個組件的APIs。所有示例中的代碼都使用對象層級的方式來取得圖表組件（如chart.series[0].data[0]）</p>
+<p>使用界面的部分會非常簡單，並不會刻意美化，我們主要的目的是練習Highcharts的APIs。</p>
+<p>首先，讓我們來說明一下使用界面的用法然後解釋代碼的部分來理解操作是如何被執行的。下面是使用前端的截圖：</p>
+<p><a href="/images/learning_highcharts/7-2.png"><img src="/images/learning_highcharts/7-2.png" alt="7-2"></a></p>
+<a id="more"></a>
+<p>這是一個非常簡單的前端Web頁面，用來繪製過去30天的股票數據圖表。最上面的一組按鈕是用來輸入股票代碼，得到股票價格以及將圖表的圖片下載或使用e-mail來發送。Add to list按鈕是可以將股票代碼直接加入到列表中，而不需要再取得股票價格及繪製這些數據。Plot All按鈕是啟動多個股票價格查詢，將股票代碼清單中的股票價格查出來並同時將這些數據繪製出來，另一個Add &amp; Plot按鈕則是快速的繪製一個單個股票代碼的數據。</p>
+<p>底部的部分則是包含了一個我們已經創建的圖表，圖表的數據部分是空的，只有顯示軸線和標題（注意showAxes選項為true），主要的想法是復用已經存在的圖表而非每次有新的資料時就重新創建一個新的圖表對象。因此這裡在報表被結束及新增時沒有絢麗的效果（flickering），只是會設定為一個平滑的動畫進行更新。當然這樣也會讓我們使用代碼來重新產生圖表對象時獲得更高的效能。</p>
+<p>這個示例可以訪問<a href="http://joekuan.org/Learning_Highcharts/Chapter_7/Example_1.html" target="_blank" rel="external">http://joekuan.org/Learning_Highcharts/Chapter_7/Example_1.html</a>，因為安全限制，e-mail及下載功能在這個線上示例中會關閉掉。</p>
+<pre><code>var chart = <span class="keyword">new</span> Highcharts.Chart({
+    chart: {
+        renderTo: <span class="string">'container'</span>,
+        showAxes: <span class="keyword">true</span>,
+        borderWidth: <span class="number">1</span>
+    },
+    title: {
+        <span class="built_in">text</span>: <span class="string">'Last 30 days stock price'</span>
+    },
+    credits: {
+        <span class="built_in">text</span>: <span class="string">'Learning Highcharts'</span>
+    },
+    xAxis: {
+        type: <span class="string">'datetime'</span>,
+        tickInterval: <span class="number">24</span> * <span class="number">3600</span> * <span class="number">1000</span>,
+        dateTimeLabelFormats: {
+            <span class="built_in">day</span>: <span class="string">'%Y-%m-%d'</span>
+        },
+        title: {
+            <span class="built_in">text</span>: <span class="string">'Date'</span>,
+            align: <span class="string">'high'</span>
+        },
+        labels: {
+            rotation: -<span class="number">45</span>,
+            align: <span class="string">'center'</span>,
+            step: <span class="number">2</span>,
+            y: <span class="number">40</span>,
+            x: -<span class="number">20</span>
+        }
+    },
+    yAxis: {
+        title: {
+            <span class="built_in">text</span>: <span class="string">'Price ($)'</span>
+        }
+    },
+    plotOptions: {
+        <span class="built_in">line</span>: {
+            allowPointSelect: <span class="keyword">true</span>
+        }
+    }
+});
+</code></pre><h2 id="使用Chart-addSeries通過Ajax獲得資料並呈現為一個新的序列">使用Chart.addSeries通過Ajax獲得資料並呈現為一個新的序列</h2><p>讓我們來測試點擊Add &amp; Polt按鈕之後的行為， HTML如下</p>
+<pre><code>&lt;input <span class="variable">id=</span><span class="string">"plotStock"</span> <span class="variable">type=</span><span class="string">"button"</span> <span class="variable">value=</span><span class="string">"Add &amp; Plot"</span> /&gt;
+</code></pre><p>按鈕動作的jQuery代碼如下所列：</p>
+<pre><code>$(<span class="string">'#plotStock'</span>).button().click(
+    <span class="function"><span class="keyword">function</span><span class="params">(evt)</span> </span>{
+        <span class="comment">// Get the input stock symbol, empty the</span>
+        <span class="comment">// list andinsert the new symbol into the list</span>
+        $(<span class="string">'#stocklist'</span>).empty();
+        <span class="keyword">var</span> symbol = $(<span class="string">'#symbol'</span>).val();
+        $(<span class="string">'#stocklist'</span>).append($(<span class="string">""</span>).append(symbol));
+        <span class="comment">// Kick off the loading screen</span>
+        chart.showLoading(<span class="string">"Getting stock data ...."</span>);
+        <span class="comment">// Launch the stock query</span>
+        $.getJSON(<span class="string">'./stockQuery.php?symbol='</span> +
+            symbol.toLowerCase(),
+            <span class="function"><span class="keyword">function</span><span class="params">(stockData)</span> </span>{
+                <span class="comment">// parse JSON response here</span>
+                .....
+            }
+        );
+    }
+);
+</code></pre><p>上面的代碼定義了Add &amp; Plot按鈕點擊後的事件處理程序。首先，它會清空id為stocklist的股票代碼列表清單選框。然後他會從股票代碼的輸入框中取得到股票代碼並增加到股票代碼清單中。下一步會在圖表區使用chart.showLoading方法初始化載入時的提示內容，載入時的畫面如下所示：</p>
+<p><a href="/images/learning_highcharts/7-3.png"><img src="/images/learning_highcharts/7-3.png" alt="7-3"></a></p>
+<p>下一步會啟動jQuery Ajax呼叫$.getJSON來查詢股票價格。服務器端的腳本stockQuery.php（當然你也可以使用任何一種其他的服務器端語言來實現）會執行兩個任務——將股票代碼解析為公司或組織的全名並從另一個網站(<a href="http://ichart.finance.yahoo.com/" target="_blank" rel="external">http://ichart.finance.yahoo.com/</a> )來取得最後的股票價格，然後將這些數據併入在同一行數據並將其編碼為JSON格式。下面是stockQuery.php的文件內容：</p>
+<pre><code><span class="php"><span class="preprocessor">&lt;?php</span>
+    <span class="variable">$ch</span> = curl_init();
+    curl_setopt(<span class="variable">$ch</span>, CURLOPT_RETURNTRANSFER, <span class="keyword">true</span>);
+    <span class="comment">// Get the stock symbol name</span>
+    curl_setopt(<span class="variable">$ch</span>, CURLOPT_URL, <span class="string">"http://download.finance.yahoo.com/d/
+        quotes.csv?s={$symbol}&amp;f=n"</span>);
+    <span class="variable">$result</span> = curl_exec(<span class="variable">$ch</span>);
+    <span class="variable">$name</span> = trim(trim(<span class="variable">$result</span>), <span class="string">'"'</span>);
+    <span class="comment">// Get from now to 30 days ago</span>
+    <span class="variable">$now</span> = time();
+    <span class="variable">$toDate</span> = localtime(<span class="variable">$now</span>, <span class="keyword">true</span>);
+    <span class="variable">$toDate</span>[<span class="string">'tm_year'</span>] += <span class="number">1900</span>;
+    <span class="variable">$fromDate</span> = localtime(<span class="variable">$now</span> - (<span class="number">86400</span> * <span class="number">30</span>), <span class="keyword">true</span>);
+    <span class="variable">$fromDate</span>[<span class="string">'tm_year'</span>] += <span class="number">1900</span>;
+    <span class="variable">$dateParams</span> = <span class="string">"a={$fromDate['tm_mon']}&amp;b={$fromDate['tm_
+        mday']}&amp;c={$fromDate['tm_year']}"</span> .<span class="string">"&amp;d={$toDate['tm_
+        mday']}&amp;e={$toDate['tm_mday']}&amp;f={$toDate['tm_year']}"</span>;
+    curl_setopt(<span class="variable">$ch</span>, CURLOPT_URL, <span class="string">"http://ichart.finance.yahoo.com/
+        table.csv?s={$symbol}&amp;{$dateParams}&amp;g=d"</span>);
+    <span class="variable">$result</span> = curl_exec(<span class="variable">$ch</span>);
+    curl_close(<span class="variable">$ch</span>);
+    <span class="comment">// Remove the header row</span>
+    <span class="variable">$lines</span> = explode(<span class="string">"\n"</span>, <span class="variable">$result</span>);
+    array_shift(<span class="variable">$lines</span>);
+    <span class="variable">$stockResult</span>[<span class="string">'rows'</span>] = <span class="keyword">array</span>();
+    <span class="comment">// Parse the result into dates and close value</span>
+    <span class="keyword">foreach</span>((<span class="keyword">array</span>) <span class="variable">$lines</span> <span class="keyword">as</span> <span class="variable">$ln</span>) {
+        <span class="keyword">if</span> (!strlen(trim(<span class="variable">$ln</span>))) {
+            <span class="keyword">continue</span>;
+        }
+        <span class="keyword">list</span>(<span class="variable">$date</span>, <span class="variable">$o</span>, <span class="variable">$h</span>, <span class="variable">$l</span>, <span class="variable">$c</span>, <span class="variable">$v</span>, <span class="variable">$ac</span>) =
+        explode(<span class="string">","</span>, <span class="variable">$ln</span>, <span class="number">7</span>);
+        <span class="keyword">list</span>(<span class="variable">$year</span>, <span class="variable">$month</span>, <span class="variable">$day</span>) = explode(<span class="string">'-'</span>, <span class="variable">$date</span>, <span class="number">3</span>);
+        <span class="variable">$tm</span> = mktime(<span class="number">12</span>, <span class="number">0</span>, <span class="number">0</span>, <span class="variable">$month</span>, <span class="variable">$day</span>, <span class="variable">$year</span>);
+        <span class="variable">$stockResult</span>[<span class="string">'rows'</span>][] =
+        <span class="keyword">array</span>(<span class="string">'date'</span> =&gt; <span class="variable">$tm</span> * <span class="number">1000</span>,
+        <span class="string">'price'</span> =&gt; floatval(<span class="variable">$c</span>));
+    }
+    <span class="variable">$stockResult</span>[<span class="string">'name'</span>] = <span class="variable">$name</span>;
+    <span class="keyword">echo</span> json_encode(<span class="variable">$stockResult</span>);
+<span class="preprocessor">?&gt;</span></span>
+</code></pre><p>下面是從Server端返回的JSON格式：</p>
+<pre><code>{
+    "<span class="attribute">rows</span>": <span class="value">[{
+            "<span class="attribute">date</span>": <span class="value"><span class="number">1348138800000</span></span>,
+            "<span class="attribute">price</span>": <span class="value"><span class="number">698.7</span>
+        </span>}, {
+            "<span class="attribute">date</span>": <span class="value"><span class="number">1348225200000</span></span>,
+            "<span class="attribute">price</span>": <span class="value"><span class="number">700.09</span>
+        </span>},
+        ...
+    ]</span>,
+    "<span class="attribute">name</span>": <span class="value"><span class="string">"Apple Inc."</span>
+</span>}
+</code></pre><p>當我們收到了JSON的返回結果後，資料會通過getJSON處理程序將其轉化為一個數組。下面是處理程序的部分：</p>
+<pre><code>$.getJSON(<span class="string">'./stockQuery.php?symbol='</span> +
+    symbol.toLowerCase(),
+    <span class="function"><span class="keyword">function</span><span class="params">(stockData)</span> </span>{
+        <span class="comment">// Remove all the chart existing series</span>
+        <span class="keyword">while</span> (chart.series.length) {
+            chart.series[<span class="number">0</span>].remove()
+        }
+        <span class="comment">// Construct series data and add the series</span>
+        $.each(stockData.rows,
+            <span class="function"><span class="keyword">function</span><span class="params">(idx, data)</span> </span>{
+                $.histStock.push([data.date,
+                    data.price
+                ]);
+            }
+        );
+        <span class="keyword">var</span> seriesOpts = {
+            name: stockData.name + <span class="string">' - ('</span> + symbol + <span class="string">')'</span>,
+            data: $.histStock,
+            <span class="comment">// This is to stop Highcharts rotating</span>
+            <span class="comment">// the color and data point symbol for</span>
+            <span class="comment">// the series</span>
+            color: chart.options.colors[<span class="number">0</span>],
+            marker: {
+                symbol: chart.options.symbols[<span class="number">0</span>]
+            }
+        };
+        chart.hideLoading();
+        chart.addSeries(seriesOpts);
+    }
+);
+</code></pre><p>首先，我們通過呼叫Series.remove來移除圖表上已存在的序列，然後為數據數組中的時間(UTC格式)和價格來設定序列的選項。完成後我們就可以使用Chart.hideLoading將圖表的載入訊息移除並使用Chart.addSeries來載入一個新的序列，只是會在序列重新載入的時候有一點小問題：在chart.options.colors和chart.options.symbols的值會在圖表移除和重新加回來的時候一直累加，我們可以明確的指定這兩個值來避免這個問題。</p>
+<p>我們也可以通過Series.setData來達到相同的結果，但是序列的名字/主題在序列建立的時候一旦制定好之後，就不允許再被更改了。因此在這個示例中，我們仍然會使用Chart.addSeries 和 Series.remove。</p>
+<p>下面是一個單個股票的查詢：</p>
+<p><a href="/images/learning_highcharts/7-4.png"><img src="/images/learning_highcharts/7-4.png" alt="7-4"></a></p>
+<h2 id="同時呼叫多個Ajax並顯示為多個序列">同時呼叫多個Ajax並顯示為多個序列</h2><p>下面的部分會討論同時啟動多個Ajax查詢，並在所有數據都返回的時候繪出對應的序列。它實現的方式與查詢並繪製單個股票的方式非常相似，除了我們是在收集到全部的返回結果並在最後一個結果返回之後才開始建立這個序列數組。</p>
+<pre><code><span class="comment">// Query all the stocks simultaneously and</span>
+<span class="comment">// plot multipleseries in one go</span>
+$(<span class="string">'#plotAll'</span>).button().click(
+    <span class="function"><span class="keyword">function</span><span class="params">(evt)</span> </span>{
+        <span class="comment">// Kick off the loading screen</span>
+        chart.showLoading(<span class="string">"Getting multiple stock data ...."</span>);
+        <span class="comment">// Get the list of stock symbols and launch</span>
+        <span class="comment">// the query foreach symbol</span>
+        <span class="keyword">var</span> total = $(<span class="string">'#stocklist'</span>).children().length;
+        <span class="comment">// start Ajax request for each of the items separately</span>
+        $.each($(<span class="string">'#stocklist'</span>).children(),
+            <span class="function"><span class="keyword">function</span><span class="params">(idx, item)</span> </span>{
+                <span class="keyword">var</span> symbol = $(item).text();
+                $.getJSON(<span class="string">'./stockQuery.php?symbol='</span> +
+                    symbol.toLowerCase(),
+                    <span class="function"><span class="keyword">function</span><span class="params">(stockData)</span> </span>{
+                        <span class="comment">// data arrives, buildup the series array</span>
+                        $.each(stockData.rows,
+                            <span class="function"><span class="keyword">function</span><span class="params">(idx, data)</span> </span>{
+                                $.histStock.push([data.date,
+                                    data.price
+                                ]);
+                            }
+                        );
+                        seriesOpts.push({
+                            name: stockData.name + <span class="string">' - ('</span> + symbol + <span class="string">')'</span>,
+                            data: $.histStock,
+                            <span class="comment">// This is to stop Highcharts</span>
+                            <span class="comment">// rotating the colorfor the series</span>
+                            color: chart.options.colors[idx],
+                            marker: {
+                                symbol: chart.options.symbols[idx]
+                            }
+                        });
+                        <span class="comment">// Plot the series if this result</span>
+                        <span class="comment">// is the last one</span>
+                        <span class="keyword">if</span> (seriesOpts.length == total) {
+                            <span class="comment">// Remove all the chart existing series</span>
+                            <span class="keyword">while</span> (chart.series.length) {
+                                chart.series[<span class="number">0</span>].remove()
+                            }
+                            chart.hideLoading();
+                            $.each(seriesOpts,
+                                <span class="function"><span class="keyword">function</span><span class="params">(idx, hcOption)</span> </span>{
+                                    chart.addSeries(hcOption,
+                                        <span class="literal">false</span>);
+                                }
+                            );
+                            chart.redraw();
+                        } <span class="comment">// else – do nothing,</span>
+                        <span class="comment">// not all results came yet</span>
+                    } <span class="comment">// function(stockData)</span>
+                ); <span class="comment">// getJSON</span>
+            }); <span class="comment">// $.each($('#stocklist')</span>
+    }); <span class="comment">// on('click'</span>
+</code></pre><p>Chart.addSeries, redraw的第二個參數使用false來代替，我們在Chart.redraw的一個呼叫中完成全部的更新以減少CPU的執行時間。下面是多個股票的查詢：</p>
+<p><a href="/images/learning_highcharts/7-5.png"><img src="/images/learning_highcharts/7-5.png" alt="7-5"></a></p>
+<h2 id="使用Chart-getSVG提取SVG數據">使用Chart.getSVG提取SVG數據</h2><p>在這一節中我們會學習到將一個圖表匯出並使用email傳送或文件下載。雖然我們可以依靠匯出模塊及呼叫exportChart方法來匯出圖表到所需的圖片格式，但通過這個過程我們我可以更深入的了解到圖表是如何從原始的SVG內容轉為一個圖片文件，之後就會再簡單的呼叫一個不同的工具將圖片文件保存到服務器端。</p>
+<p>當匯出模組被載入後，可以呼叫getSVG方法從圖表中提取數據到SVG中，這個方法對exportChart來說非常簡單，設定chartOptions參數這個用於匯出圖表的就可以完成。</p>
+<p>下面是用來處理下載和email發送的客戶端jQuery代碼，在這裡我們使用protocol變量來定義圖表和兩個按鈕呼叫所預設的共用方法deliverChart:</p>
+<p>// Export chart into SVG and deliver it to the server</p>
+<pre><code>function deliverChart(chart, protocol, target) {
+    // <span class="type">First</span> extracts the <span class="type">SVG</span> markup content <span class="keyword">from</span> the
+    // displayed chart
+    <span class="keyword">var</span> svg = chart.getSVG();
+    // <span class="type">Send</span> the whole <span class="type">SVG</span> to the server <span class="keyword">and</span> url
+    $.post('./deliverChart.php', {
+            svg: svg,
+            protocol: protocol,
+            target: target
+        },
+        function(<span class="literal">result</span>) {
+            <span class="keyword">var</span> message = null;
+            <span class="keyword">var</span> title = null;
+            switch (protocol) {
+                // <span class="type">Create</span> a dialog box to show the
+                // sent status
+                <span class="keyword">case</span> 'mailto':
+                    message = <span class="literal">result</span>.success ?
+                        '<span class="type">The</span> mail has been sent successfully' :
+                        <span class="literal">result</span>.message;
+                    title = '<span class="type">Email</span> <span class="type">Chart</span>';
+                    <span class="keyword">break</span>;
+                    // <span class="type">Uses</span> hidden frame to download the
+                    // image file created on the server side
+                <span class="keyword">case</span> 'file':
+                    // <span class="type">Only</span> popup a message <span class="keyword">if</span> error occurs
+                    <span class="keyword">if</span> (<span class="literal">result</span>.success) {
+                        $('<span class="comment">#hidden_iframe').attr("src",</span>
+                            <span class="string">"dlChart.php"</span>);
+                    } <span class="keyword">else</span> {
+                        message = <span class="literal">result</span>.message;
+                        title = '<span class="type">Download</span> <span class="type">Chart</span>';
+                    }
+                    <span class="keyword">break</span>;
+            }
+            <span class="keyword">if</span> (message) {
+                <span class="keyword">var</span> msgDialog = $('<span class="comment">#dialog');</span>
+                msgDialog.dialog({
+                    autoOpen: <span class="literal">false</span>,
+                    modal: <span class="literal">true</span>,
+                    title: title
+                });
+                msgDialog.text(message);
+                msgDialog.dialog('open');
+            }
+        }, 'json');
+}
+</code></pre><p>deliverChart方法首先會呼叫Highcharts API getSVG來提取SVG的內容，然後會啟動一個POST請求並將SVG數據和執行方式作為參數傳入。當$.post作為一個任務狀態值返回時，頁面會彈出一個對話框。至於圖表下載的部分，我們會創建一個隱藏表單域</p>
+<pre><code>&lt;<span class="tag">iframe</span> <span class="attribute">height</span>=<span class="string">"240"</span> <span class="attribute">width</span>=<span class="string">"320"</span>&gt;&lt;/iframe&gt;
+</code></pre><p>下面是一個很簡單的服務器端腳本，以用來處理將SVG數據產出為一個文件。</p>
+<pre><code><span class="php"><span class="preprocessor">&lt;?php</span>
+    <span class="variable">$svg</span> = <span class="variable">$_POST</span>[<span class="string">'svg'</span>];
+    <span class="variable">$protocol</span> = <span class="variable">$_POST</span>[<span class="string">'protocol'</span>];
+    <span class="variable">$target</span> = <span class="variable">$_POST</span>[<span class="string">'target'</span>];
+    <span class="function"><span class="keyword">function</span> <span class="title">returnError</span><span class="params">(<span class="variable">$output</span>)</span> </span>{
+        <span class="variable">$result</span>[<span class="string">'success'</span>] = <span class="keyword">false</span>;
+        <span class="variable">$result</span>[<span class="string">'error'</span>] = implode(<span class="string">"
+"</span>, <span class="variable">$output</span>);
+        <span class="keyword">echo</span> json_encode(<span class="variable">$result</span>);
+        <span class="keyword">exit</span>(<span class="number">1</span>);
+    }
+    <span class="comment">// Format the svg into an image file</span>
+    file_put_contents(<span class="string">"/tmp/chart.svg"</span>, <span class="variable">$svg</span>);
+    <span class="variable">$cmd</span> = <span class="string">"convert /tmp/chart.svg /tmp/chart.png"</span>;
+    exec(<span class="variable">$cmd</span>, <span class="variable">$output</span>, <span class="variable">$rc</span>);
+    <span class="keyword">if</span> (<span class="variable">$rc</span>) {
+        returnError(<span class="variable">$output</span>);
+    }
+    <span class="comment">// Deliver the chart image file according to the url</span>
+    <span class="keyword">if</span> (<span class="variable">$protocol</span> == <span class="string">'mailto'</span>) {
+        <span class="variable">$cmd</span> = <span class="string">"EMAIL='{$target}' mutt -s 'Here is the chart' -a /tmp/chart.
+    png -- {$protocol}:{$target} &lt;</span></span>
+</code></pre><p>網頁腳本運行在Linux平台上(Ubuntu 12.04)，至於email的部分我們使用兩個命令行工具來幫助我們。首先是一個快速的圖形轉換工具convert，它是ImageMagick包的一部分（關於這個包可以在<a href="http://www.imagemagick.org/script/index.php" target="_blank" rel="external">http://www.imagemagick.org/script/index.php</a>這裡可以看到更多的詳細資料）。在腳本中我們將SVG數據作為POST的參數提交到服務器端，並將其保存到一個文件中，然後執行轉換工具將其轉換為一個PNG圖片。這個轉換工具還支援其他的圖片格式和其他很多的功能。此外我們還可以使用以下指令來透過Batik來做一個簡單的轉換</p>
+<pre><code>java -jar batik-rasterizer<span class="class">.jar</span> /tmp/chart.svg
+</code></pre><p>這個指令也可以將SVG文件自動輸出到/tmp/chart.png文件中。因為希望可以快速實現email的緣故，我們會啟動一個email工具mutt(可在這個網站查看到更多詳細資料<a href="http://www.mutt.org" target="_blank" rel="external">http://www.mutt.org</a> )來代替PHP mail擴展。一旦PNG圖片文件被建立完成，我們使用mutt來將其作為一個附件並使用定界符來定制郵件內容。（定界符是在Unix命令行可以快速輸入換行和空格的方式，可參見<a href="http://en.wikipedia.org/wiki/Here_document" target="_blank" rel="external">http://en.wikipedia.org/wiki/Here_document</a> ）</p>
+<p>下面是郵件被發出後的截圖</p>
+<p><a href="/images/learning_highcharts/7-6.png"><img src="/images/learning_highcharts/7-6.png" alt="7-6"></a></p>
+<p>下面是我們收到的將圖表作為附件的郵件內容。</p>
+<p><a href="/images/learning_highcharts/7-7.png"><img src="/images/learning_highcharts/7-7.png" alt="7-7"></a></p>
+<h2 id="選擇數據點及增加測繪線(plot_lines)">選擇數據點及增加測繪線(plot lines)</h2><p>下面的部分來增加Show Range選框及Show Point Value按鈕。Show Range選項會在圖表的最高點和最低點畫兩條測繪線，Show Point Value會將當前選中的數據點中的數值顯示在左下角的一個方框區域中，下圖演示了這兩個選項都開啟時的效果</p>
+<p><a href="/images/learning_highcharts/7-8.png"><img src="/images/learning_highcharts/7-8.png" alt="7-8"></a></p>
+<p>（雖然Show Point Value的範例在這裡雖然可以使用在每個數據節點的select事件上應用回調處理程序的方式來取得需要顯示的數值，但我們可以直接使用Chart.getSelectedPoints方法即可）</p>
+<h2 id="使用Axis-getExtremes和Axis-addPlotLine">使用Axis.getExtremes和Axis.addPlotLine</h2><p>Axis.getExtremes方法不僅返回軸線的最小值和最大值的範圍，並且也返回來最高和最低的數據節點，在這裡我們合併使用Axis.addPlotLine函數可以增加一對沿著Y軸的測繪線。addPointLine通常比用來配置一些測繪線，在這個例子中，我們特別定義一個數據標籤及一個id的名字，使得我們可以在取消Show Range勾選或需要重新顯示新值之後可以移除測繪線，下面是Show Range的代碼：</p>
+<pre><code><span class="comment">// Show the highest and lowest range in the plotlines.</span>
+<span class="keyword">var</span> showRange = function(chart, <span class="keyword">checked</span>) {
+    <span class="keyword">if</span> (!chart.series || !chart.series.length) {
+        <span class="keyword">return</span>;
+    }
+    <span class="comment">// Checked or not checked, we still need to remove</span>
+    <span class="comment">// any existing plot lines first</span>
+    chart.yAxis[<span class="number">0</span>].removePlotLine(<span class="string">'highest'</span>);
+    chart.yAxis[<span class="number">0</span>].removePlotLine(<span class="string">'lowest'</span>);
+    <span class="keyword">if</span> (!<span class="keyword">checked</span>) {
+        <span class="keyword">return</span>;
+    }
+    <span class="comment">// Checked - get the highest &amp; lowest points</span>
+    <span class="keyword">var</span> extremes = chart.yAxis[<span class="number">0</span>].getExtremes();
+    <span class="comment">// Create plot lines for the highest &amp; lowest points</span>
+    chart.yAxis[<span class="number">0</span>].addPlotLine({
+        width: <span class="number">2</span>,
+        label: {
+            text: extremes.dataMax,
+            enabled: <span class="keyword">true</span>,
+            y: -<span class="number">7</span>
+        },
+        <span class="keyword">value</span>: extremes.dataMax,
+        id: <span class="string">'highest'</span>,
+        zIndex: <span class="number">2</span>,
+        dashStyle: <span class="string">'dashed'</span>,
+        color: <span class="string">'#33D685'</span>
+    });
+    chart.yAxis[<span class="number">0</span>].addPlotLine({
+        width: <span class="number">2</span>,
+        label: {
+            text: extremes.dataMin,
+            enabled: <span class="keyword">true</span>,
+            y: <span class="number">13</span>
+        },
+        <span class="keyword">value</span>: extremes.dataMin,
+        zIndex: <span class="number">2</span>,
+        id: <span class="string">'lowest'</span>,
+        dashStyle: <span class="string">'dashed'</span>,
+        color: <span class="string">'#FF7373'</span>
+    });
+};
+</code></pre><h2 id="使用Chart-getSelectedPoints和Chart-renderer方法">使用Chart.getSelectedPoints和Chart.renderer方法</h2><p>Show Point Value按鈕利用Chart.getSelectedPoints來出去當前所選中的數據點。注意這個方法需要序列選項中的allowPointSelect是開啟的狀態。一旦選中了一個數據點，並且Show Point Value按鈕被點擊後，我們使用Chart.renderer所提供的函數來畫出一個類似提示框的方框顯示所選中數據節點的值，我們可以使用方法Renderer.path或Renderer.rect來畫這個圓角框，再使用Renderer.text來顯示數據值。</p>
+<p>（Highcharts也允許按住Ctrl鍵複選多個數據節點）</p>
+<p>另外我們通常使用Renderer.g來將SVG框和值一起加入到圖表的一個組元素中，原因是這樣我們就可以在需要顯示新值的時候直接整體刪除而不是每個元素單獨操作。</p>
+<pre><code>$(<span class="string">'#showPoint'</span>).button().click(<span class="function"><span class="keyword">function</span><span class="params">(evt)</span> </span>{
+    <span class="comment">// Remove the point info box if exists</span>
+    chart.infoBox &amp;&amp; (chart.infoBox =
+        chart.infoBox.destroy());
+    <span class="comment">// Display the point value box if a data point</span>
+    <span class="comment">// is selected</span>
+    <span class="keyword">var</span> selectedPoint = chart.getSelectedPoints();
+    <span class="keyword">var</span> r = chart.renderer;
+    <span class="keyword">if</span> (selectedPoint.length) {
+        chart.infoBox = r.g();
+        r.rect(<span class="number">20</span>, <span class="number">255</span>, <span class="number">150</span>, <span class="number">30</span>, <span class="number">3</span>).attr({
+            stroke: chart.options.colors[<span class="number">0</span>],
+            <span class="string">'stroke-width'</span>: <span class="number">2</span>
+        }).add(chart.infoBox);
+        <span class="comment">// Convert selected point UTC value to date string</span>
+        <span class="keyword">var</span> tm = <span class="keyword">new</span> <span class="built_in">Date</span>(selectedPoint[<span class="number">0</span>].x);
+        tm = tm.getFullYear() + <span class="string">'-'</span> +
+            (tm.getMonth() + <span class="number">1</span>) + <span class="string">'-'</span> + tm.getDate();
+        r.text(tm + <span class="string">': '</span> + selectedPoint[<span class="number">0</span>].y,
+            <span class="number">28</span>, <span class="number">275</span>).add(chart.infoBox);
+        chart.infoBox.add();
+    }
+});
+</code></pre><p>Highcharts的Renderer類還附帶了其他的方法在圖表上來畫一個簡單的SVG圖形，如arc, circle, image, rect, text, g和path。更多複雜的圖形，我們可以使用path方法採用SVG的path語法及有限度支援的VML path。Renderer類還可以獨立在圖表外中，我們可以在圖表建立之前事先增加一個SVG內容並顯示在一個HTML元素中。</p>
+<pre><code><span class="keyword">var</span> renderer = <span class="keyword">new</span> Highcharts.Renderer($(<span class="string">'#container'</span>)[<span class="number">0</span>],<span class="number">200</span>, <span class="number">100</span>);
+</code></pre><p>這樣會產生一個Renderer對象並允許我們創建一個200像素寬，100像素高的SVG元素塞入到container元素中。</p>
+<h2 id="探索Series更新">探索Series更新</h2><p>series更新是在報表執行過程中非常頻繁的任務之一，在本節中我們會重點探討它。在Highcharts中我們有幾種途徑來更新series，通常我們可以從一個序列或數據節點的層級來更新，然後更新方法會自己產生一個實際的變更或重新塞入新的數值，我們需要討論全部的方法並創建一個範例來嘗試這些技術。</p>
+<p>為了比較這些方法，我們繼續使用股票數據，但是我們這次改變使用界面可以看到歷史的股票價格，下面是這個示例的截圖：</p>
+<p><a href="/images/learning_highcharts/7-9.png"><img src="/images/learning_highcharts/7-9.png" alt="7-9"></a></p>
+<p>如我們所看到的，這裡有多個選單：要看到多少年的股票價格，每個迭代中要看到多少的數據節點，每次更新之間的時間間隔是多久，我們可以觀察到他們之間有趣的差異。這個範例也可以在這裡之間查看<a href="http://joekuan.org/Learning_Highcharts/Chapter_7/Example_2.html" target="_blank" rel="external">http://joekuan.org/Learning_Highcharts/Chapter_7/Example_2.html</a>，我強烈建議將這個例子的代碼看一遍。在我們開始看之前，讓我們先來了解如何對連續序列進行更新的過程。</p>
+<h2 id="連續序列的更新">連續序列的更新</h2><p>當我們輸入了股票代碼及選擇了所希望查看的年數之後，我們可以點擊Load Data按鈕來獲取價格數據，當數據獲取完成後，將會彈出一個確認對話框，按下Start按鈕後即可啟動這個流程，下面是Start按鈕的代碼：</p>
+<pre><code><span class="comment">// Create a named space to store the current user</span>
+<span class="comment">// input field values and the timeout id</span>
+$.histStock = {};
+$(<span class="string">'#Start'</span>).button().click(<span class="function"><span class="keyword">function</span><span class="params">()</span> </span>{
+    chart.showLoading(<span class="string">"Loading stock price ... "</span>);
+    <span class="comment">// Remove old timeout if exists</span>
+    $.histStock.timeoutID &amp;&amp;
+        clearTimeout($.histStock.timeoutID);
+    <span class="keyword">var</span> symbol =
+        <span class="built_in">encodeURIComponent</span>($(<span class="string">'#symbol'</span>).val().toLowerCase());
+    <span class="keyword">var</span> years = <span class="built_in">encodeURIComponent</span>($(<span class="string">'#years'</span>).val());
+    <span class="comment">// Remember current user settings and initialize values</span>
+    <span class="comment">// for the run</span>
+    $.histStock = {
+        <span class="comment">// First loop start at the beginning</span>
+        offset: <span class="number">0</span>,
+        <span class="comment">// Number of data pts to display in each iteration</span>
+        numPoints: <span class="number">30</span>,
+        <span class="comment">// How long to wait in each iteration</span>
+        wait: <span class="built_in">parseInt</span>($(<span class="string">'#updateMs'</span>).val(), <span class="number">10</span>),
+        <span class="comment">// Which Highcharts method to update the series</span>
+        method: $(<span class="string">'#update'</span>).val(),
+        <span class="comment">// How many data points to update in each iteration</span>
+        <span class="string">'update:'</span>
+        <span class="built_in">parseInt</span>($(<span class="string">'#updatePoints'</span>).val(), <span class="number">10</span>)
+    };
+    <span class="comment">// Clean up old data points from the last run</span>
+    chart.series.length &amp;&amp; chart.series[<span class="number">0</span>].setData([]);
+    <span class="comment">// Start Ajax query to get the stock history</span>
+    $.getJSON(<span class="string">'./histStock.php?symbol='</span> + symbol +
+        <span class="string">'&amp;years='</span> + years,
+        <span class="function"><span class="keyword">function</span><span class="params">(stockData)</span> </span>{
+            <span class="comment">// Got the whole period of historical stock data</span>
+            $.histStock.name = stockData.name;
+            $.histStock.data = stockData.rows;
+            chart.hideLoading();
+            <span class="comment">// Start the chart refresh</span>
+            refreshSeries();
+        }
+    );
+})
+</code></pre><p>我們首先在jQuery命名空間下創建一個變量histStock用來訪問這個示例的各部分。histStock會將當前使用者的輸入保存下來並關聯到刷新任務(the reference to the refresh task)。任何從UI更新$.histStock都會相應對序列作出更新。</p>
+<p>基本上，當點擊了Start按鈕後，我們會初始化$.histStock變量並將股票代碼和查詢年數摻入到Ajax的查詢中，返回股票價格數據會存在一個變量中，然後執行refreshSeries，它會通過定時執行設定來自己啟動，下面是這個方法的精簡版：</p>
+<pre><code><span class="keyword">var</span> refreshSeries = <span class="function"><span class="keyword">function</span><span class="params">()</span> </span>{
+    <span class="keyword">var</span> i = <span class="number">0</span>,
+        j;
+    <span class="comment">// Update the series data according to each approach</span>
+    <span class="keyword">switch</span> ($.histStock.method) {
+        <span class="keyword">case</span> <span class="string">'setData'</span>:
+            ....
+            <span class="keyword">break</span>;
+        <span class="keyword">case</span> <span class="string">'renewSeries'</span>:
+            ....
+            <span class="keyword">break</span>;
+        <span class="keyword">case</span> <span class="string">'update'</span>:
+            ....
+            <span class="keyword">break</span>;
+        <span class="keyword">case</span> <span class="string">'addPoint'</span>:
+            ....
+            <span class="keyword">break</span>;
+    }
+    <span class="comment">// Shift the offset for the next update</span>
+    $.histStock.offset += $.histStock.update;
+    <span class="comment">// Update the jQuery UI progress bar</span>
+    ....
+    <span class="comment">// Finished</span>
+    <span class="keyword">if</span> (i == $.histStock.data.length) {
+        <span class="keyword">return</span>;
+    }
+    <span class="comment">// Setup for the next loop</span>
+    $.histStock.timeoutID =
+        setTimeout(refreshSeries, $.histStock.wait);
+};
+</code></pre><p>在refreshSeries內部，會檢查$.histStock內的設定並根據使用者的選擇來更新序列，一旦更新完成我們會將offset的值自動累加，用來記錄有多少的股票數據被複製到了圖表中。如果計數變量i所表示的全部股票數據已經到了最後，則會跳出這個方法，否則會呼叫JavaScript的timer函數來啟動下一個循環。下面的目標是再來看每一個更新方法的執行效能。</p>
+<h2 id="執行效能實驗">執行效能實驗</h2><p>更新series數據有四種技術來實現：Series.setData，Series.remove/Chart.addSeries，Point.update以及 Series.addPoint。我們會使用這四種技術會佔用的CPU時間來作為執行效能的衡量標準，一個CPU衡量工具typeperf會在背景窗口中執行。每一個方法都會使用過去一年的股票價格並設定0.5秒為每次更新的間隔時間。我們會將每次的實驗執行兩次並取其平均值，實驗會執行在下列選擇的瀏覽器上Firefox, Chrome, Internet Explorer 8和9以及Safari。雖然IE8不支持SVG，只支持VML，但因為Highcharts是支援IE8的，且IE8在目前的瀏覽器市場上仍然佔有相當的比例，因此它也是一個很重要的實驗項目。另一件事情是我們可以明顯的觀察到相同的圖表在IE8的表現明顯沒有在SVG的狀況下吸引人。</p>
+<p>（所有的實驗都是執行在Windows 7系統下，硬體為2 GB RAM Core 2 Duo 2.66 GHz及 ATI<br>Radeon 4890 /1 GB，瀏覽器的版本為Firefox 16.0.1, Chrome 22.0.1129,IE9 9.0.8112, Safari 5.1.7, and IE8 8.0.760.）</p>
+<p>下面的章節中，會解釋每一種序列的更新方式，並比較出在不同瀏覽器下的效能對比。讀者不能結論視為瀏覽器在各種情境下的綜合執行效能的標準，我們的測試只是Highcharts在各瀏覽器下執行SVG動畫的效能測試。</p>
+<h2 id="使用Series-setData來應用一個新的數據集">使用Series.setData來應用一個新的數據集</h2><p>我們可以使用Series.setData方法來將一個新的數據集應用到一個現有的序列上。</p>
+<pre><code>setData (<span class="built_in">Array</span> <span class="built_in">data</span>, <span class="preprocessor">[</span><span class="built_in">Boolean</span> redraw<span class="preprocessor">]</span><span class="markup">)</span>
+</code></pre><p>數據可以是一個一維數組，一個x和y的值對（value pairs）數組，一個數據節點數組。這是所有方法中的最簡單的方式，所以它不提供任何的動畫效果，下面是我們使用setData函數的示例：</p>
+<pre><code><span class="keyword">case</span> <span class="string">'setData'</span>:
+    <span class="keyword">var</span> data = [];
+    <span class="comment">// Building up the data array in the series option</span>
+    <span class="keyword">for</span> (i = $.histStock.offset, j = <span class="number">0</span>; i &lt; $.histStock.data.length &amp;&amp; j &lt; $.histStock.numPoints; i++, j++) {
+        data.push([
+            $.histStock.data[i].date,
+            $.histStock.data[i].price
+        ]);
+    }
+    <span class="keyword">if</span> (!chart.series.length) {
+        <span class="comment">// Insert the very first series</span>
+        chart.addSeries({
+            name: $.histStock.name,
+            data: data
+        });
+    } <span class="keyword">else</span> {
+        <span class="comment">// Just update the series with</span>
+        <span class="comment">// the new data array</span>
+        chart.series[<span class="number">0</span>].setData(data, <span class="literal">true</span>);
+    }
+    <span class="keyword">break</span>;
+</code></pre><p>因為沒有動畫，所以整個重放的過程變得有些斷斷續續。下圖是setData方法在各瀏覽器中的效能表現。</p>
+<p><a href="/images/learning_highcharts/7-10.png"><img src="/images/learning_highcharts/7-10.png" alt="7-10"></a></p>
+<p>因為setData沒有動畫效果，因此這個方法預期不會使用到很多的CPU，特別是IE8因為沒有支援SVG，VML技術執行起來比較慢也是可以解釋IE8為什麼具有較高的CPU使用率。在這些瀏覽器中，Chorme的CPU使用率最低(4.25%)，第二低是Safari(4.79%)，然後是Firefox。內存使用方面Firefox最高，而IE9則是最低，也許有點出人意料的是Safari的執行效能還好過了Firefox，也與Chrome的效能非常接近。</p>
+<h2 id="使用Series-remove和Chart-addSeries來使用新值重新插入序列中">使用Series.remove和Chart.addSeries來使用新值重新插入序列中</h2><p>另外我們可以使用Series.remove將全部的序列都移除，然後重建序列的選項和數據並通過Chart.addSeries來重新插入到序列中。這種方法的缺點是預設顏色和點符號的內部索引是自動增量的，就好像是我們遇到了前面的例子。我們通過指定color和marker選項來避免，下面是addSeries方法的代碼：</p>
+<pre><code><span class="keyword">case</span> <span class="string">'renewSeries'</span>:
+    var data = [];
+    <span class="keyword">for</span> (i = <span class="variable">$.</span>histStock.offset, j = <span class="number">0</span>; i &lt; <span class="variable">$.</span>histStock.data.length &amp;&amp;
+        j &lt; <span class="variable">$.</span>histStock.numPoints; i++, j++) {
+        data.push([<span class="variable">$.</span>histStock.data[i].<span class="keyword">date</span>,
+            <span class="variable">$.</span>histStock.data[i].price
+        ]);
+    }
+    <span class="comment">// Remove all the existing series</span>
+    <span class="keyword">if</span> (chart.series.length) {
+        chart.series[<span class="number">0</span>].remove();
+    }
+    <span class="comment">// Re-insert a new series with new data</span>
+    chart.addSeries({
+        name: <span class="variable">$.</span>histStock.name,
+        data: data,
+        <span class="keyword">color</span>: chart.options.colors[<span class="number">0</span>],
+        <span class="keyword">marker</span>: {
+            symbol: chart.options.symbols[<span class="number">0</span>]
+        }
+    });
+    <span class="keyword">break</span>;
+</code></pre><p>在這個實驗中，我們每半秒刷新一次，這比預設的動畫時間還要短。因此更新序列會出現一些斷斷續續，有一些類似於setData，然而如果我們修改刷新率到3秒或更多之後，我們就會看到序列從左到右在每次跟新時依次重繪。</p>
+<p><a href="/images/learning_highcharts/7-11.png"><img src="/images/learning_highcharts/7-11.png" alt="7-11"></a></p>
+<p>下面是使用addSeries方法在各個瀏覽器中的效能表現：</p>
+<p><a href="/images/learning_highcharts/7-12.png"><img src="/images/learning_highcharts/7-12.png" alt="7-12"></a></p>
+<p>內存的消耗狀況與上一個測試大致相同，IE8和IE9具有最高的CPU使用率，比較不尋常的結果是Safari比Chrome和Firefox所需的CPU使用率都還要來得低。我們會在下面的章節中繼續探討。</p>
+<h2 id="使用Point-update更新數據節點">使用Point.update更新數據節點</h2><p>我們可以使用Point.update方法來更新指定的數據節點，update方法與setData很類似，允許使用一個單值，一個x和y的值對，或一個數據節點對象。每一個更新都可以在圖表中使用或不使用動畫來重繪。</p>
+<pre><code><span class="tag">update</span> (<span class="attr_selector">[Mixed options]</span>, <span class="attr_selector">[Boolean redraw]</span>, <span class="attr_selector">[Mixed animation]</span>)
+</code></pre><p>下面是我們如何使用Point.update方法，我們遍歷所有的數據節點對象並呼叫他們的成員函數，為了節省CPU時間，我們在更新了數據節點之後設置redraw參數為false並執行Chart.redraw。</p>
+<pre><code><span class="keyword">case</span> <span class="string">'update'</span>:
+    <span class="comment">// Note: Series can be already existed</span>
+    <span class="comment">// at start if we click 'Stop' and 'Start'</span>
+    <span class="comment">// again</span>
+    <span class="keyword">if</span> (!chart.series.length || !chart.series[<span class="number">0</span>].points.length) {
+        <span class="comment">// Build up the first series</span>
+        <span class="keyword">var</span> data = [];
+        <span class="keyword">for</span> (i = $.histStock.offset, j = <span class="number">0</span>; i &lt; $.histStock.data.length &amp;&amp;
+            j &lt; $.histStock.numPoints; i++, j++) {
+            data.push([
+                $.histStock.data[i].date,
+                $.histStock.data[i].price
+            ]);
+        }
+        <span class="keyword">if</span> (!chart.series.length) {
+            chart.addSeries({
+                name: $.histStock.name,
+                data: data
+            });
+        } <span class="keyword">else</span> {
+            chart.series[<span class="number">0</span>].setData(data);
+        }
+    } <span class="keyword">else</span> {
+        <span class="comment">// Updating each point</span>
+        <span class="keyword">for</span> (i = $.histStock.offset, j = <span class="number">0</span>; i &lt; $.histStock.data.length &amp;&amp;
+            j &lt; $.histStock.numPoints; i++, j++) {
+            chart.series[<span class="number">0</span>].points[j].update([
+                    $.histStock.data[i].date,
+                    $.histStock.data[i].price
+                ],
+                <span class="literal">false</span>);
+        }
+        chart.redraw();
+    }
+    <span class="keyword">break</span>;
+</code></pre><p>Point.update會設定垂直的數據節點上的每個動畫，整體看來在更新時它類似一種波浪效果。另一個更新時的差異是x軸的標籤的動畫效果不同，在使用Chart.addSeries時軸線標籤是斜的，而使用Point.update時軸線標籤是水平的。</p>
+<p><a href="/images/learning_highcharts/7-13.png"><img src="/images/learning_highcharts/7-13.png" alt="7-13"></a></p>
+<p>下圖是Point.update方法在不同瀏覽器中的效能表現：</p>
+<p><a href="/images/learning_highcharts/7-14.png"><img src="/images/learning_highcharts/7-14.png" alt="7-14"></a></p>
+<p>內存使用在全部的瀏覽器中都基本保持靜態，CPU的使用率在每個瀏覽器中的分數也都低於上一個實驗，另外要特別指出的是這邊的動畫比較少。</p>
+<h2 id="使用Point-remove和Series-addPoint來移除與增加數據節點">使用Point.remove和Series.addPoint來移除與增加數據節點</h2><p>代替為一個數據節點一個數據節點的更新，我們可以使用Point.remove移除series.data數組中的數據節點，及使用Series.addPoint為series增加回一個數據節點。</p>
+<pre><code><span class="tag">remove</span> (<span class="attr_selector">[Boolean redraw]</span>, <span class="attr_selector">[Mixed animation]</span>)
+<span class="tag">addPoint</span> (<span class="tag">Object</span> <span class="tag">options</span>, <span class="attr_selector">[Boolean redraw]</span>, <span class="attr_selector">[Boolean shift]</span>,<span class="attr_selector">[Mixed animation]</span>)
+</code></pre><p>至於時間序列數據，我們可以單獨使用addPoint並設定shift參數為true，就可以自動移入在數據節點數組中：</p>
+<pre><code><span class="keyword">case</span> <span class="string">'addPoint'</span>:
+    <span class="comment">// Note: Series can be already existed at</span>
+    <span class="comment">// start if we click 'Stop' and 'Start' again</span>
+    <span class="keyword">if</span> (!chart.series.length || !chart.series[<span class="number">0</span>].points.length) {
+        <span class="comment">// Build up the first series</span>
+        <span class="keyword">var</span> data = [];
+        <span class="keyword">for</span> (i = $.histStock.offset, j = <span class="number">0</span>; i &lt; $.histStock.data.length &amp;&amp; j &lt; $.histStock.numPoints; i++, j++) {
+            data.push([
+                $.histStock.data[i].date,
+                $.histStock.data[i].price
+            ]);
+        }
+        <span class="keyword">if</span> (!chart.series.length) {
+            chart.addSeries({
+                name: $.histStock.name,
+                data: data
+            });
+        } <span class="keyword">else</span> {
+            chart.series[<span class="number">0</span>].setData(data);
+        }
+        <span class="comment">// This is different, we don't redraw</span>
+        <span class="comment">// any old points</span>
+        $.histStock.offset = i;
+    } <span class="keyword">else</span> {
+        <span class="comment">// Only updating the new data point</span>
+        <span class="keyword">for</span> (i = $.histStock.offset, j = <span class="number">0</span>; i &lt; $.histStock.data.length &amp;&amp; j &lt; $.histStock.update; i++, j++) {
+            chart.series[<span class="number">0</span>].addPoint([
+                    $.histStock.data[i].date,
+                    $.histStock.data[i].price
+                ],
+                <span class="literal">false</span>, <span class="literal">true</span>);
+        }
+        chart.redraw();
+    }
+    <span class="keyword">break</span>;
+</code></pre><p>addPoint的方式更適合與完整的顯示圖表，在這裡數據節點平滑的從右側移動到了左邊，數據節點也是同時保持水平的移動。</p>
+<p><a href="/images/learning_highcharts/7-15.png"><img src="/images/learning_highcharts/7-15.png" alt="7-15"></a></p>
+<p>下圖是使用Point.update方法更新是的效能對比：</p>
+<p><a href="/images/learning_highcharts/7-16.png"><img src="/images/learning_highcharts/7-16.png" alt="7-16"></a></p>
+<p>這個結果跟Point.update的結果很難比較出差異。</p>
+<h2 id="探索各瀏覽器的SVG動畫效能">探索各瀏覽器的SVG動畫效能</h2><p>目前為止我們看到了CPU隨著動畫的使用率增加，然而我們還有一個問題沒有回答就是為什麼Safari具有比Chrome和Firefox還要低的CPU使用率。一個瀏覽器基準分數測試的數字可確認一個通用的共識是Firefox和Chrome瀏覽器的效能要好過Safari。</p>
+<p>（所有瀏覽器在SunSpider下的得分可參考<a href="http://www.webkit.org/perf/sunspider/sunspider.html" target="_blank" rel="external">http://www.webkit.org/perf/sunspider/sunspider.html</a> ，Google V8得分可參考<a href="http://v8.googlecode.com/svn/data/benchmarks/v3/run.html" target="_blank" rel="external">http://v8.googlecode.com/svn/data/benchmarks/v3/run.html</a> ，Peacekeeper可參考<a href="http://peacekeeper.futuremark.com" target="_blank" rel="external">http://peacekeeper.futuremark.com</a> ）</p>
+<p>儘管如此，在這一個使用SVG動畫特定的情況下卻是Safari比其他的瀏覽器具有更高的執行效能。在這裡我們使用Cameron Adams所寫的一個分數測試工具來呈現，它是專門使用彈跳球的方式來衡量SVG動畫效能的工具。測試工具原始是用來比較HTML5的動畫和Flash動畫直接效能所使用（HTML5 versus Flash: Animation Benchmarking <a href="http://www.themaninblue.com/writing/perspective/2010/03/22/" target="_blank" rel="external">http://www.themaninblue.com/writing/perspective/2010/03/22/</a> ）。我們使用Chrome和Safari瀏覽器，下圖為Fafari在500個點下的測試：</p>
+<p><a href="/images/learning_highcharts/7-17.png"><img src="/images/learning_highcharts/7-17.png" alt="7-17"></a></p>
+<p>至於Chrome，這個測試的結果是102FPS。我們在這兩個瀏覽器中一直持續評估不同的數量，下圖為不同情況下綜合的效能評估：</p>
+<p><a href="/images/learning_highcharts/7-18.png"><img src="/images/learning_highcharts/7-18.png" alt="7-18"></a></p>
+<p>我們可以看到在2000之前，Safari的幀速率都高過Chrome，超過2000之後，則Safari的效能就降到與Chrome相同了。</p>
+<p>這導致了另一個不可避免的問題，為什麼都是基於webkit的瀏覽器允許相同的代碼卻有不同的效能表現？這很難找到造成差異的原因。然而其中的一些差異是JavaScript引擎的不同也許會有影響，webkit version版本的微小差異也許也是。另外一個SVG效能測試的結果（ <a href="http://jsperf.com" target="_blank" rel="external">http://jsperf.com</a> ）也是顯示Safari的效能要高於Chrome。</p>
+<p>在下一節中，我們會看到數據量對Highcharts效能的影響。</p>
+<h2 id="比較海量數據下的Highcharts效能">比較海量數據下的Highcharts效能</h2><p>最後一個測試是觀察海量數據下的Highcharts執行狀況，在這個實驗中我們會根據不同的數據量下來產生離散圖來觀察顯示這些數據量所需要的時間。我們之所以選擇離散圖是因為使用他們來繪製一萬個樣本，對用戶來說就像是在圖表上繪製一個數據節點而已。</p>
+<p>在這個分析中，我們會構建一個包含Stop timing按鈕的簡單HTML頁面，使用URL參數來設定所需要的數據量，我們使用上一個時間中的瀏覽器依次測試這些數據量。當頁面在瀏覽器中載入完成之後，數據集就被隨機創建，然後開始計時直到圖表被建立完成並顯示在熒幕上。Stop Timing按鈕被按下來衡量圖表創建和顯示的時間，如下圖為在Firefox瀏覽器顯示3000個數據點：</p>
+<p><a href="/images/learning_highcharts/7-19.png"><img src="/images/learning_highcharts/7-19.png" alt="7-19"></a></p>
+<p>（我們不計算當圖表在Highcharts.Chart或events.load handler中通過回調處理程序的時間，因為使用海量數據時，在渲染圖表和顯示圖表之間會有一個比較大的時間差，而正常的數據大小這個時間差是微不足道的。因此依靠圖表的渲染屬性會導致比實際顯示的時間要快一些）<br>下面的圖表是Highcharts的不同大小的數據在各瀏覽器上的性能表現測試：</p>
+<p><a href="/images/learning_highcharts/7-20.png"><img src="/images/learning_highcharts/7-20.png" alt="7-20"></a></p>
+<p>上圖主要需觀察的是IE8的執行效能，因為IE8使用老舊的VML，因此在1000個數據點是比IE9慢了2.5倍，15000個數據點時，慢了幾乎10倍。此外IE8因為一直彈出警告對話框，要完成這些數據節點的測試非常困難。</p>
+<p>如我們所見，SVG的效能一般是表現在同一個方向，只有VML是幾乎快速飆升到頂。換一個說法，该曲线图表明VML和SVG技术的可扩展性之间的差异。</p>
+<p>SVG瀏覽器中，在1000到10000個數據點之間他們都有很相近的效能範圍，大概從0.56秒到2.99秒之間。在可擴展性方面，Safari在Windows平台上沒有完成全部的實驗。超過了10000個數據點，瀏覽器的執行時間開始變的不穩定。</p>
+<p>除了Safari，所有的瀏覽器都是隨著數據量的增加而呈現線性的效能開銷增加。Chrome開始在50000個數據點的時候出現分歧，Firefox在運行Highcharts方面更具有擴展性。三個瀏覽器都可以進一步的增加效能負載，但這也許已經超過了時間的使用需求，對一般的使用而言，不太可能有超過1000個數據節點的使用需求。然而重要的是Highcharts在所有的瀏覽器上都可以執行的很正常，並且有需要的時候也可以執行更多的資料量。</p>
+<h1 id="總結">總結</h1><p>在這一章中，我們學習了Highcharts APIs的類模型及在應用中使用他們。然後對使用不同技術更新圖表時，查看他們之間效能的差異。最終在章節的最後分析了不同瀏覽器及不同資料量的狀況下，Highcharts渲染數據節點的效能表現。</p>
+<p>在下一節中，我們會來看Highcharts的事件處理程序，它與Highcharts APIs的相關性很高。</p>
+]]></content>
+    <summary type="html">
+    <![CDATA[<h1 id="科技零售(RetailSCM-com)_Learning_Highcharts中文教程">科技零售(RetailSCM.com) Learning Highcharts中文教程</h1><p><em><span style="color: #808080;">版權保留，網路轉載請註明來源，謝絕紙質媒體轉載，謝謝。</span></em></p>
+<h2 id="使用Highcharts_APIs">使用Highcharts APIs</h2><p>在這一節，我們會通過使用jQuery, jQuery UI及Highcharts建立一個例子來探索每一個組件的APIs。所有示例中的代碼都使用對象層級的方式來取得圖表組件（如chart.series[0].data[0]）</p>
+<p>使用界面的部分會非常簡單，並不會刻意美化，我們主要的目的是練習Highcharts的APIs。</p>
+<p>首先，讓我們來說明一下使用界面的用法然後解釋代碼的部分來理解操作是如何被執行的。下面是使用前端的截圖：</p>
+<p><a href="/images/learning_highcharts/7-2.png"><img src="/images/learning_highcharts/7-2.png" alt="7-2"></a></p>]]>
+    
+    </summary>
+    
+      <category term="Highcharts" scheme="http://www.retailscm.com/tags/Highcharts/"/>
+    
+      <category term="Learning" scheme="http://www.retailscm.com/categories/Learning/"/>
+    
+      <category term="Learning Highcharts" scheme="http://www.retailscm.com/categories/Learning/Learning-Highcharts/"/>
+    
+      <category term="Highcharts APIs" scheme="http://www.retailscm.com/categories/Learning/Learning-Highcharts/Highcharts-APIs/"/>
+    
+  </entry>
+  
+  <entry>
+    <title><![CDATA[第七章 01.了解Highcharts類模型]]></title>
+    <link href="http://www.retailscm.com/Learning/Learning-Highcharts/Highcharts-APIs/understanding-the-highcharts-class-model/"/>
+    <id>http://www.retailscm.com/Learning/Learning-Highcharts/Highcharts-APIs/understanding-the-highcharts-class-model/</id>
+    <published>2015-05-18T18:00:00.000Z</published>
+    <updated>2015-05-17T08:10:33.000Z</updated>
+    <content type="html"><![CDATA[<h1 id="科技零售(RetailSCM-com)_Learning_Highcharts中文教程">科技零售(RetailSCM.com) Learning Highcharts中文教程</h1><p><em><span style="color: #808080;">版權保留，網路轉載請註明來源，謝絕紙質媒體轉載，謝謝。</span></em></p>
+<h2 id="了解Highcharts類模型">了解Highcharts類模型</h2><p>Highcharts類和類之間的關係非常的簡單和明顯，一個圖表由5個不同的類所組成： Chart, Axis, Series, Point和Render。有一些類會包含一組由底層組件及一組對象屬性來反向引用到一個更高層的組件所組成，例如：Point class具有series屬性，可指回到一個Series的類。每個類也都有一組方法來管理和呈現他自己的層。下面的類圖即描述了這些類之間的關係。</p>
+<p><a href="/images/learning_highcharts/7-1.jpg"><img src="/images/learning_highcharts/7-1.jpg" alt="7-1"></a></p>
+<a id="more"></a>
+<p>Chart是整個圖表對象對頂層的類，它包含調用方法來操作圖表，例如匯出圖表為SVG或其他的圖片格式及設定圖表的維度等。Chart類有多個軸線及序列的數組，也就是說一個圖表可以有一個或多個的x軸，y軸及序列。Renderer類是工具類，用來提供每個圖表一對一的關係及匯出SVG和VML的通用接口。</p>
+<p>Series類包含一個Point對象的數組，這個類也有反向引用到Chart和Axis對象的屬性（參考上圖中的虛線連接線），並提供方法來管理Point對象數組的方法。yAxis和xAxis屬性在Series類中不是必要的屬性，當然一個圖表也可以有多個軸線。</p>
+<p>Point類是一個簡單的對象，它包含X和Y兩種值及一個反向引用到它的series對象(參考虛線部分)，APIs用來管理圖表中的數據點。</p>
+<h2 id="Highcharts構造函數_–_Highcharts-Chart">Highcharts構造函數 – Highcharts.Chart</h2><p>無需多說也知道最重要的方法就是Highcharts.Chart，也是到目前位置我們看到最多次的方法。然而還有更多呼叫構造函數的方法。Highcharts.Chart創建和返回一個圖表對象，它還包含一個可選的參數回調函數。</p>
+<pre><code><span class="function"><span class="title">Chart</span><span class="params">(Object options, [ Function callback ])</span></span>
+</code></pre><p>當圖表創建及渲染之後，系統會呼叫回調函數。在函數內我們可以呼叫組件的方法也可以通過屬性來訪問圖表的對象。新創建出來的圖表對象只能通過使用回調函數取得圖表對象。我們也可以在回調函數中使用’this’關鍵字來關聯到圖表對象。我們也可chart.events.load handler中定義我們的代碼來達到與Highcharts.Chart相同的效果，這會在下一章中討論。</p>
+<p>一般使用來說，我們可以在呼叫Highcharts.Chart之後就能夠訪問圖表對象了，嚴格的說，所有定義在回調函數中的代碼都應該符合以下兩個原因來關聯圖表對象：</p>
+<ul>
+<li>有一個IE的問題是說$.ready方法在某些情況下會在腳本載入完成之前被調用（這是jQuery 1.8.0的一個Bug，在1.8.1中已經被修正）。在回調函數裡面放的代碼可以避免發生問題。</li>
+<li>如果我們希望圖表上的JavaScript代碼需要並發，這會帶來一些好處。例如使用新的HTML5 Worker對象將比較繁重的工作分配給多個不同的線程來執行。</li>
+</ul>
+<h2 id="Highcharts組件導覽">Highcharts組件導覽</h2><p>為了使用Highcharts API，我們必須在類層級中找到正確的對象，這裡有幾種方式去瀏覽圖表對象——使用圖表的類目層級模型，使用Chart.get直接檢索或兩者混合。</p>
+<h2 id="使用類層級">使用類層級</h2><p>假設圖表對象已經如下的方式建立好了</p>
+<pre><code><span class="tag">&lt;<span class="title">script</span> <span class="attribute">type</span>=<span class="value">"text/javascript"</span>&gt;</span><span class="http">
+
+<span class="javascript">$(<span class="built_in">document</span>).ready(<span class="function"><span class="keyword">function</span><span class="params">()</span> </span>{
+    <span class="keyword">var</span> chart = <span class="keyword">new</span> Highcharts.Chart({
+            ...
+        xAxis: [{
+                ....
+        }, {
+                ....
+        }],
+        series: [{
+            data: [...]
+        }, {
+            data: [...]
+        }],
+        ...
+    });
+}, <span class="function"><span class="keyword">function</span><span class="params">()</span> </span>{
+        ...
+});
+
+</span></span><span class="tag">&lt;/<span class="title">script</span>&gt;</span>
+</code></pre><p>我們可以從圖表中的回調處理程序獲得第一個series對象，如下：</p>
+<pre><code><span class="keyword">var</span> series = <span class="keyword">this</span>.series[<span class="number">0</span>];
+</code></pre><p>假設這個設定中有兩個x軸，要取得第二個x軸，我們可以如下所做：</p>
+<pre><code><span class="keyword">var</span> xAxis = <span class="keyword">this</span>.xAxis[<span class="number">1</span>];
+</code></pre><p>要從圖表的第二個series中取得第三個數據節點，代碼如下：</p>
+<pre><code><span class="keyword">var</span> point = <span class="keyword">this</span>.series[<span class="number">1</span>].data[<span class="number">2</span>];
+</code></pre><h2 id="使用Chart-get方法">使用Chart.get方法</h2><p>不同於對象層級的級聯方式，我們可以通過Chart.get方法直接檢索組件（get方法只有在chart級才可用，不是所有的組件類都可以使用），為了做到這樣，組件在配置時必須定義id選項。</p>
+<p>假設我們已經按照如下代碼配置了一個圖表：</p>
+<pre><code>xAxis: {
+    id: <span class="string">'xAxis'</span>,
+    categories: <span class="preprocessor">[</span><span class="attribute">...</span><span class="preprocessor">]</span><span class="markup">
+},
+series: </span><span class="preprocessor">[</span>{
+    name: <span class="string">'UK'</span>,
+    id: <span class="string">'uk'</span>,
+    <span class="built_in">data</span>: <span class="preprocessor">[</span><span class="number">4351</span>, <span class="number">4190</span>, {
+            y: <span class="number">4028</span>,
+            id: <span class="string">'thirdPoint'</span>
+        },
+        <span class="attribute">...</span>
+    <span class="preprocessor">]</span><span class="markup">
+}]</span>
+</code></pre><p>我們可以使用下面的方式直接檢索到組件：</p>
+<pre><code><span class="keyword">var</span> series = <span class="keyword">this</span>.<span class="keyword">get</span>(<span class="string">'uk'</span>);
+<span class="keyword">var</span> point = <span class="keyword">this</span>.<span class="keyword">get</span>(<span class="string">'thirdPoint'</span>);
+<span class="keyword">var</span> xAxis = <span class="keyword">this</span>.<span class="keyword">get</span>(<span class="string">'xAxis'</span>);
+</code></pre><h2 id="使用對象層級和Chart-get的混合模式">使用對象層級和Chart.get的混合模式</h2><p>為圖表中所有的組件都定義id是非常繁複的，我們可以使用替代方案，使用兩種方法綜合來找到對應的組件，代碼如下：</p>
+<pre><code><span class="keyword">var</span> point = <span class="keyword">this</span>.<span class="keyword">get</span>(<span class="string">'uk'</span>).data[<span class="number">2</span>];
+</code></pre>]]></content>
+    <summary type="html">
+    <![CDATA[<h1 id="科技零售(RetailSCM-com)_Learning_Highcharts中文教程">科技零售(RetailSCM.com) Learning Highcharts中文教程</h1><p><em><span style="color: #808080;">版權保留，網路轉載請註明來源，謝絕紙質媒體轉載，謝謝。</span></em></p>
+<h2 id="了解Highcharts類模型">了解Highcharts類模型</h2><p>Highcharts類和類之間的關係非常的簡單和明顯，一個圖表由5個不同的類所組成： Chart, Axis, Series, Point和Render。有一些類會包含一組由底層組件及一組對象屬性來反向引用到一個更高層的組件所組成，例如：Point class具有series屬性，可指回到一個Series的類。每個類也都有一組方法來管理和呈現他自己的層。下面的類圖即描述了這些類之間的關係。</p>
+<p><a href="/images/learning_highcharts/7-1.jpg"><img src="/images/learning_highcharts/7-1.jpg" alt="7-1"></a></p>]]>
+    
+    </summary>
+    
+      <category term="Highcharts" scheme="http://www.retailscm.com/tags/Highcharts/"/>
+    
+      <category term="Learning" scheme="http://www.retailscm.com/categories/Learning/"/>
+    
+      <category term="Learning Highcharts" scheme="http://www.retailscm.com/categories/Learning/Learning-Highcharts/"/>
+    
+      <category term="Highcharts APIs" scheme="http://www.retailscm.com/categories/Learning/Learning-Highcharts/Highcharts-APIs/"/>
+    
+  </entry>
+  
+  <entry>
+    <title><![CDATA[第七章 Highcharts APIs]]></title>
+    <link href="http://www.retailscm.com/Learning/Learning-Highcharts/Highcharts-APIs/highcharts-apis/"/>
+    <id>http://www.retailscm.com/Learning/Learning-Highcharts/Highcharts-APIs/highcharts-apis/</id>
+    <published>2015-05-18T17:00:00.000Z</published>
+    <updated>2015-05-17T07:39:56.000Z</updated>
+    <content type="html"><![CDATA[<h1 id="科技零售(RetailSCM-com)_Learning_Highcharts中文教程">科技零售(RetailSCM.com) Learning Highcharts中文教程</h1><p><em><span style="color: #808080;">版權保留，網路轉載請註明來源，謝絕紙質媒體轉載，謝謝。</span></em></p>
+<h2 id="第七章_Highcharts_APIs">第七章 Highcharts APIs</h2><p>Highcharts為了繪製動態交互的圖表提供了一組API供我們使用。為了理解這些API是如何運作的，我們需要先了解圖表內的對象以及他們是如何組織在一個圖表中的。在這一章中，我們會學習Highcharts的類以及如何通過相應的對象來呼叫API。然後我們通過PHP，jQuery及 jQuery UI建立一個簡單的股票價格應用來顯示如何使用Highcharts APIs。完成這些之後，我們將焦點移往更新序列的四種不同的方式，我們會嘗試所有的更新序列方法，並建立應用程序來觀察他們之間的視覺效果和CPU性能的變化。最後我們會觀察主流的瀏覽器上不同大小數據集對應更新序列所帶來的效能影響。</p>
+<ul>
+<li>了解Highcharts類模型</li>
+<li>使用Chart.addSeries通過Ajax獲得資料並呈現為一個新的序列</li>
+<li>同時呼叫多個Ajax並顯示為多個序列</li>
+<li>使用Chart.getSVG將SVG數據轉換為一個圖片</li>
+<li>使用Chart.renderer方法</li>
+<li>探索不同方法更新序列時的效能影響</li>
+<li>探索海量資料的執行效能</li>
+</ul>
+<p><a href="/Learning/Learning-Highcharts/Highcharts-APIs/understanding-the-highcharts-class-model/" title="01.了解Highcharts類模型">了解Highcharts類模型</a></p>
+<p><a href="/Learning/Learning-Highcharts/Highcharts-APIs/using-highcharts-apis/" title="02.使用Highcharts APIs">使用Highcharts APIs</a></p>
+]]></content>
+    <summary type="html">
+    <![CDATA[<h1 id="科技零售(RetailSCM-com)_Learning_Highcharts中文教程">科技零售(RetailSCM.com) Learning Highcharts中文教程</h1><p><em><span style="color: #808080;">版權]]>
+    </summary>
+    
+      <category term="Highcharts" scheme="http://www.retailscm.com/tags/Highcharts/"/>
+    
+      <category term="Learning" scheme="http://www.retailscm.com/categories/Learning/"/>
+    
+      <category term="Learning Highcharts" scheme="http://www.retailscm.com/categories/Learning/Learning-Highcharts/"/>
+    
+      <category term="Highcharts APIs" scheme="http://www.retailscm.com/categories/Learning/Learning-Highcharts/Highcharts-APIs/"/>
+    
+  </entry>
+  
+  <entry>
+    <title><![CDATA[第五章 05.繪製一個包含多個序列的圖表]]></title>
+    <link href="http://www.retailscm.com/Learning/Learning-Highcharts/Pie-Charts/building-a-chart-with-multiple-series-types/"/>
+    <id>http://www.retailscm.com/Learning/Learning-Highcharts/Pie-Charts/building-a-chart-with-multiple-series-types/</id>
+    <published>2015-05-17T22:00:00.000Z</published>
+    <updated>2015-05-17T08:06:10.000Z</updated>
+    <content type="html"><![CDATA[<h1 id="科技零售(RetailSCM-com)_Learning_Highcharts中文教程">科技零售(RetailSCM.com) Learning Highcharts中文教程</h1><p><em><span style="color: #808080;">版權保留，網路轉載請註明來源，謝絕紙質媒體轉載，謝謝。</span></em></p>
+<h2 id="繪製一個包含多個序列的圖表">繪製一個包含多個序列的圖表</h2><p>到目前為止我們學習了線圖，柱圖以及餅圖，我們將看一下如何將這幾種不同的序列整合到同一個圖表中。在這一節中，我們使用2008年到2011年的年度資料來繪製三個不同類型的序列：線圖，柱圖及餅圖。柱圖顯示每種遊戲終端的遊戲每年的銷售數量，餅圖顯示每個遊戲終端的廠商的年銷售量，最後線圖則顯示每年一共有多少款遊戲發布。</p>
+<p>為了確保每種圖形中的遊戲終端都使用相同的顏色，我們需要手動的給餅圖和柱圖的每一個數據節點指定顏色。</p>
+<pre><code><span class="keyword">var</span> wiiColor = <span class="string">'#BBBBBB'</span>;
+<span class="keyword">var</span> x360Color = <span class="string">'#89A54E'</span>;
+<span class="keyword">var</span> ps3Color = <span class="string">'#4572A7'</span>;
+<span class="keyword">var</span> splineColor = <span class="string">'#FF66CC'</span>;
+</code></pre><p>再來我們想要把我們的圖表弄的更炫一些，首先我們給圖表加上一個漸進式的暗色背景：</p>
+<a id="more"></a>
+<pre><code><span class="atom">var</span> <span class="atom">chart</span> = <span class="atom">new</span> <span class="name">Highcharts</span>.<span class="name">Chart</span>({
+        <span class="atom">chart</span>: {
+            <span class="atom">renderTo</span>: <span class="string">'container'</span>,
+            <span class="atom">borderWidth</span>: <span class="number">1</span>,
+            <span class="atom">spacingTop</span>: <span class="number">40</span>,
+            <span class="atom">backgroundColor</span>: {
+                <span class="atom">linearGradient</span>: {
+                    <span class="atom">x1</span>: <span class="number">0</span>,
+                    <span class="atom">y1</span>: <span class="number">0</span>,
+                    <span class="atom">x2</span>: <span class="number">0</span>,
+                    <span class="atom">y2</span>: <span class="number">1</span>
+                },
+                <span class="atom">stops</span>: [
+                    [<span class="number">0</span>, <span class="string">'#0A0A0A'</span>],
+                    [<span class="number">1</span>, <span class="string">'#303030'</span>]
+                ]
+            }
+        },
+</code></pre><p>然後我們希望將柱圖向右邊移動一些，這樣我們可以有空間放置一張圖片（晚點再說這個圖片）在圖表的左上角。</p>
+<pre><code>xAxis: {
+    minPadding: <span class="number">0.2</span>,
+    tickInterval: <span class="number">1</span>,
+    labels: {
+        formatter: <span class="function"><span class="keyword">function</span><span class="params">()</span> </span>{
+            <span class="keyword">return</span> <span class="keyword">this</span>.value;
+        },
+        style: {
+            color: <span class="string">'#CFCFCF'</span>
+        }
+    }
+}
+</code></pre><p>下一步是要在柱圖上面準備足夠的空間來防止我們的餅圖，這可以通過在所有的Y軸上都設定maxPadding選項來達到。</p>
+<pre><code>yAxis: [{
+    title: {
+        <span class="keyword">text</span>: <span class="string">'Number of games sold'</span>,
+        <span class="keyword">align</span>: <span class="string">'low'</span>,
+        style: {
+            <span class="keyword">color</span>: <span class="string">'#CFCFCF'</span>
+        }
+    },
+    labels: {
+        style: {
+            <span class="keyword">color</span>: <span class="string">'#CFCFCF'</span>
+        }
+    },
+    maxPadding: <span class="number">0.5</span>
+}, {
+    title: {
+        <span class="keyword">text</span>: <span class="string">'Number of games released'</span>,
+        style: {
+            <span class="keyword">color</span>: splineColor
+        }
+    },
+    labels: {
+        style: {
+            <span class="keyword">color</span>: splineColor
+        }
+    },
+    maxPadding: <span class="number">0.5</span>,
+    opposite: true
+}],
+</code></pre><p>每一個餅圖都獨立的顯示在柱圖之上，再通過設定餅圖的center選項，還可以調整餅圖的中心與柱圖對齊。我們也希望減小餅圖的尺寸以便於可以顯示其他更多的餅圖，所以我們可以給size選項設定一個百分比，百分比是餅圖的直徑所佔圖表的數值。</p>
+<pre><code>series: [{
+        type: <span class="string">'pie'</span>,
+        name: <span class="string">'Hardware 2011'</span>,
+        <span class="keyword">size</span>: <span class="string">'25%'</span>,
+        center: [<span class="string">'88%'</span>, <span class="string">'20%'</span>],
+        data: [{
+            name: <span class="string">'PS3'</span>,
+            y: <span class="number">14128407</span>,
+            <span class="keyword">color</span>: ps3Color
+        }, {
+            name: <span class="string">'X360'</span>,
+            y: <span class="number">13808365</span>,
+            <span class="keyword">color</span>: x360Color
+        }, {
+            name: <span class="string">'Wii'</span>,
+            y: <span class="number">11567105</span>,
+            <span class="keyword">color</span>: wiiColor
+        }],
+        .....
+</code></pre><p>線圖則對應到另一條Y軸，為了明確的表達線圖對應到第二條Y軸，我們為線圖，軸標題和標籤使用相同的顏色：</p>
+<pre><code>{
+    <span class="attribute">name</span>: <span class="string">"Game released"</span>,
+    <span class="attribute">type</span>: <span class="string">'spline'</span>,
+    <span class="attribute">showInLegend</span>: false,
+    <span class="attribute">lineWidth</span>: <span class="number">3</span>,
+    <span class="attribute">yAxis</span>: <span class="number">1</span>,
+    <span class="attribute">color</span>: splineColor,
+    <span class="attribute">pointStart</span>: <span class="number">2008</span>,
+    <span class="attribute">pointInterval</span>: <span class="number">1</span>,
+    <span class="attribute">data</span>: [<span class="number">1170</span>, <span class="number">2076</span>, <span class="number">1551</span>, <span class="number">1378</span>]
+},
+</code></pre><p>我們使用renderer.image方法在圖表中插入一個圖片，並使用ZIndex來確保圖片在最頂層，所以軸線並不會顯示在圖片之上。我這裡我們使用一個SVG來代替PNG類型的圖片，主要是SVG矢量圖可以隨圖表的尺寸變化而仍然保持它的清晰。</p>
+<pre><code>chart.<span class="keyword">renderer</span>.<span class="keyword">image</span>(<span class="string">'./pacman.svg'</span>, <span class="number">0</span>,
+    <span class="number">0</span>, <span class="number">200</span>, <span class="number">200</span>).attr({
+    <span class="string">'zIndex'</span>: <span class="number">10</span>
+}).add();
+</code></pre><p>下面是圖表的最終效果，我們加了一個吃豆人的圖片，使得圖表有了一個遊戲風格相呼應。</p>
+<p><a href="/images/learning_highcharts/5-9.png"><img src="/images/learning_highcharts/5-9.png" alt="5-9"></a></p>
+<h2 id="總結">總結</h2><p>在這一章中我們學習了如何來畫一個餅圖及它的延伸圖表甜甜圈圖，我們也在這一章中學習如何將我們目前已經學到的幾種圖合併畫在同一張圖表中。</p>
+<p>在下一章中我們會學到Highcharts中新的序列，如儀錶盤，雷達圖及範圍圖，我們也會學會如何在Highcharts中學會使用輻射漸變。</p>
+]]></content>
+    <summary type="html">
+    <![CDATA[<h1 id="科技零售(RetailSCM-com)_Learning_Highcharts中文教程">科技零售(RetailSCM.com) Learning Highcharts中文教程</h1><p><em><span style="color: #808080;">版權保留，網路轉載請註明來源，謝絕紙質媒體轉載，謝謝。</span></em></p>
+<h2 id="繪製一個包含多個序列的圖表">繪製一個包含多個序列的圖表</h2><p>到目前為止我們學習了線圖，柱圖以及餅圖，我們將看一下如何將這幾種不同的序列整合到同一個圖表中。在這一節中，我們使用2008年到2011年的年度資料來繪製三個不同類型的序列：線圖，柱圖及餅圖。柱圖顯示每種遊戲終端的遊戲每年的銷售數量，餅圖顯示每個遊戲終端的廠商的年銷售量，最後線圖則顯示每年一共有多少款遊戲發布。</p>
+<p>為了確保每種圖形中的遊戲終端都使用相同的顏色，我們需要手動的給餅圖和柱圖的每一個數據節點指定顏色。</p>
+<pre><code><span class="keyword">var</span> wiiColor = <span class="string">'#BBBBBB'</span>;
+<span class="keyword">var</span> x360Color = <span class="string">'#89A54E'</span>;
+<span class="keyword">var</span> ps3Color = <span class="string">'#4572A7'</span>;
+<span class="keyword">var</span> splineColor = <span class="string">'#FF66CC'</span>;
+</code></pre><p>再來我們想要把我們的圖表弄的更炫一些，首先我們給圖表加上一個漸進式的暗色背景：</p>]]>
+    
+    </summary>
+    
+      <category term="Highcharts" scheme="http://www.retailscm.com/tags/Highcharts/"/>
+    
+      <category term="Learning" scheme="http://www.retailscm.com/categories/Learning/"/>
+    
+      <category term="Learning Highcharts" scheme="http://www.retailscm.com/categories/Learning/Learning-Highcharts/"/>
+    
+      <category term="Pie Charts" scheme="http://www.retailscm.com/categories/Learning/Learning-Highcharts/Pie-Charts/"/>
+    
+  </entry>
+  
+  <entry>
+    <title><![CDATA[第五章 04.準備一個甜甜圈圖——複合序列]]></title>
+    <link href="http://www.retailscm.com/Learning/Learning-Highcharts/Pie-Charts/preparing-a-donut-chart-multiple-series/"/>
+    <id>http://www.retailscm.com/Learning/Learning-Highcharts/Pie-Charts/preparing-a-donut-chart-multiple-series/</id>
+    <published>2015-05-17T21:00:00.000Z</published>
+    <updated>2015-05-17T08:06:30.000Z</updated>
+    <content type="html"><![CDATA[<h1 id="科技零售(RetailSCM-com)_Learning_Highcharts中文教程">科技零售(RetailSCM.com) Learning Highcharts中文教程</h1><p><em><span style="color: #808080;">版權保留，網路轉載請註明來源，謝絕紙質媒體轉載，謝謝。</span></em></p>
+<h2 id="準備一個甜甜圈圖——複合序列">準備一個甜甜圈圖——複合序列</h2><p>Highcharts提供了另一種類型的餅圖-甜甜圈圖。它具有特別的鑽取(drill-down)可以將類別展細到子類別，可以更方便的查看到更明細的資料，鑽取效果也可以用到多層級上。在本節中，我們會創建一個簡單的甜甜圈圖並在外環來呈現遊戲名稱，在內環上顯示遊戲公司。</p>
+<p>為簡單起見，我們只是用三家遊戲公司的資料在內圈，下面是甜甜圈圖序列數組的設定。</p>
+<a id="more"></a>
+<pre><code>series: [{
+        name: <span class="string">'Publishers'</span>,
+        dataLabels: {
+            distance: -<span class="number">70</span>,
+            <span class="built_in">color</span>: <span class="string">'white'</span>,
+            formatter: function() {
+                <span class="keyword">return</span> <span class="keyword">this</span>.<span class="built_in">point</span>.name + <span class="string">': '</span> + Highcharts.numberFormat(<span class="keyword">this</span>.y / <span class="number">1000000</span>, <span class="number">2</span>);
+            },
+            style: {
+                fontWeight: <span class="string">'bold'</span>
+            }
+        },
+        data: [
+            [<span class="string">'Nintendo'</span>, <span class="number">54030288</span>],
+            [<span class="string">'Electronic Arts'</span>,
+                <span class="number">31367739</span>
+            ],
+            [<span class="string">'Activision'</span>, <span class="number">30230170</span>]
+        ]
+    }, {
+        name: <span class="string">'Titles'</span>,
+        innerSize: <span class="string">'60%'</span>,
+        dataLabels: {
+            formatter: function() {
+                var <span class="built_in">str</span> = <span class="string">''</span> + <span class="keyword">this</span>.<span class="built_in">point</span>.name <span class="string">': '</span> + Highcharts.numberFormat(<span class="keyword">this</span>.y / <span class="number">1000000</span>, <span class="number">2</span>);
+                <span class="keyword">return</span> formatWithLineBreaks(<span class="built_in">str</span>);
+            }
+        },
+        data: [ <span class="comment">// Nintendo</span>
+            {
+                name: <span class="string">'Pokemon B&amp;W'</span>,
+                y: <span class="number">8541422</span>,
+                <span class="built_in">color</span>: colorBrightness(<span class="string">"#4572A7"</span>,
+                    <span class="number">0.05</span>)
+            }, {
+                name: <span class="string">'Mario Kart'</span>,
+                y: <span class="number">5349103</span>,
+                <span class="built_in">color</span>: colorBrightness(<span class="string">'#4572A7'</span>,
+                    <span class="number">0.1</span>)
+            },
+            ....
+            <span class="comment">// EA</span>
+            {
+                name: <span class="string">'Battlefield 3'</span>,
+                y: <span class="number">11178806</span>,
+                <span class="built_in">color</span>: colorBrightness(<span class="string">'#AA4643'</span>,
+                    <span class="number">0.05</span>)
+            },
+            ....
+            <span class="comment">// Activision</span>
+            {
+                name: <span class="string">'COD: Modern Warfare 3'</span>,
+                y: <span class="number">23981182</span>,
+                <span class="built_in">color</span>: colorBrightness(<span class="string">'#89A54E'</span>,
+                    <span class="number">0.1</span>)
+            },
+            ....
+        }]
+}]
+</code></pre><p>首先，我們有兩個序列-內圈的餅圖序列（遊戲公司）和外圈的序列（遊戲名稱）。遊戲名稱的序列包含全部的子類別數據並且與其對應的遊戲發行公司的名稱對齊。而順序是任天堂的順序在EA前面，子類別的順序則是按照數值來進行排序（可以參考遊戲名稱在數據數組中的排序）</p>
+<p>每一個子類別序列上的數據節點都被聲明為一個數據節點對象來分配一個他們所屬的主類別的色系。</p>
+<p>Highcharts demo所演示的顏色亮點變化，可如此實現：</p>
+<pre><code><span class="attribute">color</span>: Highcharts.<span class="function"><span class="title">Color</span><span class="params">(color)</span></span>.<span class="function"><span class="title">brighten</span><span class="params">(brightness)</span></span>.<span class="function"><span class="title">get</span><span class="params">()</span></span>
+</code></pre><p>基本上來說，我們通過使用主類別的顏色來創建一個顏色對象，然後再根據子類別的數值來調整顏色的亮度漸層參數。我們加入了一個colorBrightness的方法，並將其配置到圖表的設定中來重寫這個例子。</p>
+<pre><code>function colorBrightness(<span class="built_in">color</span>, <span class="built_in">brightness</span>) {
+    <span class="keyword">return</span> Highcharts.Color(<span class="built_in">color</span>).brighten(<span class="built_in">brightness</span>).<span class="built_in">get</span>();
+}
+</code></pre><p>下面的部分會制定哪一個序列會在甜甜圈圖的內部餅圖呈現，哪一個會在外環上呈現。innerSize的選項會使用在外環的序列上（這裡是遊戲名稱）來確認內圈的大小。如我們的設定結果，遊戲名稱的序列形成了一個同心環，innerSize的數值可以為尺寸大小也可以為百分比來確認甜甜圈圖的大小。</p>
+<p>最後的部分則使用數據標籤來美化圖表，我們希望將內部餅圖的數據標籤顯示在餅圖上面，所以我們使用負值來設定在dataLabels.distance上來實現。為了代替列印一長串的數值，我們定義formatter來轉換這些數值為百萬進行單位來顯示。</p>
+<p>下圖即為產出的甜甜圈圖</p>
+<p><a href="/images/learning_highcharts/5-6.png"><img src="/images/learning_highcharts/5-6.png" alt="5-6"></a></p>
+<p>需要注意的是Highcharts並不強制將甜甜圈圖中間呈現為餅圖，這裡只是為了呈現這個例子才這樣做。我們可以使用多個同心環來代替，下面的的圖表與上一個示例完全一樣，只是使用innerSize選項來設定內環序列的遊戲公司：</p>
+<p><a href="/images/learning_highcharts/5-7.png"><img src="/images/learning_highcharts/5-7.png" alt="5-7"></a></p>
+<p>我們可以在給甜甜圈圖上增加第三個序列，這個示例簡單的增加一個新的序列及更多的資料，代碼的部分可以參考<a href="http://joekuan.org/Learning_Highcharts/Chapter_5/" target="_blank" rel="external">http://joekuan.org/Learning_Highcharts/Chapter_5/</a>，兩個外環序列使用innerSize選項來定義，內部的圓形圖更小了以至於無法放下資料標籤，因此我們使用showInLegend選項開啟圖例框來呈現內部餅圖的標籤。</p>
+<p><a href="/images/learning_highcharts/5-8.png"><img src="/images/learning_highcharts/5-8.png" alt="5-8"></a></p>
+]]></content>
+    <summary type="html">
+    <![CDATA[<h1 id="科技零售(RetailSCM-com)_Learning_Highcharts中文教程">科技零售(RetailSCM.com) Learning Highcharts中文教程</h1><p><em><span style="color: #808080;">版權保留，網路轉載請註明來源，謝絕紙質媒體轉載，謝謝。</span></em></p>
+<h2 id="準備一個甜甜圈圖——複合序列">準備一個甜甜圈圖——複合序列</h2><p>Highcharts提供了另一種類型的餅圖-甜甜圈圖。它具有特別的鑽取(drill-down)可以將類別展細到子類別，可以更方便的查看到更明細的資料，鑽取效果也可以用到多層級上。在本節中，我們會創建一個簡單的甜甜圈圖並在外環來呈現遊戲名稱，在內環上顯示遊戲公司。</p>
+<p>為簡單起見，我們只是用三家遊戲公司的資料在內圈，下面是甜甜圈圖序列數組的設定。</p>]]>
+    
+    </summary>
+    
+      <category term="Highcharts" scheme="http://www.retailscm.com/tags/Highcharts/"/>
+    
+      <category term="Learning" scheme="http://www.retailscm.com/categories/Learning/"/>
+    
+      <category term="Learning Highcharts" scheme="http://www.retailscm.com/categories/Learning/Learning-Highcharts/"/>
+    
+      <category term="Pie Charts" scheme="http://www.retailscm.com/categories/Learning/Learning-Highcharts/Pie-Charts/"/>
+    
+  </entry>
+  
+  <entry>
+    <title><![CDATA[第五章 03.在一個圖表中繪製多個餅圖——複合序列]]></title>
+    <link href="http://www.retailscm.com/Learning/Learning-Highcharts/Pie-Charts/plotting-multiple-pies-in-a-chart-multiple-series/"/>
+    <id>http://www.retailscm.com/Learning/Learning-Highcharts/Pie-Charts/plotting-multiple-pies-in-a-chart-multiple-series/</id>
+    <published>2015-05-17T20:00:00.000Z</published>
+    <updated>2015-05-17T08:06:53.000Z</updated>
+    <content type="html"><![CDATA[<h1 id="科技零售(RetailSCM-com)_Learning_Highcharts中文教程">科技零售(RetailSCM.com) Learning Highcharts中文教程</h1><p><em><span style="color: #808080;">版權保留，網路轉載請註明來源，謝絕紙質媒體轉載，謝謝。</span></em></p>
+<h2 id="在一個圖表中繪製多個餅圖——複合序列">在一個圖表中繪製多個餅圖——複合序列</h2><p>在餅圖中，我們可以將另一個對照的餅圖擺在原來餅圖的邊上，讓數據對比顯示的更翔實。要做到這一點我們只要簡單的定義兩個序列設定在序列數組中即可。</p>
+<p>我們繼續使用上一個例子中左手邊的餅圖，然後我們使用相同的資料集再新增一個新的類別序列，但這次我們使用遊戲平臺來分組，序列設定如下配置：</p>
+<pre><code><span class="atom">series</span>: [{
+        <span class="atom">center</span>: [<span class="string">'25%'</span>, <span class="string">'50%'</span>],
+        <span class="atom">data</span>: [
+            [<span class="string">'Nintendo'</span>, <span class="number">54030288</span>],
+            [<span class="string">'Electronic Arts'</span>, <span class="number">31367739</span>],
+            ....
+        ]
+    }, {
+        <span class="atom">center</span>: [<span class="string">'75%'</span>, <span class="string">'50%'</span>],
+        <span class="atom">dataLabels</span>: {
+            <span class="atom">formatter</span>: <span class="atom">function</span>() {
+                <span class="atom">var</span> <span class="atom">str</span> = <span class="atom">this</span>.<span class="atom">point</span>.<span class="atom">name</span> + <span class="string">': '</span> +
+                    <span class="name">Highcharts</span>.<span class="atom">numberFormat</span>(<span class="atom">this</span>.<span class="atom">percentage</span>, <span class="number">0</span>) + <span class="string">'%'</span>;
+                <span class="atom">return</span> <span class="atom">formatWithLineBreaks</span>(<span class="atom">str</span>);
+            }
+        },
+        <span class="atom">data</span>: [
+            [<span class="string">'Xbox'</span>, <span class="number">80627548</span>],
+            [<span class="string">'PS3'</span>, <span class="number">64788830</span>],
+            ...
+        ]]
+}]
+</code></pre><a id="more"></a>
+<p>如同我們所看到的，我們在這裡使用了一個新的參數center來定位餅圖。這個參數的數組中包含了兩個百分比的數值，第一個餅圖橫向坐標在整個報表容器的橫向百分比，第二個則表示縱向的坐標佔比。預設的值是[‘50%’, ‘50%’]，表示在整個圖表容器的正中間。在這個例子中，我們特別設定了橫向坐標軸分別為’25%’ 和 ‘75%’，來讓這兩個餅圖對稱在容器的左邊和右邊。</p>
+<p>在第二個序列中，我們選擇將第二個餅圖中的數值部分改以百分比的方式來呈現，兩個餅圖的圖表如下：</p>
+<p><a href="/images/learning_highcharts/5-5.png"><img src="/images/learning_highcharts/5-5.png" alt="5-5"></a></p>
+<p>表面上，除了兩個餅圖共用一個標題之外，這和使用標籤來分別繪製兩個圖表沒有什麼太大的差異。我們這麼做主要的好處是我們可以將不同的序列合併在同一個圖表中來顯示，例如我們想要在餅圖中的多序列分組上直接呈現銷售佔比，我們會在下面的章節來學習到如何做。</p>
+]]></content>
+    <summary type="html">
+    <![CDATA[<h1 id="科技零售(RetailSCM-com)_Learning_Highcharts中文教程">科技零售(RetailSCM.com) Learning Highcharts中文教程</h1><p><em><span style="color: #808080;">版權保留，網路轉載請註明來源，謝絕紙質媒體轉載，謝謝。</span></em></p>
+<h2 id="在一個圖表中繪製多個餅圖——複合序列">在一個圖表中繪製多個餅圖——複合序列</h2><p>在餅圖中，我們可以將另一個對照的餅圖擺在原來餅圖的邊上，讓數據對比顯示的更翔實。要做到這一點我們只要簡單的定義兩個序列設定在序列數組中即可。</p>
+<p>我們繼續使用上一個例子中左手邊的餅圖，然後我們使用相同的資料集再新增一個新的類別序列，但這次我們使用遊戲平臺來分組，序列設定如下配置：</p>
+<pre><code><span class="atom">series</span>: [{
+        <span class="atom">center</span>: [<span class="string">'25%'</span>, <span class="string">'50%'</span>],
+        <span class="atom">data</span>: [
+            [<span class="string">'Nintendo'</span>, <span class="number">54030288</span>],
+            [<span class="string">'Electronic Arts'</span>, <span class="number">31367739</span>],
+            ....
+        ]
+    }, {
+        <span class="atom">center</span>: [<span class="string">'75%'</span>, <span class="string">'50%'</span>],
+        <span class="atom">dataLabels</span>: {
+            <span class="atom">formatter</span>: <span class="atom">function</span>() {
+                <span class="atom">var</span> <span class="atom">str</span> = <span class="atom">this</span>.<span class="atom">point</span>.<span class="atom">name</span> + <span class="string">': '</span> +
+                    <span class="name">Highcharts</span>.<span class="atom">numberFormat</span>(<span class="atom">this</span>.<span class="atom">percentage</span>, <span class="number">0</span>) + <span class="string">'%'</span>;
+                <span class="atom">return</span> <span class="atom">formatWithLineBreaks</span>(<span class="atom">str</span>);
+            }
+        },
+        <span class="atom">data</span>: [
+            [<span class="string">'Xbox'</span>, <span class="number">80627548</span>],
+            [<span class="string">'PS3'</span>, <span class="number">64788830</span>],
+            ...
+        ]]
+}]
+</code></pre>]]>
+    
+    </summary>
+    
+      <category term="Highcharts" scheme="http://www.retailscm.com/tags/Highcharts/"/>
+    
+      <category term="Learning" scheme="http://www.retailscm.com/categories/Learning/"/>
+    
+      <category term="Learning Highcharts" scheme="http://www.retailscm.com/categories/Learning/Learning-Highcharts/"/>
+    
+      <category term="Pie Charts" scheme="http://www.retailscm.com/categories/Learning/Learning-Highcharts/Pie-Charts/"/>
+    
+  </entry>
+  
+  <entry>
+    <title><![CDATA[第五章 02.繪製一個簡單的餅圖——單序列]]></title>
+    <link href="http://www.retailscm.com/Learning/Learning-Highcharts/Pie-Charts/plotting-simple-pie-charts-single-series/"/>
+    <id>http://www.retailscm.com/Learning/Learning-Highcharts/Pie-Charts/plotting-simple-pie-charts-single-series/</id>
+    <published>2015-05-17T19:00:00.000Z</published>
+    <updated>2015-05-17T08:07:23.000Z</updated>
+    <content type="html"><![CDATA[<h1 id="科技零售(RetailSCM-com)_Learning_Highcharts中文教程">科技零售(RetailSCM.com) Learning Highcharts中文教程</h1><p><em><span style="color: #808080;">版權保留，網路轉載請註明來源，謝絕紙質媒體轉載，謝謝。</span></em></p>
+<h2 id="繪製一個簡單的餅圖——單序列">繪製一個簡單的餅圖——單序列</h2><p>在本章中我們會使用vgchartz (www.vgchartz.com)提供的電視遊戲公司數據。下面所使用的餅圖設定及數據是2011年溝通遊戲公司所販售的前100名的遊戲，Wii Sports會剔除在外，因為它是搭配Wii手柄免費提供的。</p>
+<pre><code><span class="atom">chart</span>: {
+    <span class="atom">renderTo</span>: <span class="string">'container'</span>,
+    <span class="atom">type</span>: <span class="string">'pie'</span>,
+    <span class="atom">borderWidth</span>: <span class="number">1</span>
+},
+<span class="atom">title</span>: {
+    <span class="atom">text</span>: <span class="string">'Number of Software Games Sold in 2011 Grouped by Publishers'</span>,
+},
+<span class="atom">credits</span>: {
+        ...
+},
+<span class="atom">series</span>: [{
+    <span class="atom">data</span>: [
+        [<span class="string">'Nintendo'</span>, <span class="number">54030288</span>],
+        [<span class="string">'Electronic Arts'</span>, <span class="number">31367739</span>],
+        ...
+    ]
+}]
+</code></pre><p>這是一個簡單的餅圖，順時鐘來看，第一個數據節點是任天堂，並且第一個數據結點的位置總是從12點的位置開始，這個沒有辦法設定。</p>
+<a id="more"></a>
+<p><a href="/images/learning_highcharts/5-1.png"><img src="/images/learning_highcharts/5-1.png" alt="5-1"></a></p>
+<h2 id="切出一個餅圖的數據序列應如何配置">切出一個餅圖的數據序列應如何配置</h2><p>我們可以改善一下上面的餅圖，讓他包含一個標籤來顯示數值的部分，將一些名字太長的遊戲公司的名稱來折行顯示。為了重新定義dataLabels.formatter選項，我們可以事先定義一個method: formatWithLineBreaks並植入在formatter選項中，這樣我們也可以在其他的例子中複用它。</p>
+<pre><code><span class="function"><span class="keyword">function</span> <span class="title">formatWithLineBreaks</span><span class="params">(str)</span> </span>{
+    <span class="keyword">var</span> words = str.split(<span class="string">' '</span>);
+    <span class="keyword">var</span> lines = [];
+    <span class="keyword">var</span> line = <span class="string">''</span>;
+    $.each(words, <span class="function"><span class="keyword">function</span><span class="params">(idx, word)</span> </span>{
+        <span class="keyword">if</span> (line.length + word.length &amp;gt; <span class="number">25</span>) {
+            lines.push(line);
+            line = <span class="string">''</span>;
+        }
+        line += word + <span class="string">' '</span>;
+    });
+    lines.push(line);
+    <span class="keyword">return</span> lines.join(<span class="string">'
+'</span>);
+}
+</code></pre><p>下面的餅圖設定是對餅圖的序列使用allowPointSelect，可以允許使用者通過點擊餅圖的數據節點來實現互動，如餅圖的序列中可以切出一個區域。slicedOffset選項是調整切出的餅圖需要切出多遠的參數。</p>
+<pre><code>plotOptions: {
+    pie: {
+        slicedOffset: <span class="number">20</span>,
+        allowPointSelect: <span class="literal">true</span>,
+        dataLabels: {
+            formatter: <span class="function"><span class="keyword">function</span><span class="params">()</span> </span>{
+                <span class="keyword">var</span> str = <span class="keyword">this</span>.point.name + <span class="string">': '</span> +
+                    Highcharts.numberFormat(<span class="keyword">this</span>.y, <span class="number">0</span>);
+                <span class="keyword">return</span> formatWithLineBreaks(str);
+            }
+        }
+    }
+},
+</code></pre><p>另外，也許我們想要在餅圖載入的時候就將其中對大的一個數據序列切出，讓他的標籤顯示為粗體以便更加醒目。要做到這個效果，我們需要調整最大的數據節點對象的設定，我們將sliced屬性增加到對象中並修改它的預設值為true，然後我們將dataLabels屬性中的fontWeight設定為bold來替換原來的設定：</p>
+<pre><code><span class="atom">series</span>: [{
+    <span class="atom">data</span>: [{
+            <span class="atom">name</span>: <span class="string">'Nintendo'</span>,
+            <span class="atom">y</span>: <span class="number">54030288</span>,
+            <span class="atom">sliced</span>: <span class="atom">true</span>,
+            <span class="atom">dataLabels</span>: {
+                <span class="atom">style</span>: {
+                    <span class="atom">fontWeight</span>: <span class="string">'bold'</span>
+                }
+            }
+        },
+        [<span class="string">'Electronic Arts'</span>, <span class="number">31367739</span>],
+        [<span class="string">'Activision'</span>, <span class="number">30230170</span>], ....
+    ]
+}]
+</code></pre><p>下圖即為我們重新定義後的圖表</p>
+<p><a href="/images/learning_highcharts/5-2.png"><img src="/images/learning_highcharts/5-2.png" alt="5-2"></a></p>
+<p>前面有提到過slicedOffset參數可以控制切出的部分可以被切出多遠，預設是10個圖元，這個選項是應用到全部的被切出的部分，我們沒有辦法單獨控制某一個部分使用特別的切出距離，另一個不好的消息是連接線（連接切出部分和數據標籤的連線）看起來會變歪了。在下面的例子中，我們會演示sliced屬性可以被應用到多個數據節點上，並且會移除slicedOffset選項回到原始的預設狀態。</p>
+<p>下圖是3個序列都使用任天堂的數據節點設定來將他們來從餅圖中切出。</p>
+<p><a href="/images/learning_highcharts/5-3.png"><img src="/images/learning_highcharts/5-3.png" alt="5-3"></a></p>
+<p>我們注意到了連接線已經恢復為平滑的連線，而且sliced選項還有另外一個有趣的行為，這些切片的sliced屬性預設都是false，他們中只有一個切片會被切出。例如使用者任意點了屬性為false的一個切片，這個切片會被切出，然後在點Activision公司這個數據節點，Activision會切出，但是之前的切片會縮回到餅圖中，而三個設定了sliced為true的部分仍然會保留他們切出的位置，換句話說就是當我們將sliced設定為true時，能保持他們的狀態獨立與其他設定為false的部分。</p>
+<h2 id="在一個餅圖上應用圖例">在一個餅圖上應用圖例</h2><p>到目前為止圖表上我們包含了很多的數字，但用數字來表示對我們理解每個切片到底應該佔多大其實很難理解，我們需要在切片中列出各切片的百分比。讓我們將所有的遊戲公司名稱列入在圖例中並將其對應的百分佔比顯示在切片中。</p>
+<p>為了開啟圖例，我們需要將showInLegend參數設定為true，然後我們設定字體顯示為白色的粗體字，然後將formatter函數設定為this.percentage，這個設定只能使用在餅圖上。distance選項是數據標籤和餅圖外邊界之間的距離設定，正數表示距離餅圖外邊界向外延展的距離，負數則是反方向的距離。</p>
+<pre><code>plotOptions: {
+    pie: {
+        showInLegend: <span class="literal">true</span>,
+        dataLabels: {
+            distance: -<span class="number">24</span>,
+            color: <span class="string">'white'</span>,
+            style: {
+                fontWeight: <span class="string">'bold'</span>
+            },
+            formatter: <span class="function"><span class="keyword">function</span><span class="params">()</span> </span>{
+                <span class="keyword">return</span> Highcharts.numberFormat(<span class="keyword">this</span>.percentage) + <span class="string">'%'</span>;
+            }
+        }
+    }
+},
+</code></pre><p>下面是圖例的設定，我們設定一下邊界的並將圖例框設定距離餅圖更近一些，如下：</p>
+<pre><code><span class="tag">legend</span>: {
+    <span class="attribute">align</span>: <span class="string">'right'</span>,
+    <span class="attribute">layout</span>: <span class="string">'vertical'</span>,
+    <span class="attribute">verticalAlign</span>: <span class="string">'middle'</span>,
+    <span class="attribute">itemMarginBottom</span>: <span class="number">4</span>,
+    <span class="attribute">itemMarginTop</span>: <span class="number">4</span>,
+    <span class="attribute">x</span>: -<span class="number">40</span>
+},
+</code></pre><p>下面就是另外一個餅圖的呈現方式了。</p>
+<p><a href="/images/learning_highcharts/5-4.png"><img src="/images/learning_highcharts/5-4.png" alt="5-4"></a></p>
+]]></content>
+    <summary type="html">
+    <![CDATA[<h1 id="科技零售(RetailSCM-com)_Learning_Highcharts中文教程">科技零售(RetailSCM.com) Learning Highcharts中文教程</h1><p><em><span style="color: #808080;">版權保留，網路轉載請註明來源，謝絕紙質媒體轉載，謝謝。</span></em></p>
+<h2 id="繪製一個簡單的餅圖——單序列">繪製一個簡單的餅圖——單序列</h2><p>在本章中我們會使用vgchartz (www.vgchartz.com)提供的電視遊戲公司數據。下面所使用的餅圖設定及數據是2011年溝通遊戲公司所販售的前100名的遊戲，Wii Sports會剔除在外，因為它是搭配Wii手柄免費提供的。</p>
+<pre><code><span class="atom">chart</span>: {
+    <span class="atom">renderTo</span>: <span class="string">'container'</span>,
+    <span class="atom">type</span>: <span class="string">'pie'</span>,
+    <span class="atom">borderWidth</span>: <span class="number">1</span>
+},
+<span class="atom">title</span>: {
+    <span class="atom">text</span>: <span class="string">'Number of Software Games Sold in 2011 Grouped by Publishers'</span>,
+},
+<span class="atom">credits</span>: {
+        ...
+},
+<span class="atom">series</span>: [{
+    <span class="atom">data</span>: [
+        [<span class="string">'Nintendo'</span>, <span class="number">54030288</span>],
+        [<span class="string">'Electronic Arts'</span>, <span class="number">31367739</span>],
+        ...
+    ]
+}]
+</code></pre><p>這是一個簡單的餅圖，順時鐘來看，第一個數據節點是任天堂，並且第一個數據結點的位置總是從12點的位置開始，這個沒有辦法設定。</p>]]>
+    
+    </summary>
+    
+      <category term="Highcharts" scheme="http://www.retailscm.com/tags/Highcharts/"/>
+    
+      <category term="Learning" scheme="http://www.retailscm.com/categories/Learning/"/>
+    
+      <category term="Learning Highcharts" scheme="http://www.retailscm.com/categories/Learning/Learning-Highcharts/"/>
+    
+      <category term="Pie Charts" scheme="http://www.retailscm.com/categories/Learning/Learning-Highcharts/Pie-Charts/"/>
+    
+  </entry>
+  
+  <entry>
+    <title><![CDATA[第五章 餅圖]]></title>
+    <link href="http://www.retailscm.com/Learning/Learning-Highcharts/Pie-Charts/pie-charts/"/>
+    <id>http://www.retailscm.com/Learning/Learning-Highcharts/Pie-Charts/pie-charts/</id>
+    <published>2015-05-17T17:00:00.000Z</published>
+    <updated>2015-05-17T07:39:32.000Z</updated>
+    <content type="html"><![CDATA[<h1 id="科技零售(RetailSCM-com)_Learning_Highcharts中文教程">科技零售(RetailSCM.com) Learning Highcharts中文教程</h1><p><em><span style="color: #808080;">版權保留，網路轉載請註明來源，謝絕紙質媒體轉載，謝謝。</span></em></p>
+<h2 id="第五章_餅圖">第五章 餅圖</h2><p>在本章中我們將學習餅圖的參數設定及如何用其繪製一個餅圖。我們會說明如何在一個圖表中繪製一個複合餅圖，之後我們還會看一下如何來做一個甜甜圈圖，到了章節的退後，我們會來畫一個包含我們之前所學過全部類型的複合圖表，包含柱狀圖、折線圖以及餅圖。</p>
+<p>本章包含以下內容：</p>
+<ul>
+<li>瞭解圖表、餅圖及序列之間的關係</li>
+<li>繪製一個簡單的餅圖——單序列</li>
+<li>在一個圖表中繪製多個餅圖——複合序列</li>
+<li>準備一個甜甜圈圖——複合序列</li>
+<li>繪製一個包含多個序列的圖表</li>
+</ul>
+<p><a href="/Learning/Learning-Highcharts/Pie-Charts/understanding-the-relationship-of-chart-pie-and-series/" title="01.瞭解圖表、餅圖及序列之間的關係">瞭解圖表、餅圖及序列之間的關係</a></p>
+<p><a href="/Learning/Learning-Highcharts/Pie-Charts/plotting-simple-pie-charts-single-series/" title="02.繪製一個簡單的餅圖——單序列">繪製一個簡單的餅圖——單序列</a></p>
+<p><a href="/Learning/Learning-Highcharts/Pie-Charts/plotting-multiple-pies-in-a-chart-multiple-series/" title="03.在一個圖表中繪製多個餅圖——複合序列">在一個圖表中繪製多個餅圖——複合序列</a></p>
+<p><a href="/Learning/Learning-Highcharts/Pie-Charts/preparing-a-donut-chart-multiple-series/" title="04.準備一個甜甜圈圖——複合序列">準備一個甜甜圈圖——複合序列</a></p>
+<p><a href="/Learning/Learning-Highcharts/Pie-Charts/building-a-chart-with-multiple-series-types/" title="05.繪製一個包含多個序列的圖表">繪製一個包含多個序列的圖表</a></p>
+]]></content>
+    <summary type="html">
+    <![CDATA[<h1 id="科技零售(RetailSCM-com)_Learning_Highcharts中文教程">科技零售(RetailSCM.com) Learning Highcharts中文教程</h1><p><em><span style="color: #808080;">版權]]>
+    </summary>
+    
+      <category term="Highcharts" scheme="http://www.retailscm.com/tags/Highcharts/"/>
+    
+      <category term="Learning" scheme="http://www.retailscm.com/categories/Learning/"/>
+    
+      <category term="Learning Highcharts" scheme="http://www.retailscm.com/categories/Learning/Learning-Highcharts/"/>
+    
+      <category term="Pie Charts" scheme="http://www.retailscm.com/categories/Learning/Learning-Highcharts/Pie-Charts/"/>
+    
+  </entry>
+  
+  <entry>
+    <title><![CDATA[第四章 05.複合圖表]]></title>
+    <link href="http://www.retailscm.com/Learning/Learning-Highcharts/Bar-and-column-charts/sticking-the-charts-together/"/>
+    <id>http://www.retailscm.com/Learning/Learning-Highcharts/Bar-and-column-charts/sticking-the-charts-together/</id>
+    <published>2015-05-16T22:00:00.000Z</published>
+    <updated>2015-05-17T08:04:16.000Z</updated>
+    <content type="html"><![CDATA[<h1 id="科技零售(RetailSCM-com)_Learning_Highcharts中文教程">科技零售(RetailSCM.com) Learning Highcharts中文教程</h1><p><em><span style="color: #808080;">版權保留，網路轉載請註明來源，謝絕紙質媒體轉載，謝謝。</span></em></p>
+<h2 id="複合圖表">複合圖表</h2><p>在本節中我們會建立一個有多種圖表混合顯示的網頁，主要的圖表會顯示在左邊，其他三個小的圖表會在右邊自上而下依次顯示，佈局使用HTML的div標籤及css樣式表來控制。</p>
+<p>左邊的圖表使用我們之前討論的多種顏色的柱狀圖例子，在右邊的小圖表我們統一設定其軸線與標籤都不顯示。</p>
+<p>第一個小圖表是有兩個series的折線圖，且dataLabels只有在最有一個數據點上才開啟顯示，這代表著最後一個點是一個數據對象。標籤的顏色與series的顏色相同，在y軸插入一個50%標記的plotLine。下面是第一個小圖表的代碼：</p>
+<a id="more"></a>
+<pre><code><span class="string">pointStart:</span> <span class="number">2001</span>,
+<span class="string">marker:</span> {
+<span class="label">    enabled:</span> <span class="literal">false</span>
+},
+<span class="string">data:</span> [ <span class="number">53.6</span>, <span class="number">52.7</span>, <span class="number">52.7</span>, <span class="number">51.9</span>, <span class="number">52.4</span>,
+        <span class="number">52.1</span>, <span class="number">51.2</span>, <span class="number">49.7</span>, <span class="number">49.5</span>, <span class="number">49.6</span>,
+        {   <span class="string">y:</span> <span class="number">48.9</span>,
+<span class="label">            name:</span> <span class="string">'US'</span>,
+<span class="label">            dataLabels:</span> {
+<span class="label">            color:</span> <span class="string">'#4572A7'</span>,
+<span class="label">            enabled:</span> <span class="literal">true</span>,
+<span class="label">            x:</span> -<span class="number">10</span>,
+<span class="label">            y:</span> <span class="number">14</span>,
+<span class="label">            formatter:</span> function() {
+                <span class="keyword">return</span>
+                <span class="keyword">this</span>.point.name + <span class="string">": "</span> + <span class="keyword">this</span>.y + <span class="string">'%'</span>;
+            }
+        }
+}]
+</code></pre><p>第二個小圖表是一個簡單的長條圖，數據標籤在長條圖對應的右邊，數據標籤字體被設定為larger, bold</p>
+<p>最後一個小圖表是基本上來說是一個散點圖，每一個series都只有一個點，所以在圖表的右邊可以顯示圖例，然後我們設定每一個series的x為0，這樣我們就可以有不同大小的數據點並且彼此堆疊在一起，下面是這個散點圖的代碼：</p>
+<pre><code><span class="string">zIndex:</span> <span class="number">1</span>,
+<span class="string">legendIndex:</span> <span class="number">0</span>,
+<span class="string">color:</span> {
+<span class="label">    linearGradient:</span>
+        { <span class="string">x1:</span> <span class="number">0</span>, <span class="string">y1:</span> <span class="number">0</span>, <span class="string">x2:</span> <span class="number">0</span>, <span class="string">y2:</span> <span class="number">1</span> },
+<span class="label">          stops:</span> [ [ <span class="number">0</span>, <span class="string">'#FF6600'</span> ],
+                   [ <span class="number">0.6</span>, <span class="string">'#FFB280'</span> ] ]
+},
+<span class="string">name:</span> <span class="string">'America - 49%'</span>,
+<span class="string">marker:</span> {
+<span class="label">    symbol:</span> <span class="string">'circle'</span>,
+<span class="label">    lineColor:</span> <span class="string">'#B24700'</span>,
+<span class="label">    lineWidth:</span> <span class="number">1</span>
+},
+<span class="string">data:</span> [
+    { <span class="string">x:</span> <span class="number">0</span>, <span class="string">y:</span> <span class="number">49</span>, <span class="string">name:</span> <span class="string">'America'</span>,
+<span class="label">      marker:</span> { <span class="string">radius:</span> <span class="number">74</span> }
+} ]
+</code></pre><p>下圖是複合圖表最終呈現的結果：</p>
+<p><a href="/images/learning_highcharts/chart4-5-1.jpg"><img src="/images/learning_highcharts/chart4-5-1.jpg" alt="chart4-5-1"></a></p>
+<h2 id="總結">總結</h2><p>在這一章我們學習到如何使用柱形圖及長條圖。我們利用柱形圖和長條圖的比較例子輕鬆的實現了各種的演示。我們也進一步的設定不同的圖表達到如鏡圖或水平刻度圖，在下一章中我們會再了解餅圖的使用和設定。</p>
+]]></content>
+    <summary type="html">
+    <![CDATA[<h1 id="科技零售(RetailSCM-com)_Learning_Highcharts中文教程">科技零售(RetailSCM.com) Learning Highcharts中文教程</h1><p><em><span style="color: #808080;">版權保留，網路轉載請註明來源，謝絕紙質媒體轉載，謝謝。</span></em></p>
+<h2 id="複合圖表">複合圖表</h2><p>在本節中我們會建立一個有多種圖表混合顯示的網頁，主要的圖表會顯示在左邊，其他三個小的圖表會在右邊自上而下依次顯示，佈局使用HTML的div標籤及css樣式表來控制。</p>
+<p>左邊的圖表使用我們之前討論的多種顏色的柱狀圖例子，在右邊的小圖表我們統一設定其軸線與標籤都不顯示。</p>
+<p>第一個小圖表是有兩個series的折線圖，且dataLabels只有在最有一個數據點上才開啟顯示，這代表著最後一個點是一個數據對象。標籤的顏色與series的顏色相同，在y軸插入一個50%標記的plotLine。下面是第一個小圖表的代碼：</p>]]>
+    
+    </summary>
+    
+      <category term="Highcharts" scheme="http://www.retailscm.com/tags/Highcharts/"/>
+    
+      <category term="Learning" scheme="http://www.retailscm.com/categories/Learning/"/>
+    
+      <category term="Learning Highcharts" scheme="http://www.retailscm.com/categories/Learning/Learning-Highcharts/"/>
+    
+      <category term="Bar and column charts" scheme="http://www.retailscm.com/categories/Learning/Learning-Highcharts/Bar-and-column-charts/"/>
+    
+  </entry>
+  
+  <entry>
+    <title><![CDATA[第四章 04.將一個長條圖轉為水平刻度圖]]></title>
+    <link href="http://www.retailscm.com/Learning/Learning-Highcharts/Bar-and-column-charts/converting-a-single-bar-chart-into-a-horizontal-gauge-chart/"/>
+    <id>http://www.retailscm.com/Learning/Learning-Highcharts/Bar-and-column-charts/converting-a-single-bar-chart-into-a-horizontal-gauge-chart/</id>
+    <published>2015-05-16T21:00:00.000Z</published>
+    <updated>2015-05-17T08:03:28.000Z</updated>
+    <content type="html"><![CDATA[<h1 id="科技零售(RetailSCM-com)_Learning_Highcharts中文教程">科技零售(RetailSCM.com) Learning Highcharts中文教程</h1><p><em><span style="color: #808080;">版權保留，網路轉載請註明來源，謝絕紙質媒體轉載，謝謝。</span></em></p>
+<h2 id="將一個長條圖轉為水平刻度圖">將一個長條圖轉為水平刻度圖</h2><p>水平刻度圖通常用於表示當前閥值，因此意味著y軸上的極值是固定在兩端的。另一個特點是x軸上只能顯示當前時間的一個值(一個維度)。</p>
+<p>下面我們會來學習如何將一個長條圖轉換為一個水平刻度圖。基本的概念是將繪圖區域減小到與長條圖為相同大小，因此我們要同時為繪圖區域和長條圖設置固定的大小，並且不要考慮容器的尺寸。為了達成這點，我們需要設定chart.width和chart.height為一些需要的值，然後我們對繪圖區的邊框和背景色美化，使之看起來類似與一個容器壓力表：</p>
+<pre><code><span class="tag">chart</span>: {
+    <span class="attribute">renderTo</span>: <span class="string">'container'</span>,
+    <span class="attribute">type</span>: <span class="string">'bar'</span>,
+    <span class="attribute">plotBorderWidth</span>: <span class="number">2</span>,
+    <span class="attribute">plotBackgroundColor</span>: <span class="string">'#D6D6EB'</span>,
+    <span class="attribute">plotBorderColor</span>: <span class="string">'#D8D8D8'</span>,
+    <span class="attribute">plotShadow</span>: true,
+    <span class="attribute">spacingBottom</span>: <span class="number">43</span>,
+    <span class="attribute">width</span>: <span class="number">350</span>,
+    <span class="attribute">height</span>: <span class="number">120</span>
+},
+</code></pre><p>然後我們設定y軸的標籤為不顯示，並設定一個固定的百分比間隔：</p>
+<a id="more"></a>
+<pre><code><span class="tag">xAxis</span>: {
+    <span class="tag">categories</span>: <span class="attr_selector">[ 'US' ]</span>,
+    <span class="tag">tickLength</span>: <span class="tag">0</span>
+},
+<span class="tag">yAxis</span>: {
+    <span class="tag">title</span>: {
+        <span class="tag">text</span>: <span class="tag">null</span>
+    },
+    <span class="tag">labels</span>: {
+        <span class="attribute">y</span>: <span class="number">20</span>
+    },
+    <span class="attribute">min</span>: <span class="number">0</span>,
+    <span class="attribute">max</span>: <span class="number">100</span>,
+    <span class="attribute">tickInterval</span>: <span class="number">20</span>,
+    <span class="attribute">minorTickInterval</span>: <span class="number">10</span>,
+    <span class="attribute">tickWidth</span>: <span class="number">1</span>,
+    <span class="attribute">tickLength</span>: <span class="number">8</span>,
+    <span class="attribute">minorTickLength</span>: <span class="number">5</span>,
+    <span class="attribute">minorTickWidth</span>: <span class="number">1</span>,
+    <span class="attribute">minorGridLineWidth</span>: <span class="number">0</span>
+},
+</code></pre><p>最後一步是設置長條圖的寬度以完美的貼合繪圖區域，其餘的設定是為了給長條圖設定一個SVG的漸變效果，如下：</p>
+<pre><code><span class="atom">series</span>: [{
+    <span class="atom">borderColor</span>: <span class="string">'#7070B8'</span>,
+    <span class="atom">borderRadius</span>: <span class="number">3</span>,
+    <span class="atom">borderWidth</span>: <span class="number">1</span>,
+    <span class="atom">color</span>: {
+        <span class="atom">linearGradient</span>:
+            { <span class="atom">x1</span>: <span class="number">0</span>, <span class="atom">y1</span>: <span class="number">0</span>, <span class="atom">x2</span>: <span class="number">1</span>, <span class="atom">y2</span>: <span class="number">0</span> },
+        <span class="atom">stops</span>: [
+            [ <span class="number">0</span>, <span class="string">'#D6D6EB'</span> ],
+            [ <span class="number">0.3</span>, <span class="string">'#5C5CAD'</span> ],
+            [ <span class="number">0.45</span>, <span class="string">'#5C5C9C'</span> ],
+            [ <span class="number">0.55</span>, <span class="string">'#5C5C9C'</span> ],
+            [ <span class="number">0.7</span>, <span class="string">'#5C5CAD'</span> ],
+            [ <span class="number">1</span>, <span class="string">'#D6D6EB'</span>] ]
+    },
+    <span class="atom">pointWidth</span>: <span class="number">50</span>,
+    <span class="atom">data</span>: [ <span class="number">48.9</span> ]
+}]
+</code></pre><p>下面為裝飾過的最終刻度圖效果：</p>
+<p><a href="/images/learning_highcharts/chart4-4-1.jpg"><img src="/images/learning_highcharts/chart4-4-1.jpg" alt="chart4-4-1"></a></p>
+]]></content>
+    <summary type="html">
+    <![CDATA[<h1 id="科技零售(RetailSCM-com)_Learning_Highcharts中文教程">科技零售(RetailSCM.com) Learning Highcharts中文教程</h1><p><em><span style="color: #808080;">版權保留，網路轉載請註明來源，謝絕紙質媒體轉載，謝謝。</span></em></p>
+<h2 id="將一個長條圖轉為水平刻度圖">將一個長條圖轉為水平刻度圖</h2><p>水平刻度圖通常用於表示當前閥值，因此意味著y軸上的極值是固定在兩端的。另一個特點是x軸上只能顯示當前時間的一個值(一個維度)。</p>
+<p>下面我們會來學習如何將一個長條圖轉換為一個水平刻度圖。基本的概念是將繪圖區域減小到與長條圖為相同大小，因此我們要同時為繪圖區域和長條圖設置固定的大小，並且不要考慮容器的尺寸。為了達成這點，我們需要設定chart.width和chart.height為一些需要的值，然後我們對繪圖區的邊框和背景色美化，使之看起來類似與一個容器壓力表：</p>
+<pre><code><span class="tag">chart</span>: {
+    <span class="attribute">renderTo</span>: <span class="string">'container'</span>,
+    <span class="attribute">type</span>: <span class="string">'bar'</span>,
+    <span class="attribute">plotBorderWidth</span>: <span class="number">2</span>,
+    <span class="attribute">plotBackgroundColor</span>: <span class="string">'#D6D6EB'</span>,
+    <span class="attribute">plotBorderColor</span>: <span class="string">'#D8D8D8'</span>,
+    <span class="attribute">plotShadow</span>: true,
+    <span class="attribute">spacingBottom</span>: <span class="number">43</span>,
+    <span class="attribute">width</span>: <span class="number">350</span>,
+    <span class="attribute">height</span>: <span class="number">120</span>
+},
+</code></pre><p>然後我們設定y軸的標籤為不顯示，並設定一個固定的百分比間隔：</p>]]>
+    
+    </summary>
+    
+      <category term="Highcharts" scheme="http://www.retailscm.com/tags/Highcharts/"/>
+    
+      <category term="Learning" scheme="http://www.retailscm.com/categories/Learning/"/>
+    
+      <category term="Learning Highcharts" scheme="http://www.retailscm.com/categories/Learning/Learning-Highcharts/"/>
+    
+      <category term="Bar and column charts" scheme="http://www.retailscm.com/categories/Learning/Learning-Highcharts/Bar-and-column-charts/"/>
+    
+  </entry>
+  
+  <entry>
+    <title><![CDATA[第四章 03.創建一個鏡圖(mirror chart)]]></title>
+    <link href="http://www.retailscm.com/Learning/Learning-Highcharts/Bar-and-column-charts/constructing-a-mirror-chart/"/>
+    <id>http://www.retailscm.com/Learning/Learning-Highcharts/Bar-and-column-charts/constructing-a-mirror-chart/</id>
+    <published>2015-05-16T20:00:00.000Z</published>
+    <updated>2015-05-17T08:02:40.000Z</updated>
+    <content type="html"><![CDATA[<h1 id="科技零售(RetailSCM-com)_Learning_Highcharts中文教程">科技零售(RetailSCM.com) Learning Highcharts中文教程</h1><p><em><span style="color: #808080;">版權保留，網路轉載請註明來源，謝絕紙質媒體轉載，謝謝。</span></em></p>
+<h2 id="創建一個鏡圖(mirror_chart)">創建一個鏡圖(mirror chart)</h2><p>另一種比較兩個柱圖的方式是使用鏡圖。與柱狀圖根據臨近柱圖來對齊的方式不同，鏡圖是與其相反的的另一端來對齊。有時這是一種展示兩個series不同趨勢的完美途徑。</p>
+<p>在Highcharts中我們可以使用堆積長條圖並略微改造來產生一個鏡圖用以對兩個不同的數據進行橫向比較，為了做到這一點，我們開始用一個新的series來比較英國和中國在過去十年中的專利授權數。</p>
+<p>使用這種方式我們先來配置一個堆積長條圖，一組數據為正數另一組則手動轉為負數，使得零值在圖表的中間。然後我們設定invert反轉柱形圖為長條圖並標記負值的範圍為正數，為了呈現上面所說的效果，我們先建立一個堆積柱形圖，讓每個堆積柱圖為一個正數和一個手動轉換的負數組成，代碼如下：</p>
+<a id="more"></a>
+<pre><code><span class="string">chart:</span> {
+<span class="label">    renderTo:</span> <span class="string">'container'</span>,
+<span class="label">    type:</span> <span class="string">'column'</span>,
+<span class="label">    borderWidth:</span> <span class="number">1</span>
+},
+<span class="string">title:</span> {
+<span class="label">    text:</span> <span class="string">'Number of Patents Granted'</span>,
+},
+<span class="string">credits:</span> { ... },
+<span class="string">xAxis:</span> {
+<span class="label">    categories:</span> [ <span class="string">'2001'</span>, <span class="string">'2002'</span>, <span class="string">'2003'</span>, ... ],
+},
+<span class="string">yAxis:</span> {
+<span class="label">    title:</span> {
+<span class="label">        text:</span> <span class="string">'No. of Patents'</span>
+    }
+},
+<span class="string">plotOptions:</span> {
+<span class="label">    series:</span> {
+<span class="label">        stacking:</span> <span class="string">'normal'</span>
+    }
+},
+<span class="string">series:</span> [{
+<span class="label">    name:</span> <span class="string">'UK'</span>,
+<span class="label">    data:</span> [ <span class="number">4351</span>, <span class="number">4190</span>, <span class="number">4028</span>, ... ]
+}, {
+<span class="label">    name:</span> <span class="string">'China'</span>,
+<span class="label">    data:</span> [ -<span class="number">265</span>, -<span class="number">391</span>, -<span class="number">424</span>, ... ]
+}]
+</code></pre><p>下圖為堆積柱形圖且零值在y軸的中間位置：</p>
+<p><a href="/images/learning_highcharts/chart4-3-1.jpg"><img src="/images/learning_highcharts/chart4-3-1.jpg" alt="chart4-3-1"></a></p>
+<p>然後我們修改設定轉換為長條圖，並增加一個x軸來顯示兩邊都有相同的範圍，最後一步為定義y軸標籤的formatter函數來將負值的標籤轉換為正數顯示，如下：</p>
+<pre><code>chart: {
+    .... ,
+    type: <span class="string">'bar'</span>,
+},
+xAxis: [{
+    categories: [ <span class="string">'2001'</span>, <span class="string">'2002'</span>, <span class="string">'2003'</span>, ... ],
+}, {
+    categories: [ <span class="string">'2001'</span>, <span class="string">'2002'</span>, <span class="string">'2003'</span>, ... ],
+    opposite: <span class="literal">true</span>,
+    linkedTo: <span class="number">0</span>,
+}],
+yAxis: {
+    .... ,
+    labels: {
+        formatter: <span class="function"><span class="keyword">function</span><span class="params">()</span> </span>{
+            <span class="keyword">return</span>
+            Highcharts.numberFormat(<span class="built_in">Math</span>.abs(<span class="keyword">this</span>.value), <span class="number">0</span>);
+        }
+    }
+},
+</code></pre><p>下圖為過去十年中國和英國的專利授權書對比圖的最終版本：</p>
+<p><a href="/images/learning_highcharts/chart4-3-2.jpg"><img src="/images/learning_highcharts/chart4-3-2.jpg" alt="chart4-3-2"></a></p>
+<h2 id="擴展為堆積鏡圖">擴展為堆積鏡圖</h2><p>我們可以將堆積柱形圖與分組柱形圖的例子應用到鏡圖上，兩者是相同的規則。代替分組堆積柱形圖的做法在鏡圖中我們可以將它們都堆積在一起，並使用零值來將這兩組堆積圖分開，下圖為歐洲和亞洲使用長條圖來堆積分組的效果：</p>
+<p><a href="/images/learning_highcharts/chart4-3-3.jpg"><img src="/images/learning_highcharts/chart4-3-3.jpg" alt="chart4-3-3"></a></p>
+<p>南韓和日本的series堆積在左邊（負值的一邊），而英國和德國分組堆積在右邊(正值的一邊)。與前一個圖比起來唯一有一些棘手的是如何來呈現數據標籤。</p>
+<p>首先南韓和日本的series數據手動的設定為了負值，其次整個分組都是在要顯示的series之外（因為已經合併為同一個series，但只要顯示部分），我們為這些series開啟數據標籤，並使用如下代碼來進行設定：</p>
+<pre><code>series: [{
+    name: <span class="string">'UK'</span>,
+    data: [ <span class="number">4351</span>, <span class="number">4190</span>, <span class="number">4028</span>, ... ],
+    dataLabels : {
+        enabled: <span class="literal">true</span>,
+        backgroundColor: <span class="string">'#FFFFFF'</span>,
+        x: <span class="number">40</span>,
+        formatter: <span class="function"><span class="keyword">function</span><span class="params">()</span> </span>{
+            <span class="keyword">return</span>
+            Highcharts.numberFormat(<span class="built_in">Math</span>.abs(<span class="keyword">this</span>.total), <span class="number">0</span>);
+        },
+        style: {
+            fontWeight: <span class="string">'bold'</span>
+        }
+    }
+}, {
+    name: <span class="string">'Germany'</span>,
+    data: [ <span class="number">11894</span>, <span class="number">11957</span>, <span class="number">12140</span>, ... ],
+}, {
+    name: <span class="string">'S.Korea'</span>,
+    data: [ -<span class="number">3763</span>, -<span class="number">4009</span>, -<span class="number">4132</span>, ... ],
+    dataLabels : {
+        enabled: <span class="literal">true</span>,
+        x: -<span class="number">48</span>,
+        backgroundColor: <span class="string">'#FFFFFF'</span>,
+        formatter: <span class="function"><span class="keyword">function</span><span class="params">()</span> </span>{
+            <span class="keyword">return</span>
+            Highcharts.numberFormat(<span class="built_in">Math</span>.abs(<span class="keyword">this</span>.total), <span class="number">0</span>);
+        },
+        style: {
+            fontWeight: <span class="string">'bold'</span>
+        }
+    }
+}, {
+    name: <span class="string">'Japan'</span>,
+    data: [ -<span class="number">34890</span>, -<span class="number">36339</span>, -<span class="number">37248</span>, ... ],
+}]
+</code></pre><p>要注意formatter中的定義使用的是this.total而不是this.y，因為我們使用series之外的正值來顯示分組的合計。白色的背景設定可以讓我們避免數據標籤被y軸的間隔線打擾。</p>
+]]></content>
+    <summary type="html">
+    <![CDATA[<h1 id="科技零售(RetailSCM-com)_Learning_Highcharts中文教程">科技零售(RetailSCM.com) Learning Highcharts中文教程</h1><p><em><span style="color: #808080;">版權保留，網路轉載請註明來源，謝絕紙質媒體轉載，謝謝。</span></em></p>
+<h2 id="創建一個鏡圖(mirror_chart)">創建一個鏡圖(mirror chart)</h2><p>另一種比較兩個柱圖的方式是使用鏡圖。與柱狀圖根據臨近柱圖來對齊的方式不同，鏡圖是與其相反的的另一端來對齊。有時這是一種展示兩個series不同趨勢的完美途徑。</p>
+<p>在Highcharts中我們可以使用堆積長條圖並略微改造來產生一個鏡圖用以對兩個不同的數據進行橫向比較，為了做到這一點，我們開始用一個新的series來比較英國和中國在過去十年中的專利授權數。</p>
+<p>使用這種方式我們先來配置一個堆積長條圖，一組數據為正數另一組則手動轉為負數，使得零值在圖表的中間。然後我們設定invert反轉柱形圖為長條圖並標記負值的範圍為正數，為了呈現上面所說的效果，我們先建立一個堆積柱形圖，讓每個堆積柱圖為一個正數和一個手動轉換的負數組成，代碼如下：</p>]]>
+    
+    </summary>
+    
+      <category term="Highcharts" scheme="http://www.retailscm.com/tags/Highcharts/"/>
+    
+      <category term="Learning" scheme="http://www.retailscm.com/categories/Learning/"/>
+    
+      <category term="Learning Highcharts" scheme="http://www.retailscm.com/categories/Learning/Learning-Highcharts/"/>
+    
+      <category term="Bar and column charts" scheme="http://www.retailscm.com/categories/Learning/Learning-Highcharts/Bar-and-column-charts/"/>
+    
+  </entry>
+  
+  <entry>
+    <title><![CDATA[第四章 02.介紹長條圖]]></title>
+    <link href="http://www.retailscm.com/Learning/Learning-Highcharts/Bar-and-column-charts/introducing-bar-charts/"/>
+    <id>http://www.retailscm.com/Learning/Learning-Highcharts/Bar-and-column-charts/introducing-bar-charts/</id>
+    <published>2015-05-16T19:00:00.000Z</published>
+    <updated>2015-05-17T08:03:33.000Z</updated>
+    <content type="html"><![CDATA[<h1 id="科技零售(RetailSCM-com)_Learning_Highcharts中文教程">科技零售(RetailSCM.com) Learning Highcharts中文教程</h1><p><em><span style="color: #808080;">版權保留，網路轉載請註明來源，謝絕紙質媒體轉載，謝謝。</span></em></p>
+<h2 id="介紹長條圖">介紹長條圖</h2><p>Highcharts提供了2種方式來定義長條圖 – 設置series的type為bar或設置柱形圖的chart.inverted選項為true（當然也可以以此選項來將長條圖轉為柱形圖）。轉換柱狀圖與長條圖只是簡單的轉換y軸和x軸的顯示方向，標籤朝向的設定並不會改變，x和y軸的實際設定也會保留，這代表著我們可以沿用上一個例子並設定為inverted選項為true來產生長條圖，如下：</p>
+<pre><code>chart: {
+    <span class="attribute">...</span><span class="built_in">. </span>,
+    <span class="keyword">type</span>: <span class="string">'column'</span>,
+    inverted: <span class="literal">true</span>
+},
+</code></pre><p>代碼的效果如下圖所示：</p>
+<a id="more"></a>
+<p><a href="/images/learning_highcharts/chart4-2-1.jpg"><img src="/images/learning_highcharts/chart4-2-1.jpg" alt="chart4-2-1"></a></p>
+<p>國家名稱的標籤朝向和對數軸標籤都有被保留下來，但實際上數值標籤已經彼此覆蓋，並且category名字也沒有對齊到正確的長條圖上。下一步我們要重設標籤的朝向來將圖形恢復正常，我們需要先簡單的轉換一下y軸和x軸的標籤朝向：</p>
+<pre><code><span class="tag">xAxis</span>: {
+    <span class="tag">categories</span>: <span class="attr_selector">[ 'United States',
+                  'Japan', 'South Korea', ... ]</span>
+},
+<span class="tag">yAxis</span>: {
+    .... ,
+    <span class="tag">labels</span>: {
+        <span class="attribute">rotation</span>: -<span class="number">45</span>,
+        <span class="attribute">align</span>: <span class="string">'right'</span>
+    }
+},
+</code></pre><p>然後我們要繼續重置column的dataLabel設定為默認設定以便於移除rotation的選項設定，並重新調整x和y軸的定位來對齊到長條圖上：</p>
+<pre><code><span class="tag">plotOptions</span>: {
+    <span class="tag">column</span>: {
+    ..... ,
+    <span class="tag">dataLabels</span>: {
+        <span class="attribute">enabled</span>: true,
+        <span class="attribute">color</span>: <span class="string">'#F4F4F4'</span>,
+        <span class="attribute">x</span>: -<span class="number">40</span>,
+        <span class="attribute">y</span>: <span class="number">5</span>,
+        <span class="attribute">formatter</span>: ....
+        <span class="attribute">style</span>: ...
+    }
+}
+</code></pre><p>下圖是修正後的結果：</p>
+<p><a href="/images/learning_highcharts/chart4-2-2.jpg"><img src="/images/learning_highcharts/chart4-2-2.jpg" alt="chart4-2-2"></a></p>
+<h2 id="讓長條圖變得更簡潔一些">讓長條圖變得更簡潔一些</h2><p>我們來將軸背景移除，讓圖表沒有任何裝飾效果使其最簡單。我們移除整個y軸並調整category名字到長條圖本身上，代碼如下：</p>
+<pre><code><span class="tag">yAxis</span>: {
+    <span class="tag">title</span>: {
+        <span class="tag">text</span>: <span class="tag">null</span>
+    },
+    <span class="tag">labels</span>: {
+        <span class="attribute">enabled</span>: false
+    },
+    <span class="attribute">gridLineWidth</span>: <span class="number">0</span>,
+    <span class="attribute">type</span>: <span class="string">'logarithmic'</span>
+},
+</code></pre><p>然後我們將國家名標籤移動到長條圖上，同時移除軸線和間隔線，然後調整標籤的對齊方式及他們的x和y定位：</p>
+<pre><code><span class="rule"><span class="attribute">xAxis</span>:<span class="value"> {
+    categories: [ <span class="string">'United States'</span>, <span class="string">'Japan'</span>,
+                  <span class="string">'South Korea'</span>, ... ],
+    lineWidth: <span class="number">0</span>,
+    tickLength: <span class="number">0</span>,
+    labels: {
+        align: <span class="string">'left'</span>,
+        x: <span class="number">0</span>,
+        y: -<span class="number">13</span>,
+        style: {
+            fontWeight: <span class="string">'bold'</span>
+        }
+    }
+},</span></span>
+</code></pre><p>當我們改變了標籤的對齊方式並將其移動到長條圖上之後，長條圖(繪圖區域)的橫向定位為了考慮舊標籤的定位已經切換到了左邊界，因此我們需要增加左邊界的spacing設定避免圖表看起來太擁擠。</p>
+<p>最後我們給繪圖區域增加一個圖片背景來填補其空白的部分，如下：</p>
+<pre><code><span class="string">chart:</span> {
+<span class="label">    renderTo:</span> <span class="string">'container'</span>,
+<span class="label">    type:</span> <span class="string">'column'</span>,
+<span class="label">    spacingLeft:</span> <span class="number">20</span>,
+<span class="label">    plotBackgroundImage:</span> <span class="string">'chartBg.png'</span>,
+<span class="label">    inverted:</span> <span class="literal">true</span>
+},
+<span class="string">title:</span> {
+<span class="label">    text:</span> <span class="literal">null</span>
+},
+</code></pre><p>現在我們的長條圖有了一個更簡潔的外觀：</p>
+<p><a href="/images/learning_highcharts/chart4-2-3.jpg"><img src="/images/learning_highcharts/chart4-2-3.jpg" alt="chart4-2-3"></a></p>
+]]></content>
+    <summary type="html">
+    <![CDATA[<h1 id="科技零售(RetailSCM-com)_Learning_Highcharts中文教程">科技零售(RetailSCM.com) Learning Highcharts中文教程</h1><p><em><span style="color: #808080;">版權保留，網路轉載請註明來源，謝絕紙質媒體轉載，謝謝。</span></em></p>
+<h2 id="介紹長條圖">介紹長條圖</h2><p>Highcharts提供了2種方式來定義長條圖 – 設置series的type為bar或設置柱形圖的chart.inverted選項為true（當然也可以以此選項來將長條圖轉為柱形圖）。轉換柱狀圖與長條圖只是簡單的轉換y軸和x軸的顯示方向，標籤朝向的設定並不會改變，x和y軸的實際設定也會保留，這代表著我們可以沿用上一個例子並設定為inverted選項為true來產生長條圖，如下：</p>
+<pre><code>chart: {
+    <span class="attribute">...</span><span class="built_in">. </span>,
+    <span class="keyword">type</span>: <span class="string">'column'</span>,
+    inverted: <span class="literal">true</span>
+},
+</code></pre><p>代碼的效果如下圖所示：</p>]]>
+    
+    </summary>
+    
+      <category term="Highcharts" scheme="http://www.retailscm.com/tags/Highcharts/"/>
+    
+      <category term="Learning" scheme="http://www.retailscm.com/categories/Learning/"/>
+    
+      <category term="Learning Highcharts" scheme="http://www.retailscm.com/categories/Learning/Learning-Highcharts/"/>
+    
+      <category term="Bar and column charts" scheme="http://www.retailscm.com/categories/Learning/Learning-Highcharts/Bar-and-column-charts/"/>
+    
+  </entry>
+  
+  <entry>
+    <title><![CDATA[第四章 01.介紹柱形圖]]></title>
+    <link href="http://www.retailscm.com/Learning/Learning-Highcharts/Bar-and-column-charts/introducing-column-charts/"/>
+    <id>http://www.retailscm.com/Learning/Learning-Highcharts/Bar-and-column-charts/introducing-column-charts/</id>
+    <published>2015-05-16T18:00:00.000Z</published>
+    <updated>2015-05-17T08:05:05.000Z</updated>
+    <content type="html"><![CDATA[<h1 id="科技零售(RetailSCM-com)_Learning_Highcharts中文教程">科技零售(RetailSCM.com) Learning Highcharts中文教程</h1><p><em><span style="color: #808080;">版權保留，網路轉載請註明來源，謝絕紙質媒體轉載，謝謝。</span></em></p>
+<h2 id="介紹柱形圖">介紹柱形圖</h2><p>柱形圖與長條圖的差異是極微小的，柱形圖的數據是垂直呈現而長條圖是水平呈現，兩者的數據都是沿著x軸來繪製並產生圖表。在本節中我們使用的數據由美國專利和商標局提供（U.S. Patent and Trademark Office）。下面的代碼是最近10年來英國的專利授權數以圖表來呈現的相關設定代碼：</p>
+<pre><code><span class="string">chart:</span> {
+<span class="label">    renderTo:</span> <span class="string">'container'</span>,
+<span class="label">    type:</span> <span class="string">'column'</span>,
+<span class="label">    borderWidth:</span> <span class="number">1</span>
+},
+<span class="string">title:</span> {
+<span class="label">    text:</span> <span class="string">'Number of Patents Granted'</span>,
+},
+<span class="string">credits:</span> {
+<span class="label">    position:</span> {
+<span class="label">        align:</span> <span class="string">'left'</span>,
+<span class="label">        x:</span> <span class="number">20</span>
+    },
+<span class="label">    href:</span> <span class="string">'http://www.uspto.gov'</span>,
+<span class="label">    text:</span> <span class="string">'Source: U.S. Patent &amp; Trademark Office'</span>
+},
+<span class="string">xAxis:</span> {
+<span class="label">    categories:</span> [
+        <span class="string">'2001'</span>, <span class="string">'2002'</span>, <span class="string">'2003'</span>, <span class="string">'2004'</span>, <span class="string">'2005'</span>,
+        <span class="string">'2006'</span>, <span class="string">'2007'</span>, <span class="string">'2008'</span>, <span class="string">'2009'</span>, <span class="string">'2010'</span>,
+        <span class="string">'2011'</span> ]
+},
+<span class="string">yAxis:</span> {
+<span class="label">    title:</span> {
+<span class="label">        text:</span> <span class="string">'No. of Patents'</span>
+    }
+},
+<span class="string">plotOptions:</span> {
+},
+<span class="string">series:</span> [{
+<span class="label">    name:</span> <span class="string">'UK'</span>,
+<span class="label">    data:</span> [ <span class="number">4351</span>, <span class="number">4190</span>, <span class="number">4028</span>, <span class="number">3895</span>, <span class="number">3553</span>,
+            <span class="number">4323</span>, <span class="number">4029</span>, <span class="number">3834</span>, <span class="number">4009</span>, <span class="number">5038</span>, <span class="number">4924</span> ]
+}]
+</code></pre><p>上面的代碼效果如下圖所示：</p>
+<a id="more"></a>
+<p><a href="/images/learning_highcharts/chart4-1-1.jpg"><img src="/images/learning_highcharts/chart4-1-1.jpg" alt="chart4-1-1"></a></p>
+<p>我們再來增加一個series – 法國(France)，如下圖：</p>
+<p><a href="/images/learning_highcharts/chart4-1-2.jpg"><img src="/images/learning_highcharts/chart4-1-2.jpg" alt="chart4-1-2"></a></p>
+<h2 id="重疊的柱形圖">重疊的柱形圖</h2><p>重疊柱形圖是另一個顯示多維度柱形圖的方式，主要原因是可以避免當series太多的時候，柱圖變的太細。柱形圖最難的部分就是當series太多時如何比較及顯示，而重疊柱形圖可以為category之間提供更多的空間，因而柱圖可以保留其基本寬度。</p>
+<p>我們可以將兩個series的一部分進行重疊，代碼如下：</p>
+<pre><code><span class="tag">plotOptions</span>: {
+    <span class="tag">series</span>: {
+        <span class="attribute">pointPadding</span>: -<span class="number">0.2</span>,
+        <span class="attribute">groupPadding</span>: <span class="number">0.3</span>
+    }
+},
+</code></pre><p>默認的柱形圖或長條圖在不同series之間的寬度為0.2%，在本例中我們設定pointPadding為一個負數，表示我們希望原本柱圖(或長條圖)之間的間距改為相互重疊顯示。groupPadding是category之間的寬度設定，在本例中則表示為2005年和2006年之間的寬度，我們在上面將其設定為了0.3已確保柱圖之間不會自動變寬，因為重疊的設定已經為我們節省了更多的空間出來。下面是設定的效果：</p>
+<p><a href="/images/learning_highcharts/chart4-1-3.jpg"><img src="/images/learning_highcharts/chart4-1-3.jpg" alt="chart4-1-3"></a></p>
+<h2 id="堆積柱形圖及分組柱形圖">堆積柱形圖及分組柱形圖</h2><p>我們可以使用堆積柱形圖來代替柱圖直接並排對齊，雖然這樣可以讓我們比較難以看清每一個series的值，但我們可以很容易的看出每一個categroy的小計並且可以輕易看出series的比例。另一個強大的特性是當我們有超過兩個的series時，我們可以選擇我們需要產生堆積柱形圖的series。</p>
+<p>讓我們來增加一個新圖表，包含UK, Germany, Japan, South Korea這四個國家。</p>
+<p><a href="/images/learning_highcharts/chart4-1-4.jpg"><img src="/images/learning_highcharts/chart4-1-4.jpg" alt="chart4-1-4"></a></p>
+<p>可以看出日本的專利授權數遠高於其他的國家，所以讓我們再來產生一個複合的柱圖比對：歐洲VS亞洲，下面為代碼：</p>
+<pre><code><span class="atom">plotOptions</span>: {
+    <span class="atom">column</span>: {
+        <span class="atom">stacking</span>: <span class="string">'normal'</span>
+    }
+},
+<span class="atom">series</span>: [{
+    <span class="atom">name</span>: <span class="string">'UK'</span>,
+    <span class="atom">data</span>: [ <span class="number">4351</span>, <span class="number">4190</span>, <span class="number">4028</span>, .... ],
+    <span class="atom">stack</span>: <span class="string">'Europe'</span>
+}, {
+    <span class="atom">name</span>: <span class="string">'Germany'</span>,
+    <span class="atom">data</span>: [ <span class="number">11894</span>, <span class="number">11957</span>, <span class="number">12140</span>, ... ],
+    <span class="atom">stack</span>: <span class="string">'Europe'</span>
+}, {
+    <span class="atom">name</span>: <span class="string">'S.Korea'</span>,
+    <span class="atom">data</span>: [ <span class="number">3763</span>, <span class="number">4009</span>, <span class="number">4132</span>, ... ],
+    <span class="atom">stack</span>: <span class="string">'Asia'</span>
+}, {
+    <span class="atom">name</span>: <span class="string">'Japan'</span>,
+    <span class="atom">data</span>: [ <span class="number">34890</span>, <span class="number">36339</span>, <span class="number">37248</span>, ... ],
+    <span class="atom">stack</span>: <span class="string">'Asia'</span>
+}]
+</code></pre><p>我們聲明plotOptions中的stacking選項為normal，然後為每一個series設定一個堆棧分組名稱如Europe和Asia，設定會產生如下圖表：</p>
+<p><a href="/images/learning_highcharts/chart4-1-5.jpg"><img src="/images/learning_highcharts/chart4-1-5.jpg" alt="chart4-1-5"></a></p>
+<p>我們可以看到圖表中由4個柱圖減少為2個，並且每個柱圖中都合併了2個series，第一個柱圖是歐洲組，第二個柱圖是亞洲組。</p>
+<h2 id="同時顯示堆積柱形圖與單柱圖">同時顯示堆積柱形圖與單柱圖</h2><p>在上一節中我們大家都認為堆積柱形圖與分組柱形圖在數據呈現面是有它的優勢的，當有時單獨的一個series自成分組並與多個series形成的分組來組成一個category時也具有相同的優勢。Highcharts提供我們這種可能性來混合由多個series分組的堆積柱形圖與單個series的柱圖。</p>
+<p>讓我們來看一個將多個柱圖分組的堆積圖和單獨柱圖混合的例子。首先移除每一個series的堆積分組指定，這意味著所有的series會形成一個堆積在一起的柱圖。然後我們加入一個新的series – 美國，然後手動聲明stacking選項為null來覆蓋掉plotOptions中的默認的全局設定：</p>
+<pre><code><span class="atom">plotOptions</span>: {
+    <span class="atom">column</span>: {
+        <span class="atom">stacking</span>: <span class="string">'normal'</span>
+    }
+},
+<span class="atom">series</span>: [{
+    <span class="atom">name</span>: <span class="string">'UK'</span>,
+    <span class="atom">data</span>: [ <span class="number">4351</span>, <span class="number">4190</span>, <span class="number">4028</span>, .... ]
+}, {
+    <span class="atom">name</span>: <span class="string">'Germany'</span>,
+    <span class="atom">data</span>: [ <span class="number">11894</span>, <span class="number">11957</span>, <span class="number">12140</span>, ... ]
+}, {
+    <span class="atom">name</span>: <span class="string">'S.Korea'</span>,
+    <span class="atom">data</span>: [ <span class="number">3763</span>, <span class="number">4009</span>, <span class="number">4132</span>, ... ]
+}, {
+    <span class="atom">name</span>: <span class="string">'Japan'</span>,
+    <span class="atom">data</span>: [ <span class="number">34890</span>, <span class="number">36339</span>, <span class="number">37248</span>, ... ]
+}, {
+    <span class="atom">name</span>: <span class="string">'US'</span>,
+    <span class="atom">data</span>: [ <span class="number">98655</span>, <span class="number">97125</span>, <span class="number">98590</span>, ... ],
+    <span class="atom">stacking</span>: <span class="atom">null</span>
+}]
+</code></pre><p>新的series組合效果如下圖：</p>
+<p><a href="/images/learning_highcharts/chart4-1-6.jpg"><img src="/images/learning_highcharts/chart4-1-6.jpg" alt="chart4-1-6"></a></p>
+<p>前四個series – 英國，德國，韓國和日本彼此堆積在一起成為一個獨立的堆積柱圖，美國則獨立為一根柱圖。我們可以容易的觀察到四個國家加起來的專利數量還不到美國的三分之二（美國幾乎是英國專利數量的25倍）</p>
+<h2 id="百分數版本的堆積柱形圖">百分數版本的堆積柱形圖</h2><p>另一種方式是我們可以看到用每個國家的百分佔比來組成堆積柱形圖。我們手動移除美國series的stacking設定之後，再設定柱形圖的全局變量stacking為percent則可達成此效果：</p>
+<pre><code><span class="tag">plotOptions</span>: {
+    <span class="tag">column</span>: {
+        <span class="attribute">stacking</span>: <span class="string">'percent'</span>
+    }
+}
+</code></pre><p>全部的series都堆積為一個單獨的柱圖，並且他們的值都被轉為百分比，如下圖所示：</p>
+<p><a href="/images/learning_highcharts/chart4-1-7.jpg"><img src="/images/learning_highcharts/chart4-1-7.jpg" alt="chart4-1-7"></a></p>
+<h2 id="調整柱形圖的顏色及標籤">調整柱形圖的顏色及標籤</h2><p>讓我們來新建一個柱形圖，這次我們將專利授權數前十名的國家都加入其中，代碼如下：</p>
+<pre><code><span class="string">chart:</span> {
+<span class="label">    renderTo:</span> <span class="string">'container'</span>,
+<span class="label">    type:</span> <span class="string">'column'</span>,
+<span class="label">    borderWidth:</span> <span class="number">1</span>
+},
+<span class="string">title:</span> {
+<span class="label">    text:</span> <span class="string">'Number of Patents Filed in 2011'</span>
+},
+<span class="string">credits:</span> { ... },
+<span class="string">xAxis:</span> {
+<span class="label">    categories:</span> [
+        <span class="string">'United States'</span>, <span class="string">'Japan'</span>,
+        <span class="string">'South Korea'</span>, <span class="string">'Germany'</span>, <span class="string">'Taiwan'</span>,
+        <span class="string">'Canada'</span>, <span class="string">'France'</span>, <span class="string">'United Kingdom'</span>,
+        <span class="string">'China'</span>, <span class="string">'Italy'</span> ]
+},
+<span class="string">yAxis:</span> {
+<span class="label">    title:</span> {
+<span class="label">        text:</span> <span class="string">'No. of Patents'</span>
+    }
+},
+<span class="string">series:</span> [{
+<span class="label">    showInLegend:</span> <span class="literal">false</span>,
+<span class="label">    data:</span> [ <span class="number">121261</span>, <span class="number">48256</span>, <span class="number">13239</span>, <span class="number">12968</span>, <span class="number">9907</span>,
+            <span class="number">5754</span>, <span class="number">5022</span>, <span class="number">4924</span>, <span class="number">3786</span>, <span class="number">2333</span> ]
+}]
+</code></pre><p>代碼中的效果如下圖所示：</p>
+<p><a href="/images/learning_highcharts/chart4-1-8.jpg"><img src="/images/learning_highcharts/chart4-1-8.jpg" alt="chart4-1-8"></a></p>
+<p>在這張圖中我們希望改變幾個部分：</p>
+<p>首先部分國家名被折行，為了避免這種情況，我們可以在x軸標籤上使用rotation選項，如下：</p>
+<pre><code><span class="tag">xAxis</span>: {
+    <span class="tag">categories</span>: <span class="attr_selector">[
+        'United States', 'Japan',
+        'South Korea', ... ]</span>,
+    <span class="tag">labels</span>: {
+        <span class="attribute">rotation</span>: -<span class="number">45</span>,
+        <span class="attribute">align</span>: <span class="string">'right'</span>
+    }
+},
+</code></pre><p>其次，最大值按照美國的規模來與其他國家進行比較，所以我們不能真的這樣去定義它們的值，為了解決這個問題，我們可以在y軸上定義刻度為logarithmic，如下：</p>
+<pre><code><span class="tag">yAxis</span>: {
+    <span class="attribute">title</span>: ... ,
+    <span class="attribute">type</span>: <span class="string">'logarithmic'</span>
+},
+</code></pre><p>最後，我們希望可以演著柱圖將各國的數值都顯示在上面，並對每個國家的柱圖使用不同的顏色來美化，如下：</p>
+<pre><code>plotOptions: {
+    column: {
+        colorByPoint: <span class="literal">true</span>,
+        dataLabels: {
+            enabled: <span class="literal">true</span>,
+            rotation: -<span class="number">90</span>,
+            y: <span class="number">25</span>,
+            color: <span class="string">'#F4F4F4'</span>,
+            formatter: <span class="function"><span class="keyword">function</span><span class="params">()</span> </span>{
+                <span class="keyword">return</span>
+                Highcharts.numberFormat(<span class="keyword">this</span>.y, <span class="number">0</span>);
+            },
+            x: <span class="number">10</span>,
+            style: {
+                fontWeight: <span class="string">'bold'</span>
+            }
+        }
+    }
+},
+</code></pre><p>下圖是經過了我們的優化後的圖表：</p>
+<p><a href="/images/learning_highcharts/chart4-1-9.jpg"><img src="/images/learning_highcharts/chart4-1-9.jpg" alt="chart4-1-9"></a></p>
+]]></content>
+    <summary type="html">
+    <![CDATA[<h1 id="科技零售(RetailSCM-com)_Learning_Highcharts中文教程">科技零售(RetailSCM.com) Learning Highcharts中文教程</h1><p><em><span style="color: #808080;">版權保留，網路轉載請註明來源，謝絕紙質媒體轉載，謝謝。</span></em></p>
+<h2 id="介紹柱形圖">介紹柱形圖</h2><p>柱形圖與長條圖的差異是極微小的，柱形圖的數據是垂直呈現而長條圖是水平呈現，兩者的數據都是沿著x軸來繪製並產生圖表。在本節中我們使用的數據由美國專利和商標局提供（U.S. Patent and Trademark Office）。下面的代碼是最近10年來英國的專利授權數以圖表來呈現的相關設定代碼：</p>
+<pre><code><span class="string">chart:</span> {
+<span class="label">    renderTo:</span> <span class="string">'container'</span>,
+<span class="label">    type:</span> <span class="string">'column'</span>,
+<span class="label">    borderWidth:</span> <span class="number">1</span>
+},
+<span class="string">title:</span> {
+<span class="label">    text:</span> <span class="string">'Number of Patents Granted'</span>,
+},
+<span class="string">credits:</span> {
+<span class="label">    position:</span> {
+<span class="label">        align:</span> <span class="string">'left'</span>,
+<span class="label">        x:</span> <span class="number">20</span>
+    },
+<span class="label">    href:</span> <span class="string">'http://www.uspto.gov'</span>,
+<span class="label">    text:</span> <span class="string">'Source: U.S. Patent &amp; Trademark Office'</span>
+},
+<span class="string">xAxis:</span> {
+<span class="label">    categories:</span> [
+        <span class="string">'2001'</span>, <span class="string">'2002'</span>, <span class="string">'2003'</span>, <span class="string">'2004'</span>, <span class="string">'2005'</span>,
+        <span class="string">'2006'</span>, <span class="string">'2007'</span>, <span class="string">'2008'</span>, <span class="string">'2009'</span>, <span class="string">'2010'</span>,
+        <span class="string">'2011'</span> ]
+},
+<span class="string">yAxis:</span> {
+<span class="label">    title:</span> {
+<span class="label">        text:</span> <span class="string">'No. of Patents'</span>
+    }
+},
+<span class="string">plotOptions:</span> {
+},
+<span class="string">series:</span> [{
+<span class="label">    name:</span> <span class="string">'UK'</span>,
+<span class="label">    data:</span> [ <span class="number">4351</span>, <span class="number">4190</span>, <span class="number">4028</span>, <span class="number">3895</span>, <span class="number">3553</span>,
+            <span class="number">4323</span>, <span class="number">4029</span>, <span class="number">3834</span>, <span class="number">4009</span>, <span class="number">5038</span>, <span class="number">4924</span> ]
+}]
+</code></pre><p>上面的代碼效果如下圖所示：</p>]]>
+    
+    </summary>
+    
+      <category term="Highcharts" scheme="http://www.retailscm.com/tags/Highcharts/"/>
+    
+      <category term="Learning" scheme="http://www.retailscm.com/categories/Learning/"/>
+    
+      <category term="Learning Highcharts" scheme="http://www.retailscm.com/categories/Learning/Learning-Highcharts/"/>
+    
+      <category term="Bar and column charts" scheme="http://www.retailscm.com/categories/Learning/Learning-Highcharts/Bar-and-column-charts/"/>
+    
+  </entry>
+  
+  <entry>
+    <title><![CDATA[第四章 長條圖與柱形圖]]></title>
+    <link href="http://www.retailscm.com/Learning/Learning-Highcharts/Bar-and-column-charts/bar-and-column-charts/"/>
+    <id>http://www.retailscm.com/Learning/Learning-Highcharts/Bar-and-column-charts/bar-and-column-charts/</id>
+    <published>2015-05-16T17:00:00.000Z</published>
+    <updated>2015-05-17T07:38:50.000Z</updated>
+    <content type="html"><![CDATA[<h1 id="科技零售(RetailSCM-com)_Learning_Highcharts中文教程">科技零售(RetailSCM.com) Learning Highcharts中文教程</h1><p><em><span style="color: #808080;">版權保留，網路轉載請註明來源，謝絕紙質媒體轉載，謝謝。</span></em></p>
+<h2 id="第四章_長條圖與柱形圖">第四章 長條圖與柱形圖</h2><p>在本章中，我們會學習柱形圖及其設定，然後我們進一步了解堆積柱形圖的設定，之後我們會再使用長條圖來實現相同的例子。我們還會學習如何美化長條圖並增加一些刻度來將其變為水平刻度圖(horizontal gauge charts)。最後，我們會以一個網頁上的複合圖表來總結經驗。</p>
+<p>在本章中我們會涵蓋以下內容：</p>
+<ul>
+<li>介紹柱形圖</li>
+<li>堆積柱形圖及分組柱形圖</li>
+<li>調整柱形圖的顏色及標籤</li>
+<li>介紹長條圖</li>
+<li>創建一個鏡圖(mirror chart)</li>
+<li>將一個長條圖轉為水平刻度圖</li>
+<li>複合圖表</li>
+</ul>
+<p><a href="/Learning/Learning-Highcharts/Bar-and-column-charts/introducing-column-charts/" title="01.介紹柱形圖">介紹柱形圖</a></p>
+<p><a href="/Learning/Learning-Highcharts/Bar-and-column-charts/introducing-bar-charts/" title="02.介紹長條圖">介紹長條圖</a></p>
+<p><a href="/Learning/Learning-Highcharts/Bar-and-column-charts/constructing-a-mirror-chart/" title="03.創建一個鏡圖(mirror chart)">創建一個鏡圖(mirror chart)</a></p>
+<p><a href="/Learning/Learning-Highcharts/Bar-and-column-charts/converting-a-single-bar-chart-into-a-horizontal-gauge-chart/" title="04.將一個長條圖轉為水平刻度圖">將一個長條圖轉為水平刻度圖</a></p>
+<p><a href="/Learning/Learning-Highcharts/Bar-and-column-charts/sticking-the-charts-together/" title="05.複合圖表">複合圖表</a></p>
+]]></content>
+    <summary type="html">
+    <![CDATA[<h1 id="科技零售(RetailSCM-com)_Learning_Highcharts中文教程">科技零售(RetailSCM.com) Learning Highcharts中文教程</h1><p><em><span style="color: #808080;">版權]]>
+    </summary>
+    
+      <category term="Highcharts" scheme="http://www.retailscm.com/tags/Highcharts/"/>
+    
+      <category term="Learning" scheme="http://www.retailscm.com/categories/Learning/"/>
+    
+      <category term="Learning Highcharts" scheme="http://www.retailscm.com/categories/Learning/Learning-Highcharts/"/>
+    
+      <category term="Bar and column charts" scheme="http://www.retailscm.com/categories/Learning/Learning-Highcharts/Bar-and-column-charts/"/>
+    
+  </entry>
+  
+  <entry>
+    <title><![CDATA[第三章 04.散點圖和面積圖的組合]]></title>
+    <link href="http://www.retailscm.com/Learning/Learning-Highcharts/Line-area-and-scatter-charts/combining-scatter-and-area-series/"/>
+    <id>http://www.retailscm.com/Learning/Learning-Highcharts/Line-area-and-scatter-charts/combining-scatter-and-area-series/</id>
+    <published>2015-05-15T22:00:00.000Z</published>
+    <updated>2015-05-17T07:57:40.000Z</updated>
+    <content type="html"><![CDATA[<h1 id="科技零售(RetailSCM-com)_Learning_Highcharts中文教程">科技零售(RetailSCM.com) Learning Highcharts中文教程</h1><p><em><span style="color: #808080;">版權保留，網路轉載請註明來源，謝絕紙質媒體轉載，謝謝。</span></em></p>
+<h2 id="散點圖和面積圖的組合">散點圖和面積圖的組合</h2><p>Highcharts也支援散點圖表用以繪製數據的走勢。在這裡我們使用不同的散點series使我們的圖表有點像一張海報。</p>
+<p>首先，我們使用0-14年齡組數據的一個子集，並設置scatter類型：</p>
+<pre><code><span class="atom">name</span>: <span class="string">'Ages 0 to 14'</span>,
+<span class="atom">type</span>: <span class="string">'scatter'</span>,
+<span class="atom">data</span>: [ [ <span class="number">1982</span>, <span class="number">23</span> ], [ <span class="number">1989</span>, <span class="number">19</span> ],
+        [ <span class="number">2007</span>, <span class="number">14</span> ], [ <span class="number">2004</span>, <span class="number">14</span> ],
+        [ <span class="number">1997</span>, <span class="number">15</span> ], [ <span class="number">2002</span>, <span class="number">14</span> ],
+        [ <span class="number">2009</span>, <span class="number">13</span> ], [ <span class="number">2010</span>, <span class="number">13</span> ] ]
+</code></pre><p>接下來設置散點series數據標籤可用，並確保標記形狀一直為 ‘circle’，如下：</p>
+<a id="more"></a>
+<pre><code><span class="string">plotOptions:</span> {
+<span class="label">    scatter:</span> {
+<span class="label">        marker:</span> {
+<span class="label">            symbol:</span> <span class="string">'circle'</span>
+        },
+<span class="label">        dataLabels:</span> {
+<span class="label">            enabled:</span> <span class="literal">true</span>
+        }
+    }
+}
+</code></pre><p>前面的代碼片段的效果如下圖：</p>
+<p><a href="/images/learning_highcharts/chart3-4-1.jpg"><img src="/images/learning_highcharts/chart3-4-1.jpg" alt="chart3-4-1"></a></p>
+<p><em>Highcharts提供了一series的標記符號，並支援使用者使用他們自己提供的標記圖示（見第二章 Highcharts配置）。支援的標記符號有：圓形，正方形，菱形，三角形和倒三角。</em></p>
+<h2 id="使用風格美化圖表">使用風格美化圖表</h2><p>下一步使用 radius 屬性將每個離散的點美化為成氣泡樣式，並手動設置數據標籤的字體大小與數據成比例。然後使用verticalAlign將標籤在變大了的散點內部居中顯示。我們可以使用數據點的屬性來調整每個散點為不同的大小顯示效果。要做到以上的部分則我們需要改變series數據中點對象的定義，如下：</p>
+<pre><code><span class="string">plotOptions:</span> {
+<span class="label">    scatter:</span> {
+<span class="label">        marker:</span> {
+<span class="label">            symbol:</span> <span class="string">'circle'</span>
+        },
+<span class="label">        dataLabels:</span> {
+<span class="label">            enabled:</span> <span class="literal">true</span>,
+<span class="label">            verticalAlign:</span> <span class="string">'middle'</span>
+        }
+    }
+},
+<span class="string">data:</span> [ {
+<span class="label">    dataLabels:</span> {
+<span class="label">        style:</span> {
+<span class="label">            fontSize:</span> <span class="string">'25px'</span>
+        }
+    },
+<span class="label">    marker:</span> { <span class="string">radius:</span> <span class="number">31</span> },
+<span class="label">    y:</span> <span class="number">23</span>,
+<span class="label">    x:</span> <span class="number">1982</span>
+}, {
+<span class="label">    dataLabels:</span> {
+<span class="label">        style:</span> {
+<span class="label">            fontSize:</span> <span class="string">'22px'</span>
+        }
+    },
+<span class="label">    marker:</span> { <span class="string">radius:</span> <span class="number">23</span> },
+<span class="label">    y:</span> <span class="number">19</span>,
+<span class="label">    x:</span> <span class="number">1989</span>
+}, .....
+</code></pre><p>下面的截圖顯示了數據點序列隨著百分比數值的變化，從一個大的標記和字體逐漸變得小：</p>
+<p><a href="/images/learning_highcharts/chart3-4-2.jpg"><img src="/images/learning_highcharts/chart3-4-2.jpg" alt="chart3-4-2"></a></p>
+<p>上面的圖仍有兩個問題。1.散點series的顏色與標記中灰色的文本標籤不協調導致難以分辨。</p>
+<p>為瞭解決這一問題，我們用如下梯度設置將散點series改為更清爽的顏色。</p>
+<pre><code><span class="tag">color</span>: {
+    <span class="tag">linearGradient</span>: { <span class="attribute">x1</span>: <span class="number">0</span>, <span class="attribute">y1</span>: <span class="number">0</span>, <span class="attribute">x2</span>: <span class="number">0</span>, <span class="attribute">y2</span>: <span class="number">1</span> },
+    <span class="attribute">stops</span>: [ [ <span class="number">0</span>, <span class="string">'#FF944D'</span> ],
+             [ <span class="number">1</span>, <span class="string">'#FFC299'</span> ] ]
+},
+</code></pre><p>然後在plotOptions中為離散點設置一個比較深的輪廓，如下：</p>
+<pre><code><span class="tag">plotOptions</span>: {
+    <span class="tag">scatter</span>: {
+        <span class="tag">marker</span>: {
+            <span class="attribute">symbol</span>: <span class="string">'circle'</span>,
+            <span class="attribute">lineColor</span>: <span class="string">'#E65C00'</span>,
+            <span class="attribute">lineWidth</span>: <span class="number">1</span>
+        },
+</code></pre><p>第二個問題是，數據點在坐標軸結束時被遮擋住，這個問題可以通過增加兩個坐標軸額外的空白解決：</p>
+<pre><code><span class="tag">yAxis</span>: {
+    .....,
+    <span class="tag">maxPadding</span>: <span class="tag">0</span><span class="class">.09</span>
+},
+<span class="tag">xAxis</span>: {
+    .....,
+    <span class="tag">maxPadding</span>: <span class="tag">0</span><span class="class">.02</span>
+}
+</code></pre><p>以下是新的圖表一覽：</p>
+<p><a href="/images/learning_highcharts/chart3-4-3.jpg"><img src="/images/learning_highcharts/chart3-4-3.jpg" alt="chart3-4-3"></a></p>
+<p>下一部分我們會新增一個logo和一些裝飾的文字。向圖表引入圖片有兩種途徑：plotBackgroundImage選項和renderer.image API調用。</p>
+<p>plotBackgroundImage會將整個圖片設為圖表的背景，這並不是我們打算要做的。</p>
+<p>renderer.image方法在圖片位置和大小上提供了更多的控制可能性。下面是當創建好圖表後的調用：</p>
+<pre><code><span class="built_in">var</span> chart <span class="subst">=</span> <span class="literal">new</span> Highcharts<span class="built_in">.</span>Chart({
+<span class="attribute">...</span>
+});
+chart<span class="built_in">.</span>renderer<span class="built_in">.</span>image(<span class="string">'logo.png'</span>, <span class="number">240</span>, <span class="number">10</span>, <span class="number">187</span>, <span class="number">92</span>)<span class="built_in">.</span>add();
+</code></pre><p>logo.png是logo圖片檔的路徑，接下來的兩個參數是logo將顯示在圖表中的x和y的位置（從0開始，0是左上角）；最後兩個參數是圖片檔的寬度和高度。image主要返回一個元素物件，而後面的.add將返回的圖片物件放入到renderer中。<br>至於裝飾的文字，樣式為一個紅色圓圈中的大小不同的白色加粗文字。他們都是通過renderer創建的。下面的程式片段中第一個renderer的調用創建了一個紅色的圓圈，x和y的位置以及半徑。然後直接通過attr方法設置SVG屬性。接下來的三個renderer調用用來創建暈圈中的文字，使用了css方法設置字體大小，樣式和樣色。我們還會在第七章- Highcahrts APIs中再次見到charts.renderer方法。</p>
+<pre><code><span class="comment">// Red circle at the back</span>
+chart.renderer.circle(<span class="number">220</span>, <span class="number">65</span>, <span class="number">45</span>).attr({
+    fill: <span class="string">'#FF7575'</span>,
+    <span class="string">'fill-opacity'</span>: <span class="number">0.6</span>,
+    stroke: <span class="string">'#B24747'</span>,
+    <span class="string">'stroke-width'</span>: <span class="number">1</span>
+}).add();
+<span class="comment">// Large percentage text with special font</span>
+chart.renderer.text(<span class="string">'37.5%'</span>, <span class="number">182</span>, <span class="number">63</span>).css({
+    fontWeight: <span class="string">'bold'</span>,
+    <span class="keyword">color</span>: <span class="preprocessor">#FFFFFF',</span>
+    fontSize: <span class="string">'30px'</span>,
+    fontFamily: <span class="string">'palatino'</span>
+}).add();
+<span class="comment">// Align subject in the circle</span>
+chart.renderer.text(<span class="string">'65 and over'</span>, <span class="number">184</span>, <span class="number">82</span>).css({
+    <span class="string">'fontWeight'</span>: <span class="string">'bold'</span>,
+}).add();
+chart.renderer.text(<span class="string">'by 2050'</span>, <span class="number">193</span>, <span class="number">96</span>).css({
+    <span class="string">'fontWeight'</span>: <span class="string">'bold'</span>,
+}).add();
+</code></pre><p>最後我們將圖例（legend box）移到圖表的頂部。為了將圖例定位到繪圖區域，我們需要設置floating屬性為true，這樣會強制圖例為固定佈局模式。然後移除默認的邊框線，並設置圖例中的條目垂直排列：</p>
+<pre><code><span class="tag">legend</span>: {
+    <span class="attribute">floating</span>: true,
+    <span class="attribute">verticalAlign</span>: <span class="string">'top'</span>,
+    <span class="attribute">align</span>: <span class="string">'center'</span>,
+    <span class="attribute">x</span>: <span class="number">130</span>,
+    <span class="attribute">y</span>: <span class="number">40</span>,
+    <span class="attribute">borderWidth</span>: <span class="number">0</span>,
+    <span class="attribute">layout</span>: <span class="string">'vertical'</span>,
+},
+</code></pre><p>下面是加上裝飾後的最終效果：</p>
+<p><a href="/images/learning_highcharts/chart3-4-4.jpg"><img src="/images/learning_highcharts/chart3-4-4.jpg" alt="chart3-4-4"></a></p>
+<h2 id="總結">總結</h2><p>在本章中我們探索了曲線圖，面積圖和散點圖的用法。我們可以發現Highcharts能夠提供非常大的靈活性以便做出類似海報的圖表。在下一章中，我們將會學到如何繪製條狀圖和柱狀圖，以及他們的相關選項。</p>
+]]></content>
+    <summary type="html">
+    <![CDATA[<h1 id="科技零售(RetailSCM-com)_Learning_Highcharts中文教程">科技零售(RetailSCM.com) Learning Highcharts中文教程</h1><p><em><span style="color: #808080;">版權保留，網路轉載請註明來源，謝絕紙質媒體轉載，謝謝。</span></em></p>
+<h2 id="散點圖和面積圖的組合">散點圖和面積圖的組合</h2><p>Highcharts也支援散點圖表用以繪製數據的走勢。在這裡我們使用不同的散點series使我們的圖表有點像一張海報。</p>
+<p>首先，我們使用0-14年齡組數據的一個子集，並設置scatter類型：</p>
+<pre><code><span class="atom">name</span>: <span class="string">'Ages 0 to 14'</span>,
+<span class="atom">type</span>: <span class="string">'scatter'</span>,
+<span class="atom">data</span>: [ [ <span class="number">1982</span>, <span class="number">23</span> ], [ <span class="number">1989</span>, <span class="number">19</span> ],
+        [ <span class="number">2007</span>, <span class="number">14</span> ], [ <span class="number">2004</span>, <span class="number">14</span> ],
+        [ <span class="number">1997</span>, <span class="number">15</span> ], [ <span class="number">2002</span>, <span class="number">14</span> ],
+        [ <span class="number">2009</span>, <span class="number">13</span> ], [ <span class="number">2010</span>, <span class="number">13</span> ] ]
+</code></pre><p>接下來設置散點series數據標籤可用，並確保標記形狀一直為 ‘circle’，如下：</p>]]>
+    
+    </summary>
+    
+      <category term="Highcharts" scheme="http://www.retailscm.com/tags/Highcharts/"/>
+    
+      <category term="Learning" scheme="http://www.retailscm.com/categories/Learning/"/>
+    
+      <category term="Learning Highcharts" scheme="http://www.retailscm.com/categories/Learning/Learning-Highcharts/"/>
+    
+      <category term="Line area and scatter charts" scheme="http://www.retailscm.com/categories/Learning/Learning-Highcharts/Line-area-and-scatter-charts/"/>
+    
+  </entry>
+  
+  <entry>
+    <title><![CDATA[第三章 03.折線圖和面積圖的組合]]></title>
+    <link href="http://www.retailscm.com/Learning/Learning-Highcharts/Line-area-and-scatter-charts/mixing-line-and-area-series/"/>
+    <id>http://www.retailscm.com/Learning/Learning-Highcharts/Line-area-and-scatter-charts/mixing-line-and-area-series/</id>
+    <published>2015-05-15T21:00:00.000Z</published>
+    <updated>2015-05-17T07:58:11.000Z</updated>
+    <content type="html"><![CDATA[<h1 id="科技零售(RetailSCM-com)_Learning_Highcharts中文教程">科技零售(RetailSCM.com) Learning Highcharts中文教程</h1><p><em><span style="color: #808080;">版權保留，網路轉載請註明來源，謝絕紙質媒體轉載，謝謝。</span></em></p>
+<h2 id="折線圖和面積圖的組合">折線圖和面積圖的組合</h2><p>在這一部分中我們將探索將不同的類型圖綜合在一起，即混合折線和面積圖：</p>
+<ul>
+<li>投影圖</li>
+<li>混合面積曲線圖和階梯線圖</li>
+<li>研究堆積面積曲線圖圖，將兩個面積曲線圖從上部累加</li>
+</ul>
+<h2 id="模擬一個投影圖">模擬一個投影圖</h2><p>投影圖分含使用真實數據的面積曲線部分和投影數據的虛線延續部分。所以我們將數據分為兩個series，一個是真實數據，另一個是投影數據。下面是series配置的代碼。數據基於國家研究所的人口和社會安全研究報告(<a href="http://www.ipss.go.jp/pp-newest/e/ppfj02/ppfj02.pdf" target="_blank" rel="external">http://www.ipss.go.jp/pp-newest/e/ppfj02/ppfj02.pdf</a>)</p>
+<a id="more"></a>
+<pre><code><span class="atom">series</span>: [{
+    <span class="atom">name</span>: <span class="string">'project data'</span>,
+    <span class="atom">type</span>: <span class="string">'spline'</span>,
+    <span class="atom">showInLegend</span>: <span class="atom">false</span>,
+    <span class="atom">lineColor</span>: <span class="string">'#145252'</span>,
+    <span class="atom">dashStyle</span>: <span class="string">'Dash'</span>,
+    <span class="atom">data</span>: [ [ <span class="number">2010</span>, <span class="number">23</span> ], [ <span class="number">2011</span>, <span class="number">22.8</span> ],
+        ... [ <span class="number">2024</span>, <span class="number">28.5</span> ] ]
+}]
+</code></pre><p>未來的series配置為虛線曲線，並且禁用了圖例，因為我們想將這兩個series呈現為同一個series，即一個真實數據，一個未來投影數據。將未來series的顏色設置為與第一個series相同，最後再結構化數據。由於我們用 pointStart 屬性定義了x軸時間的部分，所以需要對齊2010年後的投影數據。下面有兩個途徑定義時間數據為連續的形式，如下：</p>
+<ul>
+<li>為第二個series輸入null值，用以對齊真實數據</li>
+<li>用元素集定義第二series，包括時間和投影數據<br>下面使用第二種途徑，因為呈現比較簡單。下面是未來數據series的截圖：</li>
+</ul>
+<p><a href="/images/learning_highcharts/chart3-3-1.jpg"><img src="/images/learning_highcharts/chart3-3-1.jpg" alt="chart3-3-1"></a></p>
+<p>真實數據series與繪製面積圖章節開始的圖形基本一致，除了沒有數據點標記和數據標籤的美化。下一步就是聯合兩個series，如下：</p>
+<pre><code><span class="title">series</span>: [{
+    name: 'real <span class="typedef"><span class="keyword">data</span>',</span>
+    <span class="typedef"><span class="keyword">type</span>: 'areaspline',</span>
+    ....
+}, {
+    name: 'project <span class="typedef"><span class="keyword">data</span>',</span>
+    <span class="typedef"><span class="keyword">type</span>: 'spline',</span>
+    ....
+}]
+</code></pre><p>由於兩個series的數據沒有重疊，因此產生一個平滑的投影圖表：</p>
+<p><a href="/images/learning_highcharts/chart3-3-2.jpg"><img src="/images/learning_highcharts/chart3-3-2.jpg" alt="chart3-3-2"></a></p>
+<h2 id="曲線圖與階梯線圖對比">曲線圖與階梯線圖對比</h2><p>在這部分中我們將要繪製一個曲線圖和一個階梯線圖。階梯線圖是水準和垂直走向的，僅僅按照數據的變化產生變化。通常用來展現離散的數據，即數據不是連續平緩的變動。</p>
+<p>為了展示階梯線圖，我們繼續用之前的曲線圖例子。首先，移除 showInLegend 和 dataLables 屬性以便顯示圖例和數據標籤。</p>
+<p>接下來加入一個新的series - 年齡0-14歲 ，樣式為預設折線圖。然後修改為階梯線圖。下面是配置的代碼：</p>
+<pre><code><span class="tag">series</span>: <span class="attr_selector">[{
+    name: 'Ages 65 and over',
+    type: 'areaspline',
+    lineColor: '#145252',
+    pointStart: 1980,
+    fillColor: {
+        ....
+    },
+    data: [ 9, 9, 9, 10, ...., 23 ]</span>
+}, {
+    <span class="attribute">name</span>: <span class="string">'Ages 0 to 14'</span>,
+    <span class="comment">// default type is line series</span>
+    <span class="attribute">step</span>: true,
+    <span class="attribute">pointStart</span>: <span class="number">1980</span>,
+    <span class="attribute">data</span>: [ <span class="number">24</span>, <span class="number">23</span>, <span class="number">23</span>, <span class="number">23</span>, <span class="number">22</span>, <span class="number">22</span>, <span class="number">21</span>,
+            <span class="number">20</span>, <span class="number">20</span>, <span class="number">19</span>, <span class="number">18</span>, <span class="number">18</span>, <span class="number">17</span>, <span class="number">17</span>, <span class="number">16</span>, <span class="number">16</span>, <span class="number">16</span>,
+            <span class="number">15</span>, <span class="number">15</span>, <span class="number">15</span>, <span class="number">15</span>, <span class="number">14</span>, <span class="number">14</span>, <span class="number">14</span>, <span class="number">14</span>, <span class="number">14</span>, <span class="number">14</span>,
+            <span class="number">14</span>, <span class="number">14</span>, <span class="number">13</span>, <span class="number">13</span> ]
+}]
+</code></pre><p>下面是階梯線圖的例子：</p>
+<p><a href="/images/learning_highcharts/chart3-3-3.jpg"><img src="/images/learning_highcharts/chart3-3-3.jpg" alt="chart3-3-3"></a></p>
+<h2 id="擴展到一個堆積面積圖">擴展到一個堆積面積圖</h2><p>本節中我們會將兩個series轉變為面積曲線圖，並將他們從上部堆積在一起，創建一個堆積面積圖。 使我們能夠在此圖表中粗略的觀察到數量，比例和總幅度。</p>
+<p>讓我們來把第二個series改為另一個 areaspline 類型：</p>
+<pre><code><span class="attribute">name</span>: <span class="string">'Ages 0 to 14',</span>
+<span class="attribute">type</span>: <span class="string">'areaspline',</span>
+<span class="attribute">pointStart</span>: <span class="string">1980,</span>
+<span class="attribute">data</span>: <span class="string">[ 24, 23, 23, ... ]</span>
+</code></pre><p>將 stacking 選項設為 ‘normal’ 做為 areaspline的默認設置，如下：</p>
+<pre><code><span class="tag">plotOptions</span>:{
+    <span class="tag">areaspline</span>:{
+        <span class="attribute">stacking</span>:<span class="string">'normal'</span>
+    }
+}
+</code></pre><p>這樣就使得兩個面積圖由上部互相堆疊起來。以此我們可以觀察到兩個年齡組的人口互相補償達到總人口的33%左右，而65歲及以上的年齡組將會在稍後階段快速增長。</p>
+<p><a href="/images/learning_highcharts/chart3-3-4.jpg"><img src="/images/learning_highcharts/chart3-3-4.jpg" alt="chart3-3-4"></a></p>
+<p>設想下，如果有三組面積曲線圖，但我們只想將其中兩個疊加。（儘管使用柱狀圖比這樣更加清晰）正如在Highcharts配置第二章 探索plotOption中所述，我們可以在plotOptions.series中設置stacking=’normal’，然後手動關閉第三個series的stacking配置，下面是具體的配置方法：</p>
+<pre><code>plotOptions: {
+    series: {
+        marker: {
+            enabled: <span class="literal">false</span>
+        },
+        stacking: <span class="string">'normal'</span>
+    }
+},
+series: <span class="preprocessor">[</span>{
+name: <span class="string">'Ages 65 and over'</span>,
+<span class="attribute">...</span><span class="built_in">.
+</span>}, {
+    name: <span class="string">'Ages 0 to 14'</span>,
+    <span class="attribute">...</span><span class="built_in">.
+</span>}, {
+    name: <span class="string">'Ages 15 to 64'</span>,
+    <span class="keyword">type</span>: <span class="string">'areaspline'</span>,
+    pointStart: <span class="number">1980</span>,
+    stacking: <span class="built_in">null</span>,
+    <span class="built_in">data</span>: <span class="preprocessor">[</span> <span class="number">67</span>, <span class="number">67</span>, <span class="number">68</span>, <span class="number">68</span>, <span class="attribute">...</span><span class="built_in">. </span><span class="preprocessor">]</span><span class="markup">
+}]</span>
+</code></pre><p>這樣就利用第三個series15-64年齡組生成了一個面積曲線圖，並涵蓋了前兩個堆積的series，如下：</p>
+<p><a href="/images/learning_highcharts/chart3-3-5.jpg"><img src="/images/learning_highcharts/chart3-3-5.jpg" alt="chart3-3-5"></a></p>
+<h2 id="繪製有缺失數據的圖表">繪製有缺失數據的圖表</h2><p>當一個series有缺失的數據時，Highcharts會預設將其顯示為間斷的線。而 connectNulls 選項可以使得當series中有缺失的數據時仍保持折線的連續，此選項的預設值是 false 。可以設置兩個存在空數據的曲線圖來檢驗一下其預設動作並設定數據標記為可用狀態，以便能夠清晰的觀察到缺失的數據點。</p>
+<pre><code><span class="title">series</span>: [{
+    name: '<span class="type">Ages</span> <span class="number">65</span> and over',
+    connectNulls: true,
+    ....,
+    // <span class="type">Missing</span> <span class="typedef"><span class="keyword">data</span> from 2004 - 2009</span>
+    <span class="typedef"><span class="keyword">data</span>: [ 9, 9, 9, ...., 23 ]</span>
+}, {
+    name: '<span class="type">Ages</span> <span class="number">0</span> to <span class="number">14</span>',
+    ....,
+    // <span class="type">Missing</span> <span class="typedef"><span class="keyword">data</span> from 1989 - 1994</span>
+    <span class="typedef"><span class="keyword">data</span>: [ 24, 23, 23, ...., 13 ]</span>
+}]
+</code></pre><p>下面的圖表通過樣曲線圖呈現了缺失的數據點的兩種樣式：</p>
+<p><a href="/images/learning_highcharts/chart3-3-6.jpg"><img src="/images/learning_highcharts/chart3-3-6.jpg" alt="chart3-3-6"></a></p>
+<p>正如我們所看到的年齡0-14歲的series具有明顯的間斷，而65歲及以上series因配置 connectNulls 選項為 true，就將缺失的數據點用曲線連接起來了。如果數據標記不可用，我們就不能注意到這樣的差別。</p>
+<p>然而，我們應該小心使用這個選項，並特別注意在使用 stacking選項時不要使其可用。設想下，我們有兩個堆積的面積圖，其中只有在底部的年齡0-14歲的series有缺失的數據。那麼程式對缺失數據的預設動作會令圖表看上去如下圖：</p>
+<p><a href="/images/learning_highcharts/chart3-3-7.jpg"><img src="/images/learning_highcharts/chart3-3-7.jpg" alt="chart3-3-7"></a></p>
+<p>儘管底部的series顯示了缺失間斷的部分，總體的堆積圖也是正確的。在同一區域的上層series下降至單一series值，整體的比例也保持不變。 問題所在是當 connectNulls 為true時，如果沒有注意到series中有缺失的數據，結果將是前後矛盾的圖表，如下：</p>
+<p><a href="/images/learning_highcharts/chart3-3-8.jpg"><img src="/images/learning_highcharts/chart3-3-8.jpg" alt="chart3-3-8"></a></p>
+<p>底部的series覆蓋了上部series留下的空白部分，使堆積圖的比例錯誤。</p>
+]]></content>
+    <summary type="html">
+    <![CDATA[<h1 id="科技零售(RetailSCM-com)_Learning_Highcharts中文教程">科技零售(RetailSCM.com) Learning Highcharts中文教程</h1><p><em><span style="color: #808080;">版權保留，網路轉載請註明來源，謝絕紙質媒體轉載，謝謝。</span></em></p>
+<h2 id="折線圖和面積圖的組合">折線圖和面積圖的組合</h2><p>在這一部分中我們將探索將不同的類型圖綜合在一起，即混合折線和面積圖：</p>
+<ul>
+<li>投影圖</li>
+<li>混合面積曲線圖和階梯線圖</li>
+<li>研究堆積面積曲線圖圖，將兩個面積曲線圖從上部累加</li>
+</ul>
+<h2 id="模擬一個投影圖">模擬一個投影圖</h2><p>投影圖分含使用真實數據的面積曲線部分和投影數據的虛線延續部分。所以我們將數據分為兩個series，一個是真實數據，另一個是投影數據。下面是series配置的代碼。數據基於國家研究所的人口和社會安全研究報告(<a href="http://www.ipss.go.jp/pp-newest/e/ppfj02/ppfj02.pdf">http://www.ipss.go.jp/pp-newest/e/ppfj02/ppfj02.pdf</a>)</p>]]>
+    
+    </summary>
+    
+      <category term="Highcharts" scheme="http://www.retailscm.com/tags/Highcharts/"/>
+    
+      <category term="Learning" scheme="http://www.retailscm.com/categories/Learning/"/>
+    
+      <category term="Learning Highcharts" scheme="http://www.retailscm.com/categories/Learning/Learning-Highcharts/"/>
+    
+      <category term="Line area and scatter charts" scheme="http://www.retailscm.com/categories/Learning/Learning-Highcharts/Line-area-and-scatter-charts/"/>
+    
+  </entry>
+  
+  <entry>
+    <title><![CDATA[第三章 02.繪製面積圖]]></title>
+    <link href="http://www.retailscm.com/Learning/Learning-Highcharts/Line-area-and-scatter-charts/sketching-an-area-chart/"/>
+    <id>http://www.retailscm.com/Learning/Learning-Highcharts/Line-area-and-scatter-charts/sketching-an-area-chart/</id>
+    <published>2015-05-15T20:00:00.000Z</published>
+    <updated>2015-05-17T07:58:28.000Z</updated>
+    <content type="html"><![CDATA[<h1 id="科技零售(RetailSCM-com)_Learning_Highcharts中文教程">科技零售(RetailSCM.com) Learning Highcharts中文教程</h1><p><em><span style="color: #808080;">版權保留，網路轉載請註明來源，謝絕紙質媒體轉載，謝謝。</span></em></p>
+<h2 id="繪製面積圖">繪製面積圖</h2><p>在本節，我們會將前一個例子修改成一個設定有格調的面積曲線圖（基於Kristin Clute的風能海報設計風格）。 結合使用 area 和 spline 屬性將會生成面積曲線圖，主要的數據線被繪製成一個雲形曲線，曲線下的區域被漸變且有透明效果的類似顏色填充。 如圖：</p>
+<p><a href="/images/learning_highcharts/chart3-2-1.jpg"><img src="/images/learning_highcharts/chart3-2-1.jpg" alt="chart3-2-1"></a></p>
+<a id="more"></a>
+<p>首先，我們希望圖表的使用者能夠方便的看到當前趨勢的數值，所有我們將y軸移動到最近年份（2010)的旁邊,也就是說放到了圖表的另一邊：</p>
+<pre><code><span class="tag">yAxis</span>: { ....
+    <span class="tag">opposite</span><span class="pseudo">:true</span>
+}
+</code></pre><p>接下來，移除間隔線，並調整y軸軸線的寬度，獲得一個較細的軸線：</p>
+<pre><code><span class="tag">yAxis</span>: { ....
+    <span class="tag">gridLineWidth</span>: <span class="tag">0</span>,
+    <span class="tag">lineWidth</span>: <span class="tag">1</span>,
+}
+</code></pre><p>然後用百分比標識（%）定義y軸的標題，並使之與軸線頂部對齊：</p>
+<pre><code><span class="tag">yAxis</span>:{
+    <span class="tag">title</span>:{
+        <span class="attribute">text</span>:<span class="string">'(%)'</span>,
+        <span class="attribute">rotation</span>:<span class="number">0</span>,
+        <span class="attribute">x</span>:<span class="number">10</span>,
+        <span class="attribute">y</span>:<span class="number">5</span>,
+        <span class="attribute">align</span>:<span class="string">'high'</span>
+    },
+}
+</code></pre><p>至於x軸，我們使用紅色加粗軸線，並刪除軸線上的時間刻度：</p>
+<pre><code><span class="tag">xAxis</span>:{
+    <span class="attribute">lineColor</span>:<span class="string">'#CC2929'</span>,
+    <span class="attribute">lineWidth</span>:<span class="number">4</span>,
+    <span class="attribute">tickWidth</span>:<span class="number">0</span>,
+    <span class="attribute">offset</span>:<span class="number">2</span>
+}
+</code></pre><p>對於標題，將其移動到圖表的右側，增加標題與圖表的空白，並設置一個不同的字體：</p>
+<pre><code>title:{
+    <span class="keyword">text</span>:<span class="string">'Population ages 65 and over (% of total)- Japan '</span>,
+    margin:<span class="number">40</span>,
+    <span class="keyword">align</span>:<span class="string">'right'</span>,
+    style:{
+        fontFamily:<span class="string">'palatino'</span>
+    }
+}
+</code></pre><p>在以上設置之後，我們開始修改全部series的表現形式，首先將 chart.type 屬性由 ‘line’ 改為 ‘areaspline’。要注意的是，在series 物件中設置這個屬性會覆蓋plotOptions.series中定義的 plotOptions.areaspline屬性。</p>
+<p>由於現在圖表中只有一個series，所以沒有必要顯示圖例(legend box),使用 showInLegend 屬性刪除它， 接下來使圖表變漂亮些，使用漸變的顏色填充面積區域，並為雲形曲線設置一個比較暗的顏色：</p>
+<pre><code><span class="atom">series</span>: [{
+    <span class="atom">showInLegend</span>: <span class="atom">false</span>,
+    <span class="atom">lineColor</span>: <span class="string">'#145252'</span>,
+    <span class="atom">fillColor</span>: {
+    <span class="atom">linearGradient</span>: {
+        <span class="atom">x1</span>: <span class="number">0</span>, <span class="atom">y1</span>: <span class="number">0</span>,
+        <span class="atom">x2</span>: <span class="number">0</span>, <span class="atom">y2</span>: <span class="number">1</span>
+    },
+    <span class="atom">stops</span>:[ [ <span class="number">0.0</span>, <span class="string">'#248F8F'</span> ] ,
+            [ <span class="number">0.7</span>, <span class="string">'#70DBDB'</span> ],
+            [ <span class="number">1.0</span>, <span class="string">'#EBFAFA'</span> ] ]
+    },
+    <span class="atom">data</span>: [ ... ]
+}]
+</code></pre><p>之後，我們沿著曲線引入一對數據標籤，以表明老年人口的排名隨著過去的時間而增長.使用series數據陣列中對應1995和2010年的數據，並轉換數位值為數據點物件。由於我們只想呈現這兩年的數據點，所以在全域屬性中關閉 plotOptions.series.marker.enabled 屬性並在數據點物件中的樣式設置中個別的開啟標識點：</p>
+<pre><code>plotOptions: {
+    series: {
+        marker: {
+            enabled: <span class="literal">false</span>
+        }
+    }
+},
+series: <span class="preprocessor">[</span>{ <span class="attribute">...</span>,
+    <span class="built_in">data</span>:<span class="preprocessor">[</span> <span class="number">9</span>, <span class="number">9</span>, <span class="number">9</span>, <span class="attribute">...</span>,
+        { marker: {
+            radius: <span class="number">2</span>,
+            lineColor: <span class="string">'#CC2929'</span>,
+            lineWidth: <span class="number">2</span>,
+            fillColor: <span class="string">'#CC2929'</span>,
+            enabled: <span class="literal">true</span>
+        },
+        y: <span class="number">14</span>
+        }, <span class="number">15</span>, <span class="number">15</span>, <span class="number">16</span>, <span class="attribute">...</span> <span class="preprocessor">]</span><span class="markup">
+}]</span>
+</code></pre><p>接下來，我們為數據標籤繪製一個外邊框，外邊框為一個圓角(borderRadius)紅色(borderColor)矩形。 使用x或y 選項可以很好的調整數據標籤的位置。最後，我們更改數據標籤的默認格式方法，使之返回人口在國家中的排名而不是數據點的值：</p>
+<pre><code>series: <span class="preprocessor">[</span>{ <span class="attribute">...</span>,
+    <span class="built_in">data</span>:<span class="preprocessor">[</span> <span class="number">9</span>, <span class="number">9</span>, <span class="number">9</span>, <span class="attribute">...</span>,
+        { marker: {
+            <span class="attribute">...</span>
+            },
+            dataLabels: {
+            enabled: <span class="literal">true</span>,
+            borderRadius: <span class="number">3</span>,
+            borderColor: <span class="string">'#CC2929'</span>,
+            borderWidth: <span class="number">1</span>,
+            y: <span class="subst">-</span><span class="number">23</span>,
+            formatter: function() {
+                <span class="keyword">return</span> <span class="string">"Rank: 15th"</span>;
+            }
+        },
+        y: <span class="number">14</span>
+    }, <span class="number">15</span>, <span class="number">15</span>, <span class="number">16</span>, <span class="attribute">...</span> <span class="preprocessor">]</span><span class="markup">
+}]</span>
+</code></pre><p>最後一項操作時為圖表應用一個灰色背景並增加底部空白(spacingBottom),spacingbottom額外的空白是為了避免credit lable(RetailSCM.com) 與x軸lable太過靠近，因為我們禁用了圖例(legend box)。</p>
+<pre><code><span class="tag">chart</span>: {
+    <span class="attribute">renderTo</span>: <span class="string">'container'</span>,
+    <span class="attribute">spacingBottom</span>: <span class="number">30</span>,
+    <span class="attribute">backgroundColor</span>: <span class="string">'#EAEAEA'</span>
+},
+</code></pre><p>當所有的配置都設置好後，就會顯示出本節開頭的截圖了。</p>
+]]></content>
+    <summary type="html">
+    <![CDATA[<h1 id="科技零售(RetailSCM-com)_Learning_Highcharts中文教程">科技零售(RetailSCM.com) Learning Highcharts中文教程</h1><p><em><span style="color: #808080;">版權保留，網路轉載請註明來源，謝絕紙質媒體轉載，謝謝。</span></em></p>
+<h2 id="繪製面積圖">繪製面積圖</h2><p>在本節，我們會將前一個例子修改成一個設定有格調的面積曲線圖（基於Kristin Clute的風能海報設計風格）。 結合使用 area 和 spline 屬性將會生成面積曲線圖，主要的數據線被繪製成一個雲形曲線，曲線下的區域被漸變且有透明效果的類似顏色填充。 如圖：</p>
+<p><a href="/images/learning_highcharts/chart3-2-1.jpg"><img src="/images/learning_highcharts/chart3-2-1.jpg" alt="chart3-2-1"></a></p>]]>
+    
+    </summary>
+    
+      <category term="Highcharts" scheme="http://www.retailscm.com/tags/Highcharts/"/>
+    
+      <category term="Learning" scheme="http://www.retailscm.com/categories/Learning/"/>
+    
+      <category term="Learning Highcharts" scheme="http://www.retailscm.com/categories/Learning/Learning-Highcharts/"/>
+    
+      <category term="Line area and scatter charts" scheme="http://www.retailscm.com/categories/Learning/Learning-Highcharts/Line-area-and-scatter-charts/"/>
+    
+  </entry>
+  
+  <entry>
+    <title><![CDATA[第三章 01.折線圖介紹]]></title>
+    <link href="http://www.retailscm.com/Learning/Learning-Highcharts/Line-area-and-scatter-charts/introducing-line-charts/"/>
+    <id>http://www.retailscm.com/Learning/Learning-Highcharts/Line-area-and-scatter-charts/introducing-line-charts/</id>
+    <published>2015-05-15T19:00:00.000Z</published>
+    <updated>2015-05-17T07:58:57.000Z</updated>
+    <content type="html"><![CDATA[<h1 id="科技零售(RetailSCM-com)_Learning_Highcharts中文教程">科技零售(RetailSCM.com) Learning Highcharts中文教程</h1><p><em><span style="color: #808080;">版權保留，網路轉載請註明來源，謝絕紙質媒體轉載，謝謝。</span></em></p>
+<h2 id="折線圖介紹">折線圖介紹</h2><p>首先我們從一個折線圖表開始，來選用World Bank 組織（www.worldbank.org)提供的數據之一。下面的代碼片段創建了一個簡單的折線圖，表現了日本過去三十年中65歲以上人口所佔全部人口的百分比：</p>
+<pre><code><span class="built_in">var</span> chart <span class="subst">=</span> <span class="literal">new</span> Highcharts<span class="built_in">.</span>Chart({
+    chart: {
+        renderTo: <span class="string">'container'</span>
+    },
+    title: {
+        text: <span class="string">'Population ages 65 and over (% of total)'</span>,
+    },
+    credits: {
+        position: {
+            align: <span class="string">'left'</span>,
+            x: <span class="number">20</span>
+        },
+        text: <span class="string">'Data from The World Bank'</span>
+    },
+    yAxis: {
+        title: {
+            text: <span class="string">'Percentage %'</span>
+        }
+    },
+    xAxis: {
+        categories: <span class="preprocessor">[</span><span class="string">'1980'</span>, <span class="string">'1981'</span>, <span class="string">'1982'</span>, <span class="attribute">...</span> <span class="preprocessor">]</span><span class="markup">,
+        labels: {
+            step: 5
+        }
+    },
+    series: </span><span class="preprocessor">[</span>{
+        name: <span class="string">'Japan - 65 and over'</span>,
+        <span class="built_in">data</span>: <span class="preprocessor">[</span> <span class="number">9</span>, <span class="number">9</span>, <span class="number">9</span>, <span class="number">10</span>, <span class="number">10</span>, <span class="number">10</span>, <span class="number">10</span> <span class="attribute">...</span> <span class="preprocessor">]</span><span class="markup">
+    }]
+});</span>
+</code></pre><p>如下圖所呈現：</p>
+<a id="more"></a>
+<p><a href="/images/learning_highcharts/chart3-1-1.jpg"><img src="/images/learning_highcharts/chart3-1-1.jpg" alt="chart3-1-1"></a></p>
+<p>除了在 categories屬性中手動定義年份，還可以使用 series中的 pointStart選項來初始化x軸的第一個點的值。因此我們在 xAxis中無任何配置但在seies中定義了 pointStart，代碼如下：</p>
+<pre><code>xAxis：{
+},
+series: [{
+    pointStart : <span class="number">1980</span>, 
+    <span class="property">name</span>: 'Japan - <span class="number">65</span> <span class="keyword">and</span> <span class="keyword">over</span>',
+    data: [ <span class="number">9</span>, <span class="number">9</span>, <span class="number">9</span>, <span class="number">10</span>, <span class="number">10</span>, <span class="number">10</span>, <span class="number">10</span> ... ]
+}]
+</code></pre><p>雖然這是個簡單的例子，但 Highcharts仍會使用 numberFormat方法來格式化x軸的標籤增加千分位符號，下面是x軸千分位符號的呈現結果：</p>
+<p><a href="/images/learning_highcharts/chart3-1-2.jpg"><img src="/images/learning_highcharts/chart3-1-2.jpg" alt="chart3-1-2"></a></p>
+<p>為瞭解決這個問題，我們需要重寫標籤的 formatter選項，這很簡單，只要返回一個標籤值來繞開默認 numberFormat方法的調用就可以了。 此外，還需要將 allowDecimal選項置為false.因為，當調整圖表大小時會延長x軸，小數就會顯示出來。</p>
+<p>下面是使用 pointStart來控制x軸年份值得最終版本：</p>
+<pre><code>xAxis: {
+    labels:{
+        formatter: <span class="function"><span class="keyword">function</span><span class="params">()</span> </span>{
+            <span class="comment">// 'this' keyword is the label object</span>
+            <span class="keyword">return</span> <span class="keyword">this</span>.value;
+        }
+    },
+    allowDecimals: <span class="literal">false</span>
+},
+series: [{
+    pointStart: <span class="number">1980</span>,
+    name: <span class="string">'Japan - 65 and over'</span>,
+    data: [ <span class="number">9</span>, <span class="number">9</span>, <span class="number">9</span>, <span class="number">10</span>, <span class="number">10</span>, <span class="number">10</span>, <span class="number">10</span> ... ]
+}]
+</code></pre><h2 id="擴展到多個series的折線圖">擴展到多個series的折線圖</h2><p>下面我們新增加幾個series折線，並把日本的折線增加到6個像素寬，代碼如下：</p>
+<pre><code><span class="atom">series</span>: [{
+    <span class="atom">lineWidth</span>: <span class="number">6</span>,
+    <span class="atom">name</span>: <span class="string">'Japan'</span>,
+    <span class="atom">data</span>: [ <span class="number">9</span>, <span class="number">9</span>, <span class="number">9</span>, <span class="number">10</span>, <span class="number">10</span>, <span class="number">10</span>, <span class="number">10</span> ... ]
+}, {
+    <span class="name">Name</span>: <span class="string">'Singapore'</span>,
+    <span class="atom">data</span>: [ <span class="number">5</span>, <span class="number">5</span>, <span class="number">5</span>, <span class="number">5</span>, ... ]
+}, {
+    ...
+}]
+</code></pre><p>日本series的人口數成為了圖表中的關注焦點，如圖：</p>
+<p><a href="/images/learning_highcharts/chart3-1-3.jpg"><img src="/images/learning_highcharts/chart3-1-3.jpg" alt="chart3-1-3"></a></p>
+<p>我們來繼續更加複雜的一些的折線圖。為了展示反轉的折線圖，使用 chart.inverted 選項將y軸和x軸置為相反的方向。 然後改變坐標軸的顏色匹配相同series的顏色。同時，禁用了所有series的數據點標記，最後添加 yAxis：1 屬性用來使第二個series坐標軸與第二個y軸陣列數據匹配，這樣就得到了上下兩個不同顏色，不同刻度的y坐標軸，如下：</p>
+<pre><code><span class="string">chart:</span> {
+<span class="label">    renderTo:</span> <span class="string">'container'</span>,
+<span class="label">    inverted:</span> <span class="literal">true</span>,
+},
+<span class="string">yAxis:</span> [{
+<span class="label">    title:</span> {
+<span class="label">        text:</span> <span class="string">'Percentage %'</span>
+    },
+<span class="label">    lineWidth:</span> <span class="number">2</span>,
+<span class="label">    lineColor:</span> <span class="string">'#4572A7'</span>
+}, {
+<span class="label">    title:</span> {
+<span class="label">        text:</span> <span class="string">'Age'</span>
+    },
+<span class="label">    opposite:</span> <span class="literal">true</span>,
+<span class="label">    lineWidth:</span> <span class="number">2</span>,
+<span class="label">    lineColor:</span> <span class="string">'#AA4643'</span>
+}],
+<span class="string">plotOptions:</span> {
+<span class="label">    series:</span> {
+<span class="label">        marker:</span> {
+<span class="label">            enabled:</span> <span class="literal">false</span>
+        }
+    }
+},
+<span class="string">series:</span> [{
+<span class="label">    name:</span> <span class="string">'Japan - 65 and over'</span>,
+<span class="label">    type:</span> <span class="string">'spline'</span>,
+<span class="label">    data:</span> [ <span class="number">9</span>, <span class="number">9</span>, <span class="number">9</span>, ... ]
+}, {
+<span class="label">    name:</span> <span class="string">'Japan - Life Expectancy'</span>,
+<span class="label">    yAxis:</span> <span class="number">1</span>,
+<span class="label">    data:</span> [ <span class="number">76</span>, <span class="number">76</span>, <span class="number">77</span>, ... ]
+}]
+</code></pre><p>下圖是反轉並有2個Y軸的例子：</p>
+<p><a href="/images/learning_highcharts/chart3-1-4.jpg"><img src="/images/learning_highcharts/chart3-1-4.jpg" alt="chart3-1-4"></a></p>
+<p>上圖中數據的表示看起來可能有點奇怪，因為我們通常對於把的時間標籤交換成到了y軸並且數據的走勢不容易理解。其實 inverted 選項 一般是用來展示不連續的數據格式或用於柱狀圖中。我們從上圖中獲取的資訊是這樣的： 12%的日本人口在65歲及以上，1990年的平均壽命是79歲。</p>
+<p>通過設置 plotOptions.series.marker.enabled 為 false 可以關閉所有數據點的標記，如果想為一個特定的series展示數據點標記，我們可以關閉全域的標記並打開那個特定series的標記屬性。</p>
+<pre><code>plotOptions: {
+    series: {
+        marker: {
+            enabled: <span class="literal">false</span>
+        }
+    }
+},
+series: <span class="preprocessor">[</span>{
+    marker: {
+        enabled: <span class="literal">true</span>
+    },
+    name: <span class="string">'Japan - 65 and over'</span>,
+    <span class="keyword">type</span>: <span class="string">'spline'</span>,
+    <span class="built_in">data</span>: <span class="preprocessor">[</span> <span class="number">9</span>, <span class="number">9</span>, <span class="number">9</span>, <span class="attribute">...</span> <span class="preprocessor">]</span><span class="markup">
+}, {</span>
+</code></pre><p>下面的圖表展示了只有65及以上的series才會有數據點標記的例子：</p>
+<p><a href="/images/learning_highcharts/chart3-1-5.jpg"><img src="/images/learning_highcharts/chart3-1-5.jpg" alt="chart3-1-5"></a></p>
+]]></content>
+    <summary type="html">
+    <![CDATA[<h1 id="科技零售(RetailSCM-com)_Learning_Highcharts中文教程">科技零售(RetailSCM.com) Learning Highcharts中文教程</h1><p><em><span style="color: #808080;">版權保留，網路轉載請註明來源，謝絕紙質媒體轉載，謝謝。</span></em></p>
+<h2 id="折線圖介紹">折線圖介紹</h2><p>首先我們從一個折線圖表開始，來選用World Bank 組織（www.worldbank.org)提供的數據之一。下面的代碼片段創建了一個簡單的折線圖，表現了日本過去三十年中65歲以上人口所佔全部人口的百分比：</p>
+<pre><code><span class="built_in">var</span> chart <span class="subst">=</span> <span class="literal">new</span> Highcharts<span class="built_in">.</span>Chart({
+    chart: {
+        renderTo: <span class="string">'container'</span>
+    },
+    title: {
+        text: <span class="string">'Population ages 65 and over (% of total)'</span>,
+    },
+    credits: {
+        position: {
+            align: <span class="string">'left'</span>,
+            x: <span class="number">20</span>
+        },
+        text: <span class="string">'Data from The World Bank'</span>
+    },
+    yAxis: {
+        title: {
+            text: <span class="string">'Percentage %'</span>
+        }
+    },
+    xAxis: {
+        categories: <span class="preprocessor">[</span><span class="string">'1980'</span>, <span class="string">'1981'</span>, <span class="string">'1982'</span>, <span class="attribute">...</span> <span class="preprocessor">]</span><span class="markup">,
+        labels: {
+            step: 5
+        }
+    },
+    series: </span><span class="preprocessor">[</span>{
+        name: <span class="string">'Japan - 65 and over'</span>,
+        <span class="built_in">data</span>: <span class="preprocessor">[</span> <span class="number">9</span>, <span class="number">9</span>, <span class="number">9</span>, <span class="number">10</span>, <span class="number">10</span>, <span class="number">10</span>, <span class="number">10</span> <span class="attribute">...</span> <span class="preprocessor">]</span><span class="markup">
+    }]
+});</span>
+</code></pre><p>如下圖所呈現：</p>]]>
+    
+    </summary>
+    
+      <category term="Highcharts" scheme="http://www.retailscm.com/tags/Highcharts/"/>
+    
+      <category term="Learning" scheme="http://www.retailscm.com/categories/Learning/"/>
+    
+      <category term="Learning Highcharts" scheme="http://www.retailscm.com/categories/Learning/Learning-Highcharts/"/>
+    
+      <category term="Line area and scatter charts" scheme="http://www.retailscm.com/categories/Learning/Learning-Highcharts/Line-area-and-scatter-charts/"/>
+    
+  </entry>
+  
+  <entry>
+    <title><![CDATA[第三章 折線圖，面積圖和散點圖]]></title>
+    <link href="http://www.retailscm.com/Learning/Learning-Highcharts/Line-area-and-scatter-charts/line-area-and-scatter-charts/"/>
+    <id>http://www.retailscm.com/Learning/Learning-Highcharts/Line-area-and-scatter-charts/line-area-and-scatter-charts/</id>
+    <published>2015-05-15T18:00:00.000Z</published>
+    <updated>2015-05-17T08:07:17.000Z</updated>
+    <content type="html"><![CDATA[<h1 id="科技零售(RetailSCM-com)_Learning_Highcharts中文教程">科技零售(RetailSCM.com) Learning Highcharts中文教程</h1><p><em><span style="color: #808080;">版權保留，網路轉載請註明來源，謝絕紙質媒體轉載，謝謝。</span></em></p>
+<h2 id="第三章_折線圖，面積圖和散點圖">第三章 折線圖，面積圖和散點圖</h2><p>在這一章中，我們將通過對線圖，面積圖和散點圖的繪圖選項的探索，來進一步學習。 我們還會學習如何創建疊加圖表和投影圖表。然後嘗試畫出一些美化過的圖表。 以使我們有機會利用更多的繪圖選項。這一章內容包括：</p>
+<p><a href="/Learning/Learning-Highcharts/Line-area-and-scatter-charts/introducing-line-charts/" title="01.折線圖介紹">折線圖介紹</a></p>
+<p><a href="/Learning/Learning-Highcharts/Line-area-and-scatter-charts/sketching-an-area-chart/" title="02.繪製面積圖">繪製面積圖</a></p>
+<p><a href="/Learning/Learning-Highcharts/Line-area-and-scatter-charts/mixing-line-and-area-series/" title="03.折線圖和面積圖的組合">折線圖和面積圖結合</a></p>
+<p><a href="/Learning/Learning-Highcharts/Line-area-and-scatter-charts/combining-scatter-and-area-series/" title="04.散點圖和面積圖的組合">散點圖和面積圖結合</a></p>
+]]></content>
+    <summary type="html">
+    <![CDATA[<h1 id="科技零售(RetailSCM-com)_Learning_Highcharts中文教程">科技零售(RetailSCM.com) Learning Highcharts中文教程</h1><p><em><span style="color: #808080;">版權]]>
+    </summary>
+    
+      <category term="Highcharts" scheme="http://www.retailscm.com/tags/Highcharts/"/>
+    
+      <category term="Learning" scheme="http://www.retailscm.com/categories/Learning/"/>
+    
+      <category term="Learning Highcharts" scheme="http://www.retailscm.com/categories/Learning/Learning-Highcharts/"/>
+    
+      <category term="Line area and scatter charts" scheme="http://www.retailscm.com/categories/Learning/Learning-Highcharts/Line-area-and-scatter-charts/"/>
+    
+  </entry>
+  
+  <entry>
+    <title><![CDATA[第二章 08.擴展色彩漸變(colors with gradients)]]></title>
+    <link href="http://www.retailscm.com/Learning/Learning-Highcharts/Highcharts-configurations/expanding-colors-with-gradients/"/>
+    <id>http://www.retailscm.com/Learning/Learning-Highcharts/Highcharts-configurations/expanding-colors-with-gradients/</id>
+    <published>2015-05-14T06:00:00.000Z</published>
+    <updated>2015-05-17T07:53:09.000Z</updated>
+    <content type="html"><![CDATA[<h1 id="科技零售(RetailSCM-com)_Learning_Highcharts中文教程">科技零售(RetailSCM.com) Learning Highcharts中文教程</h1><p><em><span style="color: #808080;">版權保留，網路轉載請註明來源，謝絕紙質媒體轉載，謝謝。</span></em></p>
+<h2 id="擴展色彩漸變(colors_with_gradients)">擴展色彩漸變(colors with gradients)</h2><p>Highcharts不僅支持一種顏色，同時也允許複雜的色彩漸變定義。Highcharts支持線性的色彩漸變可以是單一方向的色彩漸變也可以是輻射（或圓形）的色彩漸變，在本節中，我們嘗試驗線性的漸變，而輻射漸變會在第六章中再討論。</p>
+<p>在Highcharts中色彩的漸變是基於SVG的線性色彩漸變標準來實現的，它由以下兩種組合所構成：</p>
+<ul>
+<li>linearGradient：給出了x和y軸兩套坐標的顏色範圍作為漸變的方向，比率在0到1之間，或者為一個百分數</li>
+<li>stops：給出一組顏色的序列來填充他們在漸變方向的某一位置</li>
+</ul>
+<p>我們使用前面股市的例子中交易量的series，並重新定義yAxis.alternateGridColor，如下：</p>
+<a id="more"></a>
+<pre><code><span class="atom">yAxis</span>: [{
+    <span class="atom">title</span>: { <span class="atom">text</span>: <span class="string">'Nasdaq index'</span> },
+    ....
+    <span class="atom">alternateGridColor</span>: {
+        <span class="atom">linearGradient</span>: [ <span class="number">10</span>, <span class="number">250</span>, <span class="number">400</span>, <span class="number">250</span> ],
+        <span class="atom">stops</span>:  [
+                [ <span class="number">0</span>, <span class="string">'red'</span> ],
+                [ <span class="number">0.2</span>, <span class="string">'orange'</span> ],
+                [ <span class="number">0.5</span>, <span class="string">'yellow'</span> ] ,
+                [ <span class="number">0.8</span>, <span class="string">'green'</span> ] ,
+                [ <span class="number">1</span>, <span class="string">'lime'</span> ] ]
+    }
+</code></pre><p>linearGradient是一個坐標值數據，被指定在x1,y1,x2,y2。這些值可以使用固定的定位來表示也可以使用百分比來表示，差別是固定的值可能會被圖表大小影響而百分比則不會。</p>
+<p><em>固定位置的設定已經不建議使用了，因為他們在SVG和VML中無法正常使用。並且也與不同大小的圖表無法很好的配合。</em></p>
+<p>stops屬性有一個元素集數組，第一個值是0～1的位移範圍，第二個值是顏色的定義。位移和顏色的值定義為顏色在範圍中的位置，如[0, ‘red’ ] 和[0.2, ‘orange’ ]意味著從紅色開始然橫向後漸變橘色，方向朝向的位置是x = 80 (0.2 * 400)，然後從 x = 80到 x = 200的地方顏色由橘色變為黃色等，下圖為多色漸變：</p>
+<p><a href="/images/learning_highcharts/chart2-8-1.jpg"><img src="/images/learning_highcharts/chart2-8-1.jpg" alt="chart2-8-1"></a></p>
+<p>如果我們所看到的，紅色和橘色並為顯示在圖表中，因為顏色漸變是依據坐標，因而受到圖表大小的影響，x軸在這個例子中的位置已經超出了紅色和橘色的坐標。另一種方法，我們可以指定linearGradient為一個百分比的範圍，如下：</p>
+<pre><code><span class="rule"><span class="attribute">linearGradient</span>:<span class="value"> [ <span class="string">'20%'</span>, <span class="number">250</span>, <span class="string">'90%'</span>, <span class="number">250</span> ]</span></span>
+</code></pre><p>這意味著linearGradient從20%的寬度部分延伸90%的地方，所以色帶不會再受限與圖表的大小，下圖為新的linearGradient設定後的效果：</p>
+<p><a href="/images/learning_highcharts/chart2-8-2.jpg"><img src="/images/learning_highcharts/chart2-8-2.jpg" alt="chart2-8-2"></a></p>
+<p>這個圖表的背景現在已經有完整的色彩區域，用於指定0～1之間的比率時linearGradient必須定義一個樣式對象，否則這些值會被作為坐標來看待。注意這些值只有使用在繪圖的區域內，而不是全局的設定。</p>
+<pre><code><span class="tag">linearGradient</span>: { <span class="attribute">x1</span>: <span class="number">0</span>, <span class="attribute">y1</span>: <span class="number">0</span>, <span class="attribute">x2</span>: <span class="number">1</span>, <span class="attribute">y2</span>: <span class="number">0</span> }
+</code></pre><p>此設定是另一種設定橫向色彩漸變的方式：</p>
+<p><a href="/images/learning_highcharts/chart2-8-3.jpg"><img src="/images/learning_highcharts/chart2-8-3.jpg" alt="chart2-8-3"></a></p>
+<p>下面的代碼會調整為縱向的色彩漸變：</p>
+<pre><code><span class="tag">linearGradient</span>: { <span class="attribute">x1</span>: <span class="number">0</span>, <span class="attribute">y1</span>: <span class="number">0</span>, <span class="attribute">x2</span>: <span class="number">0</span>, <span class="attribute">y2</span>: <span class="number">1</span> }
+</code></pre><p>它會將背景的色彩漸變調整為縱向的方向，我們可以將’Jan’ 和 ‘Jul’的數據點設置為point object，並使用線性的方式實現縱向陰影漸變。</p>
+<p><a href="/images/learning_highcharts/chart2-8-4.jpg"><img src="/images/learning_highcharts/chart2-8-4.jpg" alt="chart2-8-4"></a></p>
+<p>此外，我們可以通過Highcharts的標準顏色來觸發series上的色彩漸變，它可以讓圖表看起來類似3D圖表的效果，在畫圖表之間，我們需要先覆蓋默認的series顏色為一個漸變色彩，下面的代碼片段使用一個藍色的漸變陰影來替代原本的series顏色，注意漸變的比率數值在本例中參考了柱圖的寬度：</p>
+<pre><code>$(<span class="built_in">document</span>).ready(<span class="function"><span class="keyword">function</span><span class="params">()</span> </span>{
+    Highcharts.getOptions().colors[<span class="number">0</span>] = {
+        linearGradient: { x1: <span class="number">0</span>, y1: <span class="number">0</span>, x2: <span class="number">1</span>, y2: <span class="number">0</span> },
+        stops:  [ [ <span class="number">0</span>, <span class="string">'#4572A7'</span> ],
+                [ <span class="number">0.7</span>, <span class="string">'#CCFFFF'</span> ],
+                [ <span class="number">1</span>, <span class="string">'#4572A7'</span> ] ]
+    };
+    <span class="keyword">var</span> chart = <span class="keyword">new</span> Highcharts.Chart({ ...
+</code></pre><p>下圖為使用了色彩陰影漸變的柱圖：</p>
+<p><a href="/images/learning_highcharts/chart2-8-5.jpg"><img src="/images/learning_highcharts/chart2-8-5.jpg" alt="chart2-8-5"></a></p>
+<h2 id="總結">總結</h2><p>在本章，我們使用案例來討論及試驗了重要的組件設定。現在我們應該可以知道如何繪製一些基礎的圖形及應用對應的樣式。在下一章中，我們會了解Highcharts的折線圖，區域圖，散點圖，我們會在這一章中了解及學到series-specific樣式選項的配置來繪製一些有精美樣式的圖表。</p>
+]]></content>
+    <summary type="html">
+    <![CDATA[<h1 id="科技零售(RetailSCM-com)_Learning_Highcharts中文教程">科技零售(RetailSCM.com) Learning Highcharts中文教程</h1><p><em><span style="color: #808080;">版權保留，網路轉載請註明來源，謝絕紙質媒體轉載，謝謝。</span></em></p>
+<h2 id="擴展色彩漸變(colors_with_gradients)">擴展色彩漸變(colors with gradients)</h2><p>Highcharts不僅支持一種顏色，同時也允許複雜的色彩漸變定義。Highcharts支持線性的色彩漸變可以是單一方向的色彩漸變也可以是輻射（或圓形）的色彩漸變，在本節中，我們嘗試驗線性的漸變，而輻射漸變會在第六章中再討論。</p>
+<p>在Highcharts中色彩的漸變是基於SVG的線性色彩漸變標準來實現的，它由以下兩種組合所構成：</p>
+<ul>
+<li>linearGradient：給出了x和y軸兩套坐標的顏色範圍作為漸變的方向，比率在0到1之間，或者為一個百分數</li>
+<li>stops：給出一組顏色的序列來填充他們在漸變方向的某一位置</li>
+</ul>
+<p>我們使用前面股市的例子中交易量的series，並重新定義yAxis.alternateGridColor，如下：</p>]]>
+    
+    </summary>
+    
+      <category term="Highcharts" scheme="http://www.retailscm.com/tags/Highcharts/"/>
+    
+      <category term="Learning" scheme="http://www.retailscm.com/categories/Learning/"/>
+    
+      <category term="Learning Highcharts" scheme="http://www.retailscm.com/categories/Learning/Learning-Highcharts/"/>
+    
+      <category term="Highcharts configurations" scheme="http://www.retailscm.com/categories/Learning/Learning-Highcharts/Highcharts-configurations/"/>
+    
+  </entry>
+  
+</feed>

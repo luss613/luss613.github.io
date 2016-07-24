@@ -1,0 +1,657 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <meta charset="utf-8">
+    
+    <title>第三章 03.折線圖和面積圖的組合 | 科技零售</title>
+    <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1">
+    
+        <meta name="keywords" content="Highcharts" />
+    
+    <meta name="description" content="科技零售(RetailSCM.com) Learning Highcharts中文教程版權保留，網路轉載請註明來源，謝絕紙質媒體轉載，謝謝。
+折線圖和面積圖的組合在這一部分中我們將探索將不同的類型圖綜合在一起，即混合折線和面積圖：
+
+投影圖
+混合面積曲線圖和階梯線圖
+研究堆積面積曲線圖圖，將兩個面積曲線圖從上部累加
+
+模擬一個投影圖投影圖分含使用真實數據的面積曲線部分和投影數據的虛線延續部分。所以">
+<meta property="og:type" content="article">
+<meta property="og:title" content="第三章 03.折線圖和面積圖的組合">
+<meta property="og:url" content="http://www.retailscm.com/Learning/Learning-Highcharts/Line-area-and-scatter-charts/mixing-line-and-area-series/index.html">
+<meta property="og:site_name" content="科技零售">
+<meta property="og:description" content="科技零售(RetailSCM.com) Learning Highcharts中文教程版權保留，網路轉載請註明來源，謝絕紙質媒體轉載，謝謝。
+折線圖和面積圖的組合在這一部分中我們將探索將不同的類型圖綜合在一起，即混合折線和面積圖：
+
+投影圖
+混合面積曲線圖和階梯線圖
+研究堆積面積曲線圖圖，將兩個面積曲線圖從上部累加
+
+模擬一個投影圖投影圖分含使用真實數據的面積曲線部分和投影數據的虛線延續部分。所以">
+<meta property="og:image" content="/images/learning_highcharts/chart3-3-1.jpg">
+<meta name="twitter:card" content="summary">
+<meta name="twitter:title" content="第三章 03.折線圖和面積圖的組合">
+<meta name="twitter:description" content="科技零售(RetailSCM.com) Learning Highcharts中文教程版權保留，網路轉載請註明來源，謝絕紙質媒體轉載，謝謝。
+折線圖和面積圖的組合在這一部分中我們將探索將不同的類型圖綜合在一起，即混合折線和面積圖：
+
+投影圖
+混合面積曲線圖和階梯線圖
+研究堆積面積曲線圖圖，將兩個面積曲線圖從上部累加
+
+模擬一個投影圖投影圖分含使用真實數據的面積曲線部分和投影數據的虛線延續部分。所以">
+    
+
+    
+
+    
+
+    <link rel="stylesheet" href="/vendor/font-awesome/css/font-awesome.min.css" type="text/css">
+    <link rel="stylesheet" href="/vendor/titillium-web/styles.css" type="text/css">
+    <link rel="stylesheet" href="/vendor/source-code-pro/styles.css" type="text/css">
+
+    <link rel="stylesheet" href="/css/style.css" type="text/css">
+
+    <script src="/vendor/jquery/2.0.3/jquery.min.js" type="text/javascript"></script>
+    
+    
+        <link rel="stylesheet" href="/vendor/fancybox/jquery.fancybox.css" type="text/css">
+    
+    
+        <link rel="stylesheet" href="/vendor/scrollLoading/style.css" type="text/css">
+    
+    
+        <script type="text/javascript">
+(function(i,s,o,g,r,a,m) {i['GoogleAnalyticsObject']=r;i[r]=i[r]||function() {
+(i[r].q=i[r].q||[]).push(arguments)},i[r].l=1*new Date();a=s.createElement(o),
+m=s.getElementsByTagName(o)[0];a.async=1;a.src=g;m.parentNode.insertBefore(a,m)
+})(window,document,'script','//www.google-analytics.com/analytics.js','ga');
+
+ga('create', 'UA-3707575-5', 'auto');
+ga('send', 'pageview');
+
+</script>
+    
+    
+
+</head>
+
+<body>
+    <div id="wrap">
+        <header id="header">
+    <div id="header-outer" class="outer">
+        <div class="container">
+            <div class="container-inner">
+                <div id="header-title">
+                    <h1 class="logo-wrap">
+                        <a href="/" class="logo"></a>
+                    </h1>
+                    
+                        <h2 class="subtitle-wrap">
+                            <p class="subtitle">PP Studio</p>
+                        </h2>
+                    
+                </div>
+                <div id="header-inner" class="nav-container">
+                    <a id="main-nav-toggle" class="nav-icon fa fa-bars"></a>
+                    <div class="nav-container-inner">
+                      <ul id="main-nav">
+                            <li class="main-nav-list-item">
+                                <a class="main-nav-list-link" href="/">主頁</a>
+                            </li>
+                            <ul class="main-nav-list">
+                                <li class="main-nav-list-item"><a class="main-nav-list-link" href="#">愛科技</a>
+                                    <ul class="main-nav-list-child">
+                                        <li class="main-nav-list-item"><a class="main-nav-list-link" href="/categories/Learning/Learning-Highcharts/">Learning Highcharts</a></li>
+                                        <li class="main-nav-list-item"><a class="main-nav-list-link" href="/categories/WEB2-0/">WEB2.0</a></li>
+                                        <li class="main-nav-list-item"><a class="main-nav-list-link" href="/categories/Oracle/">Oracle</a></li>
+                                    </ul>
+                                </li>
+                                <li class="main-nav-list-item"><a class="main-nav-list-link" href="#">愛應用</a>
+                                    <ul class="main-nav-list-child">
+                                        <li class="main-nav-list-item"><a class="main-nav-list-link" href="/categories/業務案例/">業務案例</a></li>
+                                        <li class="main-nav-list-item"><a class="main-nav-list-link" href="/categories/行業動態/">行業動態</a></li>
+                                    </ul>
+                                </li>
+                                <li class="main-nav-list-item"><a class="main-nav-list-link" href="#">愛生活</a>
+                                    <ul class="main-nav-list-child">
+                                        <li class="main-nav-list-item"><a class="main-nav-list-link" href="/categories/隨筆/">隨筆</a></li>
+                                        <li class="main-nav-list-item"><a class="main-nav-list-link" href="/categories/閱讀/">閱讀</a></li>
+                                    </ul>
+                                </li>
+                            </ul>
+                            <li class="main-nav-list-item">
+                                <a class="main-nav-list-link" href="/about">關於</a>
+                            </li>
+                        </ul>
+                        <nav id="sub-nav">
+                            <div id="search-form-wrap">
+
+    <form action="//google.com/search" method="get" accept-charset="UTF-8" class="search-form"><input type="search" name="q" results="0" class="search-form-input" placeholder="查詢"><input type="hidden" name="q" value="site:http://www.retailscm.com"></form>
+
+</div>
+                        </nav>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</header>
+        <div class="container">
+            <div class="main-body container-inner">
+                <div class="main-body-inner">
+                    <section id="main">
+                        <div class="main-body-header">
+    <h1 class="header">
+    
+    <a class="page-title-link" href="/categories/Learning/">Learning</a><i class="icon fa fa-angle-right"></i><a class="page-title-link" href="/categories/Learning/Learning-Highcharts/">Learning Highcharts</a><i class="icon fa fa-angle-right"></i><a class="page-title-link" href="/categories/Learning/Learning-Highcharts/Line-area-and-scatter-charts/">Line area and scatter charts</a>
+    </h1>
+</div>
+                        <div class="main-body-content">
+                            <article id="post-mixing-line-and-area-series" class="article article-single article-type-post" itemscope itemprop="blogPost">
+    <div class="article-inner">
+        
+            <header class="article-header">
+                
+    
+        <h1 class="article-title" itemprop="name">
+        第三章 03.折線圖和面積圖的組合
+        </h1>
+    
+
+            </header>
+        
+        <div class="article-subtitle">
+            <a href="/Learning/Learning-Highcharts/Line-area-and-scatter-charts/mixing-line-and-area-series/" class="article-date">
+    <time datetime="2015-05-15T21:00:00.000Z" itemprop="datePublished">2015-05-16</time>
+</a>
+            
+    <ul class="article-tag-list"><li class="article-tag-list-item"><a class="article-tag-list-link" href="/tags/Highcharts/">Highcharts</a></li></ul>
+
+        </div>
+        <div class="article-entry" itemprop="articleBody">
+            <h1 id="科技零售(RetailSCM-com)_Learning_Highcharts中文教程">科技零售(RetailSCM.com) Learning Highcharts中文教程</h1><p><em><span style="color: #808080;">版權保留，網路轉載請註明來源，謝絕紙質媒體轉載，謝謝。</span></em></p>
+<h2 id="折線圖和面積圖的組合">折線圖和面積圖的組合</h2><p>在這一部分中我們將探索將不同的類型圖綜合在一起，即混合折線和面積圖：</p>
+<ul>
+<li>投影圖</li>
+<li>混合面積曲線圖和階梯線圖</li>
+<li>研究堆積面積曲線圖圖，將兩個面積曲線圖從上部累加</li>
+</ul>
+<h2 id="模擬一個投影圖">模擬一個投影圖</h2><p>投影圖分含使用真實數據的面積曲線部分和投影數據的虛線延續部分。所以我們將數據分為兩個series，一個是真實數據，另一個是投影數據。下面是series配置的代碼。數據基於國家研究所的人口和社會安全研究報告(<a href="http://www.ipss.go.jp/pp-newest/e/ppfj02/ppfj02.pdf" target="_blank" rel="external">http://www.ipss.go.jp/pp-newest/e/ppfj02/ppfj02.pdf</a>)</p>
+<a id="more"></a>
+<pre><code><span class="atom">series</span>: [{
+    <span class="atom">name</span>: <span class="string">'project data'</span>,
+    <span class="atom">type</span>: <span class="string">'spline'</span>,
+    <span class="atom">showInLegend</span>: <span class="atom">false</span>,
+    <span class="atom">lineColor</span>: <span class="string">'#145252'</span>,
+    <span class="atom">dashStyle</span>: <span class="string">'Dash'</span>,
+    <span class="atom">data</span>: [ [ <span class="number">2010</span>, <span class="number">23</span> ], [ <span class="number">2011</span>, <span class="number">22.8</span> ],
+        ... [ <span class="number">2024</span>, <span class="number">28.5</span> ] ]
+}]
+</code></pre><p>未來的series配置為虛線曲線，並且禁用了圖例，因為我們想將這兩個series呈現為同一個series，即一個真實數據，一個未來投影數據。將未來series的顏色設置為與第一個series相同，最後再結構化數據。由於我們用 pointStart 屬性定義了x軸時間的部分，所以需要對齊2010年後的投影數據。下面有兩個途徑定義時間數據為連續的形式，如下：</p>
+<ul>
+<li>為第二個series輸入null值，用以對齊真實數據</li>
+<li>用元素集定義第二series，包括時間和投影數據<br>下面使用第二種途徑，因為呈現比較簡單。下面是未來數據series的截圖：</li>
+</ul>
+<p><a href="/images/learning_highcharts/chart3-3-1.jpg"><img src="/images/learning_highcharts/chart3-3-1.jpg" alt="chart3-3-1"></a></p>
+<p>真實數據series與繪製面積圖章節開始的圖形基本一致，除了沒有數據點標記和數據標籤的美化。下一步就是聯合兩個series，如下：</p>
+<pre><code><span class="title">series</span>: [{
+    name: 'real <span class="typedef"><span class="keyword">data</span>',</span>
+    <span class="typedef"><span class="keyword">type</span>: 'areaspline',</span>
+    ....
+}, {
+    name: 'project <span class="typedef"><span class="keyword">data</span>',</span>
+    <span class="typedef"><span class="keyword">type</span>: 'spline',</span>
+    ....
+}]
+</code></pre><p>由於兩個series的數據沒有重疊，因此產生一個平滑的投影圖表：</p>
+<p><a href="/images/learning_highcharts/chart3-3-2.jpg"><img src="/images/learning_highcharts/chart3-3-2.jpg" alt="chart3-3-2"></a></p>
+<h2 id="曲線圖與階梯線圖對比">曲線圖與階梯線圖對比</h2><p>在這部分中我們將要繪製一個曲線圖和一個階梯線圖。階梯線圖是水準和垂直走向的，僅僅按照數據的變化產生變化。通常用來展現離散的數據，即數據不是連續平緩的變動。</p>
+<p>為了展示階梯線圖，我們繼續用之前的曲線圖例子。首先，移除 showInLegend 和 dataLables 屬性以便顯示圖例和數據標籤。</p>
+<p>接下來加入一個新的series - 年齡0-14歲 ，樣式為預設折線圖。然後修改為階梯線圖。下面是配置的代碼：</p>
+<pre><code><span class="tag">series</span>: <span class="attr_selector">[{
+    name: 'Ages 65 and over',
+    type: 'areaspline',
+    lineColor: '#145252',
+    pointStart: 1980,
+    fillColor: {
+        ....
+    },
+    data: [ 9, 9, 9, 10, ...., 23 ]</span>
+}, {
+    <span class="attribute">name</span>: <span class="string">'Ages 0 to 14'</span>,
+    <span class="comment">// default type is line series</span>
+    <span class="attribute">step</span>: true,
+    <span class="attribute">pointStart</span>: <span class="number">1980</span>,
+    <span class="attribute">data</span>: [ <span class="number">24</span>, <span class="number">23</span>, <span class="number">23</span>, <span class="number">23</span>, <span class="number">22</span>, <span class="number">22</span>, <span class="number">21</span>,
+            <span class="number">20</span>, <span class="number">20</span>, <span class="number">19</span>, <span class="number">18</span>, <span class="number">18</span>, <span class="number">17</span>, <span class="number">17</span>, <span class="number">16</span>, <span class="number">16</span>, <span class="number">16</span>,
+            <span class="number">15</span>, <span class="number">15</span>, <span class="number">15</span>, <span class="number">15</span>, <span class="number">14</span>, <span class="number">14</span>, <span class="number">14</span>, <span class="number">14</span>, <span class="number">14</span>, <span class="number">14</span>,
+            <span class="number">14</span>, <span class="number">14</span>, <span class="number">13</span>, <span class="number">13</span> ]
+}]
+</code></pre><p>下面是階梯線圖的例子：</p>
+<p><a href="/images/learning_highcharts/chart3-3-3.jpg"><img src="/images/learning_highcharts/chart3-3-3.jpg" alt="chart3-3-3"></a></p>
+<h2 id="擴展到一個堆積面積圖">擴展到一個堆積面積圖</h2><p>本節中我們會將兩個series轉變為面積曲線圖，並將他們從上部堆積在一起，創建一個堆積面積圖。 使我們能夠在此圖表中粗略的觀察到數量，比例和總幅度。</p>
+<p>讓我們來把第二個series改為另一個 areaspline 類型：</p>
+<pre><code><span class="attribute">name</span>: <span class="string">'Ages 0 to 14',</span>
+<span class="attribute">type</span>: <span class="string">'areaspline',</span>
+<span class="attribute">pointStart</span>: <span class="string">1980,</span>
+<span class="attribute">data</span>: <span class="string">[ 24, 23, 23, ... ]</span>
+</code></pre><p>將 stacking 選項設為 ‘normal’ 做為 areaspline的默認設置，如下：</p>
+<pre><code><span class="tag">plotOptions</span>:{
+    <span class="tag">areaspline</span>:{
+        <span class="attribute">stacking</span>:<span class="string">'normal'</span>
+    }
+}
+</code></pre><p>這樣就使得兩個面積圖由上部互相堆疊起來。以此我們可以觀察到兩個年齡組的人口互相補償達到總人口的33%左右，而65歲及以上的年齡組將會在稍後階段快速增長。</p>
+<p><a href="/images/learning_highcharts/chart3-3-4.jpg"><img src="/images/learning_highcharts/chart3-3-4.jpg" alt="chart3-3-4"></a></p>
+<p>設想下，如果有三組面積曲線圖，但我們只想將其中兩個疊加。（儘管使用柱狀圖比這樣更加清晰）正如在Highcharts配置第二章 探索plotOption中所述，我們可以在plotOptions.series中設置stacking=’normal’，然後手動關閉第三個series的stacking配置，下面是具體的配置方法：</p>
+<pre><code>plotOptions: {
+    series: {
+        marker: {
+            enabled: <span class="literal">false</span>
+        },
+        stacking: <span class="string">'normal'</span>
+    }
+},
+series: <span class="preprocessor">[</span>{
+name: <span class="string">'Ages 65 and over'</span>,
+<span class="attribute">...</span><span class="built_in">.
+</span>}, {
+    name: <span class="string">'Ages 0 to 14'</span>,
+    <span class="attribute">...</span><span class="built_in">.
+</span>}, {
+    name: <span class="string">'Ages 15 to 64'</span>,
+    <span class="keyword">type</span>: <span class="string">'areaspline'</span>,
+    pointStart: <span class="number">1980</span>,
+    stacking: <span class="built_in">null</span>,
+    <span class="built_in">data</span>: <span class="preprocessor">[</span> <span class="number">67</span>, <span class="number">67</span>, <span class="number">68</span>, <span class="number">68</span>, <span class="attribute">...</span><span class="built_in">. </span><span class="preprocessor">]</span><span class="markup">
+}]</span>
+</code></pre><p>這樣就利用第三個series15-64年齡組生成了一個面積曲線圖，並涵蓋了前兩個堆積的series，如下：</p>
+<p><a href="/images/learning_highcharts/chart3-3-5.jpg"><img src="/images/learning_highcharts/chart3-3-5.jpg" alt="chart3-3-5"></a></p>
+<h2 id="繪製有缺失數據的圖表">繪製有缺失數據的圖表</h2><p>當一個series有缺失的數據時，Highcharts會預設將其顯示為間斷的線。而 connectNulls 選項可以使得當series中有缺失的數據時仍保持折線的連續，此選項的預設值是 false 。可以設置兩個存在空數據的曲線圖來檢驗一下其預設動作並設定數據標記為可用狀態，以便能夠清晰的觀察到缺失的數據點。</p>
+<pre><code><span class="title">series</span>: [{
+    name: '<span class="type">Ages</span> <span class="number">65</span> and over',
+    connectNulls: true,
+    ....,
+    // <span class="type">Missing</span> <span class="typedef"><span class="keyword">data</span> from 2004 - 2009</span>
+    <span class="typedef"><span class="keyword">data</span>: [ 9, 9, 9, ...., 23 ]</span>
+}, {
+    name: '<span class="type">Ages</span> <span class="number">0</span> to <span class="number">14</span>',
+    ....,
+    // <span class="type">Missing</span> <span class="typedef"><span class="keyword">data</span> from 1989 - 1994</span>
+    <span class="typedef"><span class="keyword">data</span>: [ 24, 23, 23, ...., 13 ]</span>
+}]
+</code></pre><p>下面的圖表通過樣曲線圖呈現了缺失的數據點的兩種樣式：</p>
+<p><a href="/images/learning_highcharts/chart3-3-6.jpg"><img src="/images/learning_highcharts/chart3-3-6.jpg" alt="chart3-3-6"></a></p>
+<p>正如我們所看到的年齡0-14歲的series具有明顯的間斷，而65歲及以上series因配置 connectNulls 選項為 true，就將缺失的數據點用曲線連接起來了。如果數據標記不可用，我們就不能注意到這樣的差別。</p>
+<p>然而，我們應該小心使用這個選項，並特別注意在使用 stacking選項時不要使其可用。設想下，我們有兩個堆積的面積圖，其中只有在底部的年齡0-14歲的series有缺失的數據。那麼程式對缺失數據的預設動作會令圖表看上去如下圖：</p>
+<p><a href="/images/learning_highcharts/chart3-3-7.jpg"><img src="/images/learning_highcharts/chart3-3-7.jpg" alt="chart3-3-7"></a></p>
+<p>儘管底部的series顯示了缺失間斷的部分，總體的堆積圖也是正確的。在同一區域的上層series下降至單一series值，整體的比例也保持不變。 問題所在是當 connectNulls 為true時，如果沒有注意到series中有缺失的數據，結果將是前後矛盾的圖表，如下：</p>
+<p><a href="/images/learning_highcharts/chart3-3-8.jpg"><img src="/images/learning_highcharts/chart3-3-8.jpg" alt="chart3-3-8"></a></p>
+<p>底部的series覆蓋了上部series留下的空白部分，使堆積圖的比例錯誤。</p>
+
+        </div>
+        <footer class="article-footer">
+            
+
+
+
+    <a data-url="http://www.retailscm.com/Learning/Learning-Highcharts/Line-area-and-scatter-charts/mixing-line-and-area-series/" data-id="cir0mgfqg002bg1zttjvmv4jj" class="article-share-link"><i class="fa fa-share"></i>分享到</a>
+<script>
+    (function ($) {
+        $('body').on('click', function() {
+            $('.article-share-box.on').removeClass('on');
+        }).on('click', '.article-share-link', function(e) {
+            e.stopPropagation();
+
+            var $this = $(this),
+                url = $this.attr('data-url'),
+                encodedUrl = encodeURIComponent(url),
+                id = 'article-share-box-' + $this.attr('data-id'),
+                offset = $this.offset(),
+                box;
+
+            if ($('#' + id).length) {
+                box = $('#' + id);
+
+                if (box.hasClass('on')){
+                    box.removeClass('on');
+                    return;
+                }
+            } else {
+                var html = [
+                    '<div id="' + id + '" class="article-share-box">',
+                        '<input class="article-share-input" value="' + url + '">',
+                        '<div class="article-share-links">',
+                            '<a href="https://twitter.com/intent/tweet?url=' + encodedUrl + '" class="article-share-twitter" target="_blank" title="Twitter"></a>',
+                            '<a href="https://www.facebook.com/sharer.php?u=' + encodedUrl + '" class="article-share-facebook" target="_blank" title="Facebook"></a>',
+                            '<a href="http://pinterest.com/pin/create/button/?url=' + encodedUrl + '" class="article-share-pinterest" target="_blank" title="Pinterest"></a>',
+                            '<a href="https://plus.google.com/share?url=' + encodedUrl + '" class="article-share-google" target="_blank" title="Google+"></a>',
+                        '</div>',
+                    '</div>'
+                ].join('');
+
+              box = $(html);
+
+              $('body').append(box);
+            }
+
+            $('.article-share-box.on').hide();
+
+            box.css({
+                top: offset.top + 25,
+                left: offset.left
+            }).addClass('on');
+
+        }).on('click', '.article-share-box', function (e) {
+            e.stopPropagation();
+        }).on('click', '.article-share-box-input', function () {
+            $(this).select();
+        }).on('click', '.article-share-box-link', function (e) {
+            e.preventDefault();
+            e.stopPropagation();
+
+            window.open(this.href, 'article-share-box-window-' + Date.now(), 'width=500,height=450');
+        });
+    })(jQuery);
+</script>
+
+        </footer>
+    </div>
+</article>
+
+    <section id="comments">
+    
+        
+    <div id="disqus_thread">
+        <noscript>Please enable JavaScript to view the <a href="//disqus.com/?ref_noscript">comments powered by Disqus.</a></noscript>
+    </div>
+
+    
+    </section>
+
+                        </div>
+                    </section>
+                    <aside id="sidebar">
+    <a class="sidebar-toggle" title="Expand Sidebar"><i class="toggle icon"></i></a>
+    <div class="sidebar-top">
+        <p>關注我 :</p>
+        <ul class="social-links">
+            
+                
+                <li>
+                    <a class="social-tooltip" title="github" href="http://github.com/luss613" target="_blank">
+                        <i class="icon fa fa-github"></i>
+                    </a>
+                </li>
+                
+            
+                
+                <li>
+                    <a class="social-tooltip" title="twitter" href="http://twitter.com/luss613" target="_blank">
+                        <i class="icon fa fa-twitter"></i>
+                    </a>
+                </li>
+                
+            
+                
+                <li>
+                    <a class="social-tooltip" title="facebook" href="https://www.facebook.com/retailscm" target="_blank">
+                        <i class="icon fa fa-facebook"></i>
+                    </a>
+                </li>
+                
+            
+                
+                <li>
+                    <a class="social-tooltip" title="rss" href="/atom.xml" target="_blank">
+                        <i class="icon fa fa-rss"></i>
+                    </a>
+                </li>
+                
+            
+        </ul>
+    </div>
+    
+        
+<nav id="article-nav">
+    
+        <a href="/Learning/Learning-Highcharts/Line-area-and-scatter-charts/combining-scatter-and-area-series/" id="article-nav-newer" class="article-nav-link-wrap">
+        <strong class="article-nav-caption">下一篇</strong>
+        <p class="article-nav-title">
+        
+            第三章 04.散點圖和面積圖的組合
+        
+        </p>
+        <i class="icon fa fa-chevron-right" id="icon-chevron-right"></i>
+    </a>
+    
+    
+        <a href="/Learning/Learning-Highcharts/Line-area-and-scatter-charts/sketching-an-area-chart/" id="article-nav-older" class="article-nav-link-wrap">
+        <strong class="article-nav-caption">上一篇</strong>
+        <p class="article-nav-title">第三章 02.繪製面積圖</p>
+        <i class="icon fa fa-chevron-left" id="icon-chevron-left"></i>
+        </a>
+    
+</nav>
+
+    
+    <div class="widgets-container">
+        
+            
+                
+    <div class="widget-wrap widget-list">
+        <h3 class="widget-title">分類</h3>
+        <div class="widget">
+            <ul class="category-list"><li class="category-list-item"><a class="category-list-link" href="/categories/Learning/">Learning</a><span class="category-list-count">36</span><ul class="category-list-child"><li class="category-list-item"><a class="category-list-link" href="/categories/Learning/Learning-Highcharts/">Learning Highcharts</a><span class="category-list-count">36</span><ul class="category-list-child"><li class="category-list-item"><a class="category-list-link" href="/categories/Learning/Learning-Highcharts/Bar-and-column-charts/">Bar and column charts</a><span class="category-list-count">6</span></li><li class="category-list-item"><a class="category-list-link" href="/categories/Learning/Learning-Highcharts/Highcharts-APIs/">Highcharts APIs</a><span class="category-list-count">3</span></li><li class="category-list-item"><a class="category-list-link" href="/categories/Learning/Learning-Highcharts/Highcharts-configurations/">Highcharts configurations</a><span class="category-list-count">9</span></li><li class="category-list-item"><a class="category-list-link" href="/categories/Learning/Learning-Highcharts/Line-area-and-scatter-charts/">Line area and scatter charts</a><span class="category-list-count">5</span></li><li class="category-list-item"><a class="category-list-link" href="/categories/Learning/Learning-Highcharts/Pie-Charts/">Pie Charts</a><span class="category-list-count">5</span></li><li class="category-list-item"><a class="category-list-link" href="/categories/Learning/Learning-Highcharts/Web-Charts/">Web Charts</a><span class="category-list-count">6</span></li></ul></li></ul></li><li class="category-list-item"><a class="category-list-link" href="/categories/Oracle/">Oracle</a><span class="category-list-count">1</span></li><li class="category-list-item"><a class="category-list-link" href="/categories/WEB2-0/">WEB2.0</a><span class="category-list-count">2</span><ul class="category-list-child"><li class="category-list-item"><a class="category-list-link" href="/categories/WEB2-0/Bootstrap/">Bootstrap</a><span class="category-list-count">1</span></li><li class="category-list-item"><a class="category-list-link" href="/categories/WEB2-0/jQuery/">jQuery</a><span class="category-list-count">1</span></li></ul></li><li class="category-list-item"><a class="category-list-link" href="/categories/Yii/">Yii</a><span class="category-list-count">2</span></li><li class="category-list-item"><a class="category-list-link" href="/categories/業務案例/">業務案例</a><span class="category-list-count">1</span></li><li class="category-list-item"><a class="category-list-link" href="/categories/行業動態/">行業動態</a><span class="category-list-count">2</span></li><li class="category-list-item"><a class="category-list-link" href="/categories/隨筆/">隨筆</a><span class="category-list-count">1</span></li></ul>
+        </div>
+    </div>
+
+
+            
+                
+    <div class="widget-wrap">
+        <h3 class="widget-title">最新文章</h3>
+        <div class="widget">
+            <ul id="recent-post" class="">
+                
+                    <li>
+                        
+                        <div class="item-thumbnail">
+                            <a href="/Learning/Learning-Highcharts/Highcharts-APIs/using-highcharts-apis/" class="thumbnail">
+    
+    
+        <span style="background-image:url(/images/learning_highcharts/7-2.png)" alt="第七章 02.使用Highcharts APIs" class="thumbnail-image"></span>
+    
+    
+</a>
+                        </div>
+                        
+                        <div class="item-inner">
+                            <p class="item-category"><a class="article-category-link" href="/categories/Learning/">Learning</a><i class="icon fa fa-angle-right"></i><a class="article-category-link" href="/categories/Learning/Learning-Highcharts/">Learning Highcharts</a></p>
+                            <p class="item-title"><a href="/Learning/Learning-Highcharts/Highcharts-APIs/using-highcharts-apis/" class="title">第七章 02.使用Highcharts APIs</a></p>
+                            <p class="item-date"><time datetime="2015-05-18T19:00:00.000Z" itemprop="datePublished">2015-05-19</time></p>
+                        </div>
+                    </li>
+                
+                    <li>
+                        
+                        <div class="item-thumbnail">
+                            <a href="/Learning/Learning-Highcharts/Highcharts-APIs/understanding-the-highcharts-class-model/" class="thumbnail">
+    
+    
+        <span style="background-image:url(/images/learning_highcharts/7-1.jpg)" alt="第七章 01.了解Highcharts類模型" class="thumbnail-image"></span>
+    
+    
+</a>
+                        </div>
+                        
+                        <div class="item-inner">
+                            <p class="item-category"><a class="article-category-link" href="/categories/Learning/">Learning</a><i class="icon fa fa-angle-right"></i><a class="article-category-link" href="/categories/Learning/Learning-Highcharts/">Learning Highcharts</a></p>
+                            <p class="item-title"><a href="/Learning/Learning-Highcharts/Highcharts-APIs/understanding-the-highcharts-class-model/" class="title">第七章 01.了解Highcharts類模型</a></p>
+                            <p class="item-date"><time datetime="2015-05-18T18:00:00.000Z" itemprop="datePublished">2015-05-19</time></p>
+                        </div>
+                    </li>
+                
+                    <li>
+                        
+                        <div class="item-thumbnail">
+                            <a href="/Learning/Learning-Highcharts/Highcharts-APIs/highcharts-apis/" class="thumbnail">
+    
+    
+        <span class="thumbnail-image thumbnail-none"></span>
+    
+    
+</a>
+                        </div>
+                        
+                        <div class="item-inner">
+                            <p class="item-category"><a class="article-category-link" href="/categories/Learning/">Learning</a><i class="icon fa fa-angle-right"></i><a class="article-category-link" href="/categories/Learning/Learning-Highcharts/">Learning Highcharts</a></p>
+                            <p class="item-title"><a href="/Learning/Learning-Highcharts/Highcharts-APIs/highcharts-apis/" class="title">第七章 Highcharts APIs</a></p>
+                            <p class="item-date"><time datetime="2015-05-18T17:00:00.000Z" itemprop="datePublished">2015-05-19</time></p>
+                        </div>
+                    </li>
+                
+                    <li>
+                        
+                        <div class="item-thumbnail">
+                            <a href="/Learning/Learning-Highcharts/Pie-Charts/building-a-chart-with-multiple-series-types/" class="thumbnail">
+    
+    
+        <span style="background-image:url(/images/learning_highcharts/5-9.png)" alt="第五章 05.繪製一個包含多個序列的圖表" class="thumbnail-image"></span>
+    
+    
+</a>
+                        </div>
+                        
+                        <div class="item-inner">
+                            <p class="item-category"><a class="article-category-link" href="/categories/Learning/">Learning</a><i class="icon fa fa-angle-right"></i><a class="article-category-link" href="/categories/Learning/Learning-Highcharts/">Learning Highcharts</a></p>
+                            <p class="item-title"><a href="/Learning/Learning-Highcharts/Pie-Charts/building-a-chart-with-multiple-series-types/" class="title">第五章 05.繪製一個包含多個序列的圖表</a></p>
+                            <p class="item-date"><time datetime="2015-05-17T22:00:00.000Z" itemprop="datePublished">2015-05-18</time></p>
+                        </div>
+                    </li>
+                
+                    <li>
+                        
+                        <div class="item-thumbnail">
+                            <a href="/Learning/Learning-Highcharts/Pie-Charts/preparing-a-donut-chart-multiple-series/" class="thumbnail">
+    
+    
+        <span style="background-image:url(/images/learning_highcharts/5-6.png)" alt="第五章 04.準備一個甜甜圈圖——複合序列" class="thumbnail-image"></span>
+    
+    
+</a>
+                        </div>
+                        
+                        <div class="item-inner">
+                            <p class="item-category"><a class="article-category-link" href="/categories/Learning/">Learning</a><i class="icon fa fa-angle-right"></i><a class="article-category-link" href="/categories/Learning/Learning-Highcharts/">Learning Highcharts</a></p>
+                            <p class="item-title"><a href="/Learning/Learning-Highcharts/Pie-Charts/preparing-a-donut-chart-multiple-series/" class="title">第五章 04.準備一個甜甜圈圖——複合序列</a></p>
+                            <p class="item-date"><time datetime="2015-05-17T21:00:00.000Z" itemprop="datePublished">2015-05-18</time></p>
+                        </div>
+                    </li>
+                
+            </ul>
+        </div>
+    </div>
+
+            
+                
+    <div class="widget-wrap widget-list">
+        <h3 class="widget-title">歸檔</h3>
+        <div class="widget">
+            <ul class="archive-list"><li class="archive-list-item"><a class="archive-list-link" href="/archives/2015/05/">五月 2015</a><span class="archive-list-count">35</span></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2013/10/">十月 2013</a><span class="archive-list-count">2</span></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2013/04/">四月 2013</a><span class="archive-list-count">5</span></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2013/03/">三月 2013</a><span class="archive-list-count">3</span></li></ul>
+        </div>
+    </div>
+
+
+            
+                
+    <div class="widget-wrap widget-list">
+        <h3 class="widget-title">標籤</h3>
+        <div class="widget">
+            <ul class="tag-list"><li class="tag-list-item"><a class="tag-list-link" href="/tags/Highcharts/">Highcharts</a><span class="tag-list-count">36</span></li></ul>
+        </div>
+    </div>
+
+
+            
+                
+    <div class="widget-wrap widget-float">
+        <h3 class="widget-title">標簽雲</h3>
+        <div class="widget tagcloud">
+            <a href="/tags/Highcharts/" style="font-size: NaNpx;">Highcharts</a>
+        </div>
+    </div>
+
+
+            
+                
+    <div class="widget-wrap widget-list">
+        <h3 class="widget-title">連接</h3>
+        <div class="widget">
+            <ul>
+                
+                    <li>
+                        <a href="http://hexo.io">Hexo</a>
+                    </li>
+                
+            </ul>
+        </div>
+    </div>
+
+
+            
+        
+    </div>
+</aside>
+                </div>
+            </div>
+        </div>
+        <footer id="footer">
+    <div class="container">
+        <div class="container-inner">
+            <a id="back-to-top" href="javascript:;"><i class="icon fa fa-angle-up"></i></a>
+            <div class="credit">
+                <h1 class="logo-wrap">
+                    <a href="/" class="logo"></a>
+                </h1>
+                <p>&copy; 2016 Paul Lu</p>
+                <p>Powered by <a href="//hexo.io/" target="_blank">Hexo</a>. Theme by <a href="//github.com/ppoffice" target="_blank">PPOffice</a></p>
+            </div>
+        </div>
+    </div>
+</footer>
+        
+    
+    <script>
+    var disqus_shortname = 'retailscm';
+    
+    
+    var disqus_url = 'http://www.retailscm.com/Learning/Learning-Highcharts/Line-area-and-scatter-charts/mixing-line-and-area-series/';
+    
+    (function() {
+    var dsq = document.createElement('script');
+    dsq.type = 'text/javascript';
+    dsq.async = true;
+    dsq.src = '//' + disqus_shortname + '.disqus.com/embed.js';
+    (document.getElementsByTagName('head')[0] || document.getElementsByTagName('body')[0]).appendChild(dsq);
+    })();
+    </script>
+
+
+
+    
+        <script src="/vendor/fancybox/jquery.fancybox.pack.js" type="text/javascript"></script>
+    
+
+    
+        <script src="/vendor/scrollLoading/jquery.scrollLoading.js" type="text/javascript"></script>
+        <script src="/vendor/scrollLoading/main.js" type="text/javascript"></script>
+    
+
+
+<!-- Custom Scripts -->
+<script src="/js/main.js" type="text/javascript"></script>
+
+    </div>
+</body>
+</html>

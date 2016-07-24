@@ -1,0 +1,871 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <meta charset="utf-8">
+    
+    <title>第二章 03.軸在圖表中的應用 | 科技零售</title>
+    <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1">
+    
+        <meta name="keywords" content="Highcharts" />
+    
+    <meta name="description" content="科技零售(RetailSCM.com) Learning Highcharts中文教程版權保留，網路轉載請註明來源，謝絕紙質媒體轉載，謝謝。
+軸在圖表中的應用在本節中，我們會來看一下軸的設定，會從一個普通的折線圖開始，然後逐漸增加一些選項到圖表上，再來驗證其效果。
+訪問軸的數據類型有兩種方法為圖表指定數據 - categories數組和series數據。對顯示特定名稱的間隔，我們應該用一個字串數組">
+<meta property="og:type" content="article">
+<meta property="og:title" content="第二章 03.軸在圖表中的應用">
+<meta property="og:url" content="http://www.retailscm.com/Learning/Learning-Highcharts/Highcharts-configurations/framing-the-chart-with-axes/index.html">
+<meta property="og:site_name" content="科技零售">
+<meta property="og:description" content="科技零售(RetailSCM.com) Learning Highcharts中文教程版權保留，網路轉載請註明來源，謝絕紙質媒體轉載，謝謝。
+軸在圖表中的應用在本節中，我們會來看一下軸的設定，會從一個普通的折線圖開始，然後逐漸增加一些選項到圖表上，再來驗證其效果。
+訪問軸的數據類型有兩種方法為圖表指定數據 - categories數組和series數據。對顯示特定名稱的間隔，我們應該用一個字串數組">
+<meta property="og:image" content="/images/learning_highcharts/chart2-3-1.jpg">
+<meta name="twitter:card" content="summary">
+<meta name="twitter:title" content="第二章 03.軸在圖表中的應用">
+<meta name="twitter:description" content="科技零售(RetailSCM.com) Learning Highcharts中文教程版權保留，網路轉載請註明來源，謝絕紙質媒體轉載，謝謝。
+軸在圖表中的應用在本節中，我們會來看一下軸的設定，會從一個普通的折線圖開始，然後逐漸增加一些選項到圖表上，再來驗證其效果。
+訪問軸的數據類型有兩種方法為圖表指定數據 - categories數組和series數據。對顯示特定名稱的間隔，我們應該用一個字串數組">
+    
+
+    
+
+    
+
+    <link rel="stylesheet" href="/vendor/font-awesome/css/font-awesome.min.css" type="text/css">
+    <link rel="stylesheet" href="/vendor/titillium-web/styles.css" type="text/css">
+    <link rel="stylesheet" href="/vendor/source-code-pro/styles.css" type="text/css">
+
+    <link rel="stylesheet" href="/css/style.css" type="text/css">
+
+    <script src="/vendor/jquery/2.0.3/jquery.min.js" type="text/javascript"></script>
+    
+    
+        <link rel="stylesheet" href="/vendor/fancybox/jquery.fancybox.css" type="text/css">
+    
+    
+        <link rel="stylesheet" href="/vendor/scrollLoading/style.css" type="text/css">
+    
+    
+        <script type="text/javascript">
+(function(i,s,o,g,r,a,m) {i['GoogleAnalyticsObject']=r;i[r]=i[r]||function() {
+(i[r].q=i[r].q||[]).push(arguments)},i[r].l=1*new Date();a=s.createElement(o),
+m=s.getElementsByTagName(o)[0];a.async=1;a.src=g;m.parentNode.insertBefore(a,m)
+})(window,document,'script','//www.google-analytics.com/analytics.js','ga');
+
+ga('create', 'UA-3707575-5', 'auto');
+ga('send', 'pageview');
+
+</script>
+    
+    
+
+</head>
+
+<body>
+    <div id="wrap">
+        <header id="header">
+    <div id="header-outer" class="outer">
+        <div class="container">
+            <div class="container-inner">
+                <div id="header-title">
+                    <h1 class="logo-wrap">
+                        <a href="/" class="logo"></a>
+                    </h1>
+                    
+                        <h2 class="subtitle-wrap">
+                            <p class="subtitle">PP Studio</p>
+                        </h2>
+                    
+                </div>
+                <div id="header-inner" class="nav-container">
+                    <a id="main-nav-toggle" class="nav-icon fa fa-bars"></a>
+                    <div class="nav-container-inner">
+                      <ul id="main-nav">
+                            <li class="main-nav-list-item">
+                                <a class="main-nav-list-link" href="/">主頁</a>
+                            </li>
+                            <ul class="main-nav-list">
+                                <li class="main-nav-list-item"><a class="main-nav-list-link" href="#">愛科技</a>
+                                    <ul class="main-nav-list-child">
+                                        <li class="main-nav-list-item"><a class="main-nav-list-link" href="/categories/Learning/Learning-Highcharts/">Learning Highcharts</a></li>
+                                        <li class="main-nav-list-item"><a class="main-nav-list-link" href="/categories/WEB2-0/">WEB2.0</a></li>
+                                        <li class="main-nav-list-item"><a class="main-nav-list-link" href="/categories/Oracle/">Oracle</a></li>
+                                    </ul>
+                                </li>
+                                <li class="main-nav-list-item"><a class="main-nav-list-link" href="#">愛應用</a>
+                                    <ul class="main-nav-list-child">
+                                        <li class="main-nav-list-item"><a class="main-nav-list-link" href="/categories/業務案例/">業務案例</a></li>
+                                        <li class="main-nav-list-item"><a class="main-nav-list-link" href="/categories/行業動態/">行業動態</a></li>
+                                    </ul>
+                                </li>
+                                <li class="main-nav-list-item"><a class="main-nav-list-link" href="#">愛生活</a>
+                                    <ul class="main-nav-list-child">
+                                        <li class="main-nav-list-item"><a class="main-nav-list-link" href="/categories/隨筆/">隨筆</a></li>
+                                        <li class="main-nav-list-item"><a class="main-nav-list-link" href="/categories/閱讀/">閱讀</a></li>
+                                    </ul>
+                                </li>
+                            </ul>
+                            <li class="main-nav-list-item">
+                                <a class="main-nav-list-link" href="/about">關於</a>
+                            </li>
+                        </ul>
+                        <nav id="sub-nav">
+                            <div id="search-form-wrap">
+
+    <form action="//google.com/search" method="get" accept-charset="UTF-8" class="search-form"><input type="search" name="q" results="0" class="search-form-input" placeholder="查詢"><input type="hidden" name="q" value="site:http://www.retailscm.com"></form>
+
+</div>
+                        </nav>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</header>
+        <div class="container">
+            <div class="main-body container-inner">
+                <div class="main-body-inner">
+                    <section id="main">
+                        <div class="main-body-header">
+    <h1 class="header">
+    
+    <a class="page-title-link" href="/categories/Learning/">Learning</a><i class="icon fa fa-angle-right"></i><a class="page-title-link" href="/categories/Learning/Learning-Highcharts/">Learning Highcharts</a><i class="icon fa fa-angle-right"></i><a class="page-title-link" href="/categories/Learning/Learning-Highcharts/Highcharts-configurations/">Highcharts configurations</a>
+    </h1>
+</div>
+                        <div class="main-body-content">
+                            <article id="post-framing-the-chart-with-axes" class="article article-single article-type-post" itemscope itemprop="blogPost">
+    <div class="article-inner">
+        
+            <header class="article-header">
+                
+    
+        <h1 class="article-title" itemprop="name">
+        第二章 03.軸在圖表中的應用
+        </h1>
+    
+
+            </header>
+        
+        <div class="article-subtitle">
+            <a href="/Learning/Learning-Highcharts/Highcharts-configurations/framing-the-chart-with-axes/" class="article-date">
+    <time datetime="2015-05-13T17:00:00.000Z" itemprop="datePublished">2015-05-14</time>
+</a>
+            
+    <ul class="article-tag-list"><li class="article-tag-list-item"><a class="article-tag-list-link" href="/tags/Highcharts/">Highcharts</a></li></ul>
+
+        </div>
+        <div class="article-entry" itemprop="articleBody">
+            <h1 id="科技零售(RetailSCM-com)_Learning_Highcharts中文教程">科技零售(RetailSCM.com) Learning Highcharts中文教程</h1><p><em><span style="color: #808080;">版權保留，網路轉載請註明來源，謝絕紙質媒體轉載，謝謝。</span></em></p>
+<h2 id="軸在圖表中的應用">軸在圖表中的應用</h2><p>在本節中，我們會來看一下軸的設定，會從一個普通的折線圖開始，然後逐漸增加一些選項到圖表上，再來驗證其效果。</p>
+<h2 id="訪問軸的數據類型">訪問軸的數據類型</h2><p>有兩種方法為圖表指定數據 - categories數組和series數據。對顯示特定名稱的間隔，我們應該用一個字串數組賦值給對應的categories，每一個categories都關聯一個series數據數組中的一個值。另一種方式是在categories中都嵌入series數據數組的值。之後Highcharts會取出每一個軸上的series數據，並解釋數據類型，適當的對數據進行格式化。</p>
+<a id="more"></a>
+<p>下面是一個使用categories的簡單例子：</p>
+<pre><code><span class="string">chart:</span> {
+<span class="label">  renderTo:</span> <span class="string">'container'</span>,
+<span class="label">  height:</span> <span class="number">250</span>,
+<span class="label">  spacingRight:</span> <span class="number">20</span>
+},
+<span class="string">title:</span> {
+<span class="label">  text:</span> <span class="string">'Market Data: Nasdaq 100'</span>
+},
+<span class="string">subtitle:</span> {
+<span class="label">  text:</span> <span class="string">'May 11, 2012'</span>
+},
+<span class="string">xAxis:</span> {
+<span class="label">  categories:</span> [ 
+    <span class="string">'9:30 am'</span>, <span class="string">'10:00 am'</span>, <span class="string">'10:30 am'</span>,
+    <span class="string">'11:00 am'</span>, <span class="string">'11:30 am'</span>, <span class="string">'12:00 pm'</span>,
+    <span class="string">'12:30 pm'</span>, <span class="string">'1:00 pm'</span>, <span class="string">'1:30 pm'</span>,
+    <span class="string">'2:00 pm'</span>, <span class="string">'2:30 pm'</span>, <span class="string">'3:00 pm'</span>,
+    <span class="string">'3:30 pm'</span>, <span class="string">'4:00 pm'</span> ],
+<span class="label">  labels:</span> {
+<span class="label">    step:</span> <span class="number">3</span>
+  }
+},
+<span class="string">yAxis:</span> {
+<span class="label">  title:</span> {
+<span class="label">    text:</span> <span class="literal">null</span>
+  }
+},
+<span class="string">legend:</span> {
+<span class="label">  enabled:</span> <span class="literal">false</span>
+},
+<span class="string">credits:</span> {
+<span class="label">  enabled:</span> <span class="literal">false</span>
+},
+<span class="string">series:</span> [{
+<span class="label">  name:</span> <span class="string">'Nasdaq'</span>,
+<span class="label">  data:</span> [ 
+    <span class="number">2606.01</span>, <span class="number">2622.08</span>, <span class="number">2636.03</span>, <span class="number">2637.78</span>, <span class="number">2639.15</span>,
+    <span class="number">2637.09</span>, <span class="number">2633.38</span>, <span class="number">2632.23</span>, <span class="number">2632.33</span>, <span class="number">2632.59</span>,
+    <span class="number">2630.34</span>, <span class="number">2626.89</span>, <span class="number">2624.59</span>, <span class="number">2615.98</span> ]
+}]
+</code></pre><p>上面的代碼片段會產生如下圖所示的圖表：</p>
+<p><a href="/images/learning_highcharts/chart2-3-1.jpg"><img src="/images/learning_highcharts/chart2-3-1.jpg" alt="chart2-3-1"></a></p>
+<p>Categories數組中的第一個時間9:30am對應到series數據數組中第一個值2606.01，整個圖表就是以此類推。</p>
+<p>另外，我們可以在series數據中指定時間的值，並在x軸上設定type屬性來格式化時間。Type屬性支持linear(默認), logarithmic或datetime。datetime的設定會自動識別series數據中的時間並轉化為特定的時間格式。此外，我們可以使用dateTimeLabelFormats屬性來預定義日期的格式，參數的部分可以允許不同時間維度的格式，這樣當我們未來改變報表中時間維度的查詢條件時，系統可以自動的去匹配合適的時間維度，如每天，每月，每年等。下面的例子會展示圖表如何預定義小時和分鐘的格式（時間格式化語法部分請參考PHP的strftime函數）。</p>
+<pre><code>xAxis: {
+    <span class="keyword">type</span>: <span class="string">'datetime'</span>,
+    <span class="comment">// Format 24 hour time to AM/PM</span>
+    dateTimeLabelFormats: {
+        hour: <span class="string">'%I:%M %P'</span>,
+        minute: <span class="string">'%I %M'</span>
+    }
+},
+series: <span class="preprocessor">[</span>{
+    name: <span class="string">'Nasdaq'</span>,
+    <span class="built_in">data</span>: <span class="preprocessor">[</span> 
+            <span class="preprocessor">[</span> <span class="built_in">Date</span><span class="built_in">.</span>UTC(<span class="number">2012</span>, <span class="number">4</span>, <span class="number">11</span>, <span class="number">9</span>, <span class="number">30</span>), <span class="number">2606.01</span> <span class="preprocessor">]</span><span class="markup">,
+            </span><span class="preprocessor">[</span> <span class="built_in">Date</span><span class="built_in">.</span>UTC(<span class="number">2012</span>, <span class="number">4</span>, <span class="number">11</span>, <span class="number">10</span>), <span class="number">2622.08</span> <span class="preprocessor">]</span><span class="markup">,
+            </span><span class="preprocessor">[</span> <span class="built_in">Date</span><span class="built_in">.</span>UTC(<span class="number">2012</span>, <span class="number">4</span>, <span class="number">11</span>, <span class="number">10</span>, <span class="number">30</span>), <span class="number">2636.03</span> <span class="preprocessor">]</span><span class="markup">,
+            .....
+          ]
+}]</span>
+</code></pre><p>注意x軸上12小時制的時間格式：</p>
+<p><a href="/images/learning_highcharts/chart2-3-2.jpg"><img src="/images/learning_highcharts/chart2-3-2.jpg" alt="chart2-3-2"></a></p>
+<p>作為替代方案，我們也可以定義xAxis.labels.formatter屬性的格式化字串來達到類似的效果。Highcharts提供一個常用工具Highcharts.dateFormat，可以將timestamp格式的日期轉換為可讀的特定日期格式。在下面的代碼片段中，我們使用dateFormat及this.value定義了formatter功能，關鍵詞this是軸上interval的對象，而this.value是軸上interval的實例（UTC日期格式）</p>
+<pre><code>xAxis: {
+    type: <span class="string">'datetime'</span>,
+    labels: {
+        formatter: <span class="function"><span class="keyword">function</span><span class="params">()</span> </span>{
+            <span class="keyword">return</span> Highcharts.dateFormat(<span class="string">'%I:%M %P'</span>, <span class="keyword">this</span>.value);
+        }
+    }
+},
+</code></pre><p>我們也可以定義一個開始時間pointStart及一個等距間隔點pointInterval，則我們就可以自我們定義好的開始時間和間距來產生一個精簡版的圖表。</p>
+<pre><code><span class="rule"><span class="attribute">series</span>:<span class="value"> [{
+    name: <span class="string">'Nasdaq'</span>,
+    pointStart: Date.<span class="function">UTC</span>(<span class="number">2012</span>, <span class="number">4</span>, <span class="number">11</span>, <span class="number">9</span>, <span class="number">30</span>),
+    pointInterval: <span class="number">30</span> * <span class="number">60</span> * <span class="number">1000</span>,
+    data: [ <span class="number">2606.01</span>, <span class="number">2622.08</span>, <span class="number">2636.03</span>, <span class="number">2637.78</span>,
+            <span class="number">2639.15</span>, <span class="number">2637.09</span>, <span class="number">2633.38</span>, <span class="number">2632.23</span>,
+            <span class="number">2632.33</span>, <span class="number">2632.59</span>, <span class="number">2630.34</span>, <span class="number">2626.89</span>,
+            <span class="number">2624.59</span>, <span class="number">2615.98</span> ]
+}]</span></span>
+</code></pre><h2 id="調整interval和背景">調整interval和背景</h2><p>在上一節中我們了解到了如何使用categories和series數據數組，在本節中我們會了解如何格式化間隔線(interval lines)及背景樣式來使得產出的圖表更清晰易懂。</p>
+<p>我們先繼續上一節的例子，首先我們會沿著y軸建立間隔線，在圖表中間隔會被自動設置為20，然而如果將間隔線的密度增加一倍會讓圖表更容易讀懂，為了做到這點，我們可以將tickInterval設定為0，然後我們使用minorTickInterval來將一條半間隔線至於兩條間隔線中間。為了區別新增的半間隔線，我們設置minorGridLineDashStyle來將新增的間隔線設置為虛線或點狀線的樣式。</p>
+<p>依據第一步來創建一個新設定：</p>
+<pre><code><span class="tag">yAxis</span>: {
+    <span class="tag">title</span>: {
+        <span class="attribute">text</span>: null
+    },
+    <span class="attribute">tickInterval</span>: <span class="number">10</span>,
+    <span class="attribute">minorTickInterval</span>: <span class="number">5</span>,
+    <span class="attribute">minorGridLineColor</span>: <span class="string">'#ADADAD'</span>,
+    <span class="attribute">minorGridLineDashStyle</span>: <span class="string">'dashdot'</span>
+}
+</code></pre><p>間隔線看起來會如下圖所示：</p>
+<p><a href="/images/learning_highcharts/chart2-3-3.jpg"><img src="/images/learning_highcharts/chart2-3-3.jpg" alt="chart2-3-3"></a></p>
+<p>為了讓圖表看起來更正式，我們再使用alternateGridColor增加一些明暗間隔行的效果，並使用gridLineColor來修改間隔線的顏色。將如下代碼增加到yAxis配置中：</p>
+<pre><code><span class="atom">gridLineColor</span>: <span class="string">'#8AB8E6'</span>,
+<span class="atom">alternateGridColor</span>: {
+    <span class="atom">linearGradient</span>: {
+        <span class="atom">x1</span>: <span class="number">0</span>, <span class="atom">y1</span>: <span class="number">1</span>,
+        <span class="atom">x2</span>: <span class="number">1</span>, <span class="atom">y2</span>: <span class="number">1</span>
+    },
+    <span class="atom">stops</span>: [[<span class="number">0</span>, <span class="string">'#FAFCFF'</span> ],
+            [<span class="number">0.5</span>, <span class="string">'#F5FAFF'</span>] ,
+            [<span class="number">0.8</span>, <span class="string">'#E0F0FF'</span>] ,
+            [<span class="number">1</span>, <span class="string">'#D6EBFF'</span>]]
+}
+</code></pre><p>我們在下一章中會再討論顏色漸變的部分，下圖使用了新的背景：</p>
+<p><a href="/images/learning_highcharts/chart2-3-4.jpg"><img src="/images/learning_highcharts/chart2-3-4.jpg" alt="chart2-3-4"></a></p>
+<p>下一步來增加更多專業的效果到y軸的軸線上。我們先使用lineWidth屬性畫一條線在y軸上，並沿著間隔線增加一些刻度，代碼如下：</p>
+<pre><code><span class="attribute">lineWidth</span>: <span class="string">2,</span>
+<span class="attribute">lineColor</span>: <span class="string">'#92A8CD',</span>
+<span class="attribute">tickWidth</span>: <span class="string">3,</span>
+<span class="attribute">tickLength</span>: <span class="string">6,</span>
+<span class="attribute">tickColor</span>: <span class="string">'#92A8CD',</span>
+<span class="attribute">minorTickLength</span>: <span class="string">3,</span>
+<span class="attribute">minorTickWidth</span>: <span class="string">1,</span>
+<span class="attribute">minorTickColor</span>: <span class="string">'#D8D8D8'</span>
+</code></pre><p>tickWidth和tickLength在每個分割線的左端增加了一些標記，並在在軸線上使用了與分割線相同的顏色，然後增加了minorTickLength和minorTickWidth – 在半分割線上使用比較小的尺寸。這些設定沿著軸線產生了比較漂亮的效果，如下圖：</p>
+<p><a href="/images/learning_highcharts/chart2-3-5.jpg"><img src="/images/learning_highcharts/chart2-3-5.jpg" alt="chart2-3-5"></a></p>
+<p>現在我們再來簡單的裝飾一下x軸的配置，如下：</p>
+<pre><code><span class="rule"><span class="attribute">xAxis</span>:<span class="value"> {
+    type: <span class="string">'datetime'</span>,
+    labels: {
+        formatter: <span class="function">function</span>() {
+            return Highcharts.<span class="function">dateFormat</span>(<span class="string">'%I:%M %P'</span>, this.value)</span></span>;
+        },
+    },
+    <span class="rule"><span class="attribute">gridLineDashStyle</span>:<span class="value"> <span class="string">'dot'</span>,
+    gridLineWidth: <span class="number">1</span>,
+    tickInterval: <span class="number">60</span> * <span class="number">60</span> * <span class="number">1000</span>,
+    lineWidth: <span class="number">2</span>,
+    lineColor: <span class="string">'#92A8CD'</span>,
+    tickWidth: <span class="number">3</span>,
+    tickLength: <span class="number">6</span>,
+    tickColor: <span class="string">'#92A8CD'</span>,
+},</span></span>
+</code></pre><p>我們使用小時來設定了x軸的分割線並設置其為點狀線，然後我們再沿用y軸的設定來對x軸間隔線設定相同的顏色，粗細，效果如下圖：</p>
+<p><a href="/images/learning_highcharts/chart2-3-6.jpg"><img src="/images/learning_highcharts/chart2-3-6.jpg" alt="chart2-3-6"></a></p>
+<p>但是，這樣在x軸線上有一些缺陷，首先，x和y軸交界點沒有對齊；其次，x軸的間隔標記點距離間隔標籤太近，已經重疊；最後，第一個數據點已經與y軸有部分重疊了。</p>
+<p>下面這張圖特別突出了有問題的這些部分：</p>
+<p><a href="/images/learning_highcharts/chart2-3-7.jpg"><img src="/images/learning_highcharts/chart2-3-7.jpg" alt="chart2-3-7"></a></p>
+<p>有兩種方法可以解決軸線對齊的問題：</p>
+<ul>
+<li>將圖表向上移動一個像素，可以將xAxis的offset屬性設置為1來實現。</li>
+<li>增加x軸線的寬度到3個像素，已保持與y軸間隔標記點相同的寬度。</li>
+</ul>
+<p>對於x軸標籤，我們可以用之前介紹的y定位位移來簡單的解決。</p>
+<p>最後，為了避免第一個數據點碰到y軸，我們可以在x軸上使用minPadding來解決，minPadding會增加按照設定的最小值來給第一個數據點增加一個填充空間。minPadding是使用圖表寬度的比率來設定，按照本例來說設置屬性為0.02等於沿著x軸向右移動了5個像素的距離(250px * 0.02)，下面是讓圖表變得更整潔的調整代碼：</p>
+<pre><code><span class="tag">xAxis</span>: {
+    ....
+    <span class="tag">labels</span>: {
+        <span class="attribute">formatter</span>: ...,
+        <span class="attribute">y</span>: <span class="number">17</span>
+    },
+    .....
+    <span class="tag">minPadding</span>: <span class="tag">0</span><span class="class">.02</span>,
+    <span class="tag">offset</span>: <span class="tag">1</span>
+}
+</code></pre><p>下圖可以看到之前的問題都已經被解決了：</p>
+<p><a href="/images/learning_highcharts/chart2-3-8.jpg"><img src="/images/learning_highcharts/chart2-3-8.jpg" alt="chart2-3-8"></a></p>
+<p>如我們所見，Highcharts有著一整組靈活變化又可配置的設定。</p>
+<h2 id="使用標示線plot_lines和區域色帶(plot_bands)">使用標示線plot lines和區域色帶(plot bands)</h2><p>在本節中我們會看到我們可以沿著軸線放置任何的線或色帶(bands)，我們繼續使用上一節中的例子。讓我們在y軸上來畫一組當日數據點的最高及最低標示線。每一個標示線的plotLines參數都允許一個設定的數組對象，但寬度和顏色沒有默認設定，所以為了可以看到標示線，我們需要特別來指定它們，下面是標示線的代碼部分：</p>
+<pre><code>yAxis: {
+    ... ,
+    plotLines: [{
+        value: <span class="number">2606.01</span>,
+        <span class="variable">width</span>: <span class="number">2</span>,
+        <span class="built_in">color</span>: <span class="string">'#821740'</span>,
+        label: {
+            <span class="built_in">text</span>: <span class="string">'Lowest: 2606.01'</span>,
+            style: {
+                <span class="built_in">color</span>: <span class="string">'#898989'</span>
+            }
+        }
+    }, {
+        value: <span class="number">2639.15</span>,
+        <span class="variable">width</span>: <span class="number">2</span>,
+        <span class="built_in">color</span>: <span class="string">'#4A9338'</span>,
+        label: {
+            <span class="built_in">text</span>: <span class="string">'Highest: 2639.15'</span>,
+            style: {
+                <span class="built_in">color</span>: <span class="string">'#898989'</span>
+            }
+        }
+    }]
+}
+</code></pre><p>下圖是圖表看起來的樣子：</p>
+<p><a href="/images/learning_highcharts/chart2-3-9.jpg"><img src="/images/learning_highcharts/chart2-3-9.jpg" alt="chart2-3-9"></a></p>
+<p>我們可以略微改善一下圖表的美觀度。首先，上限標示線的文字說明應該在最高點的邊上；其次，折線和間隔線不應該遮住下限標示線的文字說明，如下圖：</p>
+<p><a href="/images/learning_highcharts/chart2-3-10.jpg"><img src="/images/learning_highcharts/chart2-3-10.jpg" alt="chart2-3-10"></a></p>
+<p>為了解決這些問題，我們可以修改標示線的zIndex為1，這樣可以確保文字說明會在標示線之上，而不會被遮蓋。我們也可以修改文字說明的x定位已移動到極點的後面，下面是這些對應的改變：</p>
+<pre><code>plotLines: <span class="preprocessor">[</span>{
+    <span class="attribute">...</span> ,
+    label: {
+        <span class="attribute">...</span> ,
+        x: <span class="number">25</span>
+    },
+    zIndex: <span class="number">1</span>
+    }, {
+    <span class="attribute">...</span> ,
+    label: {
+        <span class="attribute">...</span> ,
+        x: <span class="number">130</span>
+    },
+    zIndex: <span class="number">1</span>
+}<span class="preprocessor">]</span><span class="markup"></span>
+</code></pre><p>此時說明文字已經被移動到極點之後，並且也現實在間隔線的上層，避免被遮住，如下圖：</p>
+<p><a href="/images/learning_highcharts/chart2-3-11.jpg"><img src="/images/learning_highcharts/chart2-3-11.jpg" alt="chart2-3-11"></a></p>
+<p>現在我們再來改變一下上一個例子，我們使用區域色帶來顯示出股市的開盤和收市的點數，區域色帶的配置與標示線很相似，除了區域色帶使用to和form屬性及顏色可以選擇使用漸變或純色。我們創建一個帶三角符號及相關上升數值的區域色帶，代替使用x和y來調整標籤的位置，我們使用align選項來將標籤居中顯示。</p>
+<pre><code><span class="atom">plotBands</span>: [{
+    <span class="atom">from</span>: <span class="number">2606.01</span>,
+    <span class="atom">to</span>: <span class="number">2615.98</span>,
+    <span class="atom">label</span>: {
+            <span class="atom">text</span>: <span class="string">'▲ 9.97 (0.38%)'</span>,
+            <span class="atom">align</span>: <span class="string">'center'</span>,
+        <span class="atom">style</span>: {
+            <span class="atom">color</span>: <span class="string">'#007A3D'</span>
+        }
+    },
+    <span class="atom">zIndex</span>: <span class="number">1</span>,
+    <span class="atom">color</span>: {
+        <span class="atom">linearGradient</span>: {
+            <span class="atom">x1</span>: <span class="number">0</span>, <span class="atom">y1</span>: <span class="number">1</span>,
+            <span class="atom">x2</span>: <span class="number">1</span>, <span class="atom">y2</span>: <span class="number">1</span>
+        },
+        <span class="atom">stops</span>: [[<span class="number">0</span>, <span class="string">'#EBFAEB'</span> ],
+                [<span class="number">0.5</span>, <span class="string">'#C2F0C2'</span>] ,
+                [<span class="number">0.8</span>, <span class="string">'#ADEBAD'</span>] ,
+                [<span class="number">1</span>, <span class="string">'#99E699'</span>]]
+    }
+}]
+</code></pre><p>上面的代碼產生了一個綠色的色帶，表示股市是以上漲收市，如下圖：</p>
+<p><a href="/images/learning_highcharts/chart2-3-12.jpg"><img src="/images/learning_highcharts/chart2-3-12.jpg" alt="chart2-3-12"></a></p>
+<h2 id="擴展到多軸">擴展到多軸</h2><p>前面我們已經看過了大多關於軸的設定，在這裡我們會再看一下如何使用一個包含軸設定的數組來實現多軸。</p>
+<p>我們繼續使用前面的股市的例子，假設我們現在希望在圖表中納斯達克指數之後再增加一個道瓊斯指數，但是他們的本質不同因而他們的股指範圍也有很大的差異。</p>
+<p>首先我們來解釋一下這兩個指數公用y軸的結果，我們會修改y軸的標題，移除y軸上的固定間隔設定，再引入另外一組series數據：</p>
+<pre><code><span class="string">chart:</span> ... ,
+<span class="string">title:</span> {
+<span class="label">    text:</span> <span class="string">'Market Data: Nasdaq &amp; Dow Jones'</span>
+},
+<span class="string">subtitle:</span> ... ,
+<span class="string">xAxis:</span> ... ,
+<span class="string">credits:</span> ... ,
+<span class="string">yAxis:</span> {
+<span class="label">    title:</span> {
+<span class="label">        text:</span> <span class="literal">null</span>
+    },
+<span class="string">minorGridLineColor:</span> <span class="string">'#D8D8D8'</span>,
+<span class="string">minorGridLineDashStyle:</span> <span class="string">'dashdot'</span>,
+<span class="string">gridLineColor:</span> <span class="string">'#8AB8E6'</span>,
+<span class="string">alternateGridColor:</span> {
+<span class="label">    linearGradient:</span> {
+<span class="label">        x1:</span> <span class="number">0</span>, <span class="string">y1:</span> <span class="number">1</span>,
+<span class="label">        x2:</span> <span class="number">1</span>, <span class="string">y2:</span> <span class="number">1</span>
+    },
+<span class="label">    stops:</span> [ [<span class="number">0</span>, <span class="string">'#FAFCFF'</span> ],
+            [<span class="number">0.5</span>, <span class="string">'#F5FAFF'</span>] ,
+            [<span class="number">0.8</span>, <span class="string">'#E0F0FF'</span>] ,
+            [<span class="number">1</span>, <span class="string">'#D6EBFF'</span>] ]
+    },
+<span class="label">    lineWidth:</span> <span class="number">2</span>,
+<span class="label">    lineColor:</span> <span class="string">'#92A8CD'</span>,
+<span class="label">    tickWidth:</span> <span class="number">3</span>,
+<span class="label">    tickLength:</span> <span class="number">6</span>,
+<span class="label">    tickColor:</span> <span class="string">'#92A8CD'</span>,
+<span class="label">    minorTickLength:</span> <span class="number">3</span>,
+<span class="label">    minorTickWidth:</span> <span class="number">1</span>,
+<span class="label">    minorTickColor:</span> <span class="string">'#D8D8D8'</span>,
+},
+<span class="string">series:</span> [{
+<span class="label">    name:</span> <span class="string">'Nasdaq'</span>,
+<span class="label">    data:</span> [ [ Date.UTC(<span class="number">2012</span>, <span class="number">4</span>, <span class="number">11</span>, <span class="number">9</span>, <span class="number">30</span>), <span class="number">2606.01</span> ],
+            [ Date.UTC(<span class="number">2012</span>, <span class="number">4</span>, <span class="number">11</span>, <span class="number">10</span>), <span class="number">2622.08</span> ],
+            [ Date.UTC(<span class="number">2012</span>, <span class="number">4</span>, <span class="number">11</span>, <span class="number">10</span>, <span class="number">30</span>), <span class="number">2636.03</span> ],
+            ...
+            ]
+}, {
+<span class="string">name:</span> <span class="string">'Dow Jones'</span>,
+<span class="string">data:</span> [ [ Date.UTC(<span class="number">2012</span>, <span class="number">4</span>, <span class="number">11</span>, <span class="number">9</span>, <span class="number">30</span>), <span class="number">12598.32</span> ],
+        [ Date.UTC(<span class="number">2012</span>, <span class="number">4</span>, <span class="number">11</span>, <span class="number">10</span>), <span class="number">12538.61</span> ],
+        [ Date.UTC(<span class="number">2012</span>, <span class="number">4</span>, <span class="number">11</span>, <span class="number">10</span>, <span class="number">30</span>), <span class="number">12549.89</span> ],
+        ...
+        ]
+}]
+</code></pre><p>下面為兩種市場指數的圖表</p>
+<p><a href="/images/learning_highcharts/chart2-3-13.jpg"><img src="/images/learning_highcharts/chart2-3-13.jpg" alt="chart2-3-13"></a></p>
+<p>如同之前的猜測，兩個指數具有非常大的差異，造成兩條線幾乎是平的，這會造成一種誤解：股指並沒有什麼變化。</p>
+<p>讓我們來看一下如果將兩個不同的股指放在不同的y軸上會怎麼樣。因為我們需要將不同股指範圍的數據顯示在同一個背景中，因此我們需移除y軸上所有的裝飾性的設置。</p>
+<p>下面是y軸的設定：</p>
+<pre><code>yAxis: [{
+    title: {
+        <span class="keyword">text</span>: <span class="string">'Nasdaq'</span>
+    },
+}, {
+    title: {
+        <span class="keyword">text</span>: <span class="string">'Dow Jones'</span>
+    },
+    opposite: <span class="constant">true</span>
+}],
+</code></pre><p>現在yAxis有一個存有軸設定的數組，第一個鍵值中是納斯達克，第二個鍵值是道瓊斯，現在我們可以區別的顯示兩者的軸標題了。opposite屬性將道瓊斯指數的y軸放在圖表的另一側，如果不設定這個屬性，則兩個y軸都會在左側。下一步則設定y軸上的series數據數組，如下：</p>
+<pre><code><span class="tag">series</span>: <span class="attr_selector">[{
+    name: 'Nasdaq',
+    yAxis: 0,
+    data: [ ... ]</span>
+}, {
+    <span class="attribute">name</span>: <span class="string">'Dow Jones'</span>,
+    <span class="attribute">yAxis</span>: <span class="number">1</span>,
+    <span class="attribute">data</span>: [ ... ]
+}]
+</code></pre><p>現在我們可以在圖表上清楚的看到兩種指數的波動了，如下：</p>
+<p><a href="/images/learning_highcharts/chart2-3-14.jpg"><img src="/images/learning_highcharts/chart2-3-14.jpg" alt="chart2-3-14"></a></p>
+<p>此外，我們可以優化這個圖表，將series的圖例顏色引用到軸線上。Highcharts.colors屬性包含了series默認顏色的一組列表，稍後我們為我們的指數使用其中前兩個鍵值。另一個優化是為x軸設定maxPadding，因為新的y軸軸線與數據點有一些重疊了，代碼如下：</p>
+<pre><code><span class="string">xAxis:</span> {
+    ... ,
+<span class="label">    minPadding:</span> <span class="number">0.02</span>,
+<span class="label">    maxPadding:</span> <span class="number">0.02</span>
+},
+<span class="string">yAxis:</span> [{
+<span class="label">    title:</span> {
+<span class="label">        text:</span> <span class="string">'Nasdaq'</span>
+    },
+<span class="label">    lineWidth:</span> <span class="number">2</span>,
+<span class="label">    lineColor:</span> <span class="string">'#4572A7'</span>,
+<span class="label">    tickWidth:</span> <span class="number">3</span>,
+<span class="label">    tickLength:</span> <span class="number">6</span>,
+<span class="label">    tickColor:</span> <span class="string">'#4572A7'</span>
+}, {
+<span class="label">    title:</span> {
+<span class="label">        text:</span> <span class="string">'Dow Jones'</span>
+    },
+<span class="label">    opposite:</span> <span class="literal">true</span>,
+<span class="label">    lineWidth:</span> <span class="number">2</span>,
+<span class="label">    lineColor:</span> <span class="string">'#AA4643'</span>,
+<span class="label">    tickWidth:</span> <span class="number">3</span>,
+<span class="label">    tickLength:</span> <span class="number">6</span>,
+<span class="label">    tickColor:</span> <span class="string">'#AA4643'</span>
+}],
+</code></pre><p>改善後的圖表效果如下圖：</p>
+<p><a href="/images/learning_highcharts/chart2-3-15.jpg"><img src="/images/learning_highcharts/chart2-3-15.jpg" alt="chart2-3-15"></a></p>
+<p>我們可以擴展前一個例子，再繼續增加更多的軸，只要在yAxis增加新的鍵值並匹配series數組即可，下圖是四個軸的圖表：</p>
+<p><a href="/images/learning_highcharts/chart2-3-16.jpg"><img src="/images/learning_highcharts/chart2-3-16.jpg" alt="chart2-3-16"></a></p>
+
+        </div>
+        <footer class="article-footer">
+            
+
+
+
+    <a data-url="http://www.retailscm.com/Learning/Learning-Highcharts/Highcharts-configurations/framing-the-chart-with-axes/" data-id="cir0mgfqq0036g1zttlfqchib" class="article-share-link"><i class="fa fa-share"></i>分享到</a>
+<script>
+    (function ($) {
+        $('body').on('click', function() {
+            $('.article-share-box.on').removeClass('on');
+        }).on('click', '.article-share-link', function(e) {
+            e.stopPropagation();
+
+            var $this = $(this),
+                url = $this.attr('data-url'),
+                encodedUrl = encodeURIComponent(url),
+                id = 'article-share-box-' + $this.attr('data-id'),
+                offset = $this.offset(),
+                box;
+
+            if ($('#' + id).length) {
+                box = $('#' + id);
+
+                if (box.hasClass('on')){
+                    box.removeClass('on');
+                    return;
+                }
+            } else {
+                var html = [
+                    '<div id="' + id + '" class="article-share-box">',
+                        '<input class="article-share-input" value="' + url + '">',
+                        '<div class="article-share-links">',
+                            '<a href="https://twitter.com/intent/tweet?url=' + encodedUrl + '" class="article-share-twitter" target="_blank" title="Twitter"></a>',
+                            '<a href="https://www.facebook.com/sharer.php?u=' + encodedUrl + '" class="article-share-facebook" target="_blank" title="Facebook"></a>',
+                            '<a href="http://pinterest.com/pin/create/button/?url=' + encodedUrl + '" class="article-share-pinterest" target="_blank" title="Pinterest"></a>',
+                            '<a href="https://plus.google.com/share?url=' + encodedUrl + '" class="article-share-google" target="_blank" title="Google+"></a>',
+                        '</div>',
+                    '</div>'
+                ].join('');
+
+              box = $(html);
+
+              $('body').append(box);
+            }
+
+            $('.article-share-box.on').hide();
+
+            box.css({
+                top: offset.top + 25,
+                left: offset.left
+            }).addClass('on');
+
+        }).on('click', '.article-share-box', function (e) {
+            e.stopPropagation();
+        }).on('click', '.article-share-box-input', function () {
+            $(this).select();
+        }).on('click', '.article-share-box-link', function (e) {
+            e.preventDefault();
+            e.stopPropagation();
+
+            window.open(this.href, 'article-share-box-window-' + Date.now(), 'width=500,height=450');
+        });
+    })(jQuery);
+</script>
+
+        </footer>
+    </div>
+</article>
+
+    <section id="comments">
+    
+        
+    <div id="disqus_thread">
+        <noscript>Please enable JavaScript to view the <a href="//disqus.com/?ref_noscript">comments powered by Disqus.</a></noscript>
+    </div>
+
+    
+    </section>
+
+                        </div>
+                    </section>
+                    <aside id="sidebar">
+    <a class="sidebar-toggle" title="Expand Sidebar"><i class="toggle icon"></i></a>
+    <div class="sidebar-top">
+        <p>關注我 :</p>
+        <ul class="social-links">
+            
+                
+                <li>
+                    <a class="social-tooltip" title="github" href="http://github.com/luss613" target="_blank">
+                        <i class="icon fa fa-github"></i>
+                    </a>
+                </li>
+                
+            
+                
+                <li>
+                    <a class="social-tooltip" title="twitter" href="http://twitter.com/luss613" target="_blank">
+                        <i class="icon fa fa-twitter"></i>
+                    </a>
+                </li>
+                
+            
+                
+                <li>
+                    <a class="social-tooltip" title="facebook" href="https://www.facebook.com/retailscm" target="_blank">
+                        <i class="icon fa fa-facebook"></i>
+                    </a>
+                </li>
+                
+            
+                
+                <li>
+                    <a class="social-tooltip" title="rss" href="/atom.xml" target="_blank">
+                        <i class="icon fa fa-rss"></i>
+                    </a>
+                </li>
+                
+            
+        </ul>
+    </div>
+    
+        
+<nav id="article-nav">
+    
+        <a href="/Learning/Learning-Highcharts/Highcharts-configurations/revisiting-the-series-configuration/" id="article-nav-newer" class="article-nav-link-wrap">
+        <strong class="article-nav-caption">下一篇</strong>
+        <p class="article-nav-title">
+        
+            第二章 04.重溫series配置
+        
+        </p>
+        <i class="icon fa fa-chevron-right" id="icon-chevron-right"></i>
+    </a>
+    
+    
+        <a href="/Learning/Learning-Highcharts/Highcharts-configurations/understanding-highcharts-layouts/" id="article-nav-older" class="article-nav-link-wrap">
+        <strong class="article-nav-caption">上一篇</strong>
+        <p class="article-nav-title">第二章 02.了解圖表佈局(layout)</p>
+        <i class="icon fa fa-chevron-left" id="icon-chevron-left"></i>
+        </a>
+    
+</nav>
+
+    
+    <div class="widgets-container">
+        
+            
+                
+    <div class="widget-wrap widget-list">
+        <h3 class="widget-title">分類</h3>
+        <div class="widget">
+            <ul class="category-list"><li class="category-list-item"><a class="category-list-link" href="/categories/Learning/">Learning</a><span class="category-list-count">36</span><ul class="category-list-child"><li class="category-list-item"><a class="category-list-link" href="/categories/Learning/Learning-Highcharts/">Learning Highcharts</a><span class="category-list-count">36</span><ul class="category-list-child"><li class="category-list-item"><a class="category-list-link" href="/categories/Learning/Learning-Highcharts/Bar-and-column-charts/">Bar and column charts</a><span class="category-list-count">6</span></li><li class="category-list-item"><a class="category-list-link" href="/categories/Learning/Learning-Highcharts/Highcharts-APIs/">Highcharts APIs</a><span class="category-list-count">3</span></li><li class="category-list-item"><a class="category-list-link" href="/categories/Learning/Learning-Highcharts/Highcharts-configurations/">Highcharts configurations</a><span class="category-list-count">9</span></li><li class="category-list-item"><a class="category-list-link" href="/categories/Learning/Learning-Highcharts/Line-area-and-scatter-charts/">Line area and scatter charts</a><span class="category-list-count">5</span></li><li class="category-list-item"><a class="category-list-link" href="/categories/Learning/Learning-Highcharts/Pie-Charts/">Pie Charts</a><span class="category-list-count">5</span></li><li class="category-list-item"><a class="category-list-link" href="/categories/Learning/Learning-Highcharts/Web-Charts/">Web Charts</a><span class="category-list-count">6</span></li></ul></li></ul></li><li class="category-list-item"><a class="category-list-link" href="/categories/Oracle/">Oracle</a><span class="category-list-count">1</span></li><li class="category-list-item"><a class="category-list-link" href="/categories/WEB2-0/">WEB2.0</a><span class="category-list-count">2</span><ul class="category-list-child"><li class="category-list-item"><a class="category-list-link" href="/categories/WEB2-0/Bootstrap/">Bootstrap</a><span class="category-list-count">1</span></li><li class="category-list-item"><a class="category-list-link" href="/categories/WEB2-0/jQuery/">jQuery</a><span class="category-list-count">1</span></li></ul></li><li class="category-list-item"><a class="category-list-link" href="/categories/Yii/">Yii</a><span class="category-list-count">2</span></li><li class="category-list-item"><a class="category-list-link" href="/categories/業務案例/">業務案例</a><span class="category-list-count">1</span></li><li class="category-list-item"><a class="category-list-link" href="/categories/行業動態/">行業動態</a><span class="category-list-count">2</span></li><li class="category-list-item"><a class="category-list-link" href="/categories/隨筆/">隨筆</a><span class="category-list-count">1</span></li></ul>
+        </div>
+    </div>
+
+
+            
+                
+    <div class="widget-wrap">
+        <h3 class="widget-title">最新文章</h3>
+        <div class="widget">
+            <ul id="recent-post" class="">
+                
+                    <li>
+                        
+                        <div class="item-thumbnail">
+                            <a href="/Learning/Learning-Highcharts/Highcharts-APIs/using-highcharts-apis/" class="thumbnail">
+    
+    
+        <span style="background-image:url(/images/learning_highcharts/7-2.png)" alt="第七章 02.使用Highcharts APIs" class="thumbnail-image"></span>
+    
+    
+</a>
+                        </div>
+                        
+                        <div class="item-inner">
+                            <p class="item-category"><a class="article-category-link" href="/categories/Learning/">Learning</a><i class="icon fa fa-angle-right"></i><a class="article-category-link" href="/categories/Learning/Learning-Highcharts/">Learning Highcharts</a></p>
+                            <p class="item-title"><a href="/Learning/Learning-Highcharts/Highcharts-APIs/using-highcharts-apis/" class="title">第七章 02.使用Highcharts APIs</a></p>
+                            <p class="item-date"><time datetime="2015-05-18T19:00:00.000Z" itemprop="datePublished">2015-05-19</time></p>
+                        </div>
+                    </li>
+                
+                    <li>
+                        
+                        <div class="item-thumbnail">
+                            <a href="/Learning/Learning-Highcharts/Highcharts-APIs/understanding-the-highcharts-class-model/" class="thumbnail">
+    
+    
+        <span style="background-image:url(/images/learning_highcharts/7-1.jpg)" alt="第七章 01.了解Highcharts類模型" class="thumbnail-image"></span>
+    
+    
+</a>
+                        </div>
+                        
+                        <div class="item-inner">
+                            <p class="item-category"><a class="article-category-link" href="/categories/Learning/">Learning</a><i class="icon fa fa-angle-right"></i><a class="article-category-link" href="/categories/Learning/Learning-Highcharts/">Learning Highcharts</a></p>
+                            <p class="item-title"><a href="/Learning/Learning-Highcharts/Highcharts-APIs/understanding-the-highcharts-class-model/" class="title">第七章 01.了解Highcharts類模型</a></p>
+                            <p class="item-date"><time datetime="2015-05-18T18:00:00.000Z" itemprop="datePublished">2015-05-19</time></p>
+                        </div>
+                    </li>
+                
+                    <li>
+                        
+                        <div class="item-thumbnail">
+                            <a href="/Learning/Learning-Highcharts/Highcharts-APIs/highcharts-apis/" class="thumbnail">
+    
+    
+        <span class="thumbnail-image thumbnail-none"></span>
+    
+    
+</a>
+                        </div>
+                        
+                        <div class="item-inner">
+                            <p class="item-category"><a class="article-category-link" href="/categories/Learning/">Learning</a><i class="icon fa fa-angle-right"></i><a class="article-category-link" href="/categories/Learning/Learning-Highcharts/">Learning Highcharts</a></p>
+                            <p class="item-title"><a href="/Learning/Learning-Highcharts/Highcharts-APIs/highcharts-apis/" class="title">第七章 Highcharts APIs</a></p>
+                            <p class="item-date"><time datetime="2015-05-18T17:00:00.000Z" itemprop="datePublished">2015-05-19</time></p>
+                        </div>
+                    </li>
+                
+                    <li>
+                        
+                        <div class="item-thumbnail">
+                            <a href="/Learning/Learning-Highcharts/Pie-Charts/building-a-chart-with-multiple-series-types/" class="thumbnail">
+    
+    
+        <span style="background-image:url(/images/learning_highcharts/5-9.png)" alt="第五章 05.繪製一個包含多個序列的圖表" class="thumbnail-image"></span>
+    
+    
+</a>
+                        </div>
+                        
+                        <div class="item-inner">
+                            <p class="item-category"><a class="article-category-link" href="/categories/Learning/">Learning</a><i class="icon fa fa-angle-right"></i><a class="article-category-link" href="/categories/Learning/Learning-Highcharts/">Learning Highcharts</a></p>
+                            <p class="item-title"><a href="/Learning/Learning-Highcharts/Pie-Charts/building-a-chart-with-multiple-series-types/" class="title">第五章 05.繪製一個包含多個序列的圖表</a></p>
+                            <p class="item-date"><time datetime="2015-05-17T22:00:00.000Z" itemprop="datePublished">2015-05-18</time></p>
+                        </div>
+                    </li>
+                
+                    <li>
+                        
+                        <div class="item-thumbnail">
+                            <a href="/Learning/Learning-Highcharts/Pie-Charts/preparing-a-donut-chart-multiple-series/" class="thumbnail">
+    
+    
+        <span style="background-image:url(/images/learning_highcharts/5-6.png)" alt="第五章 04.準備一個甜甜圈圖——複合序列" class="thumbnail-image"></span>
+    
+    
+</a>
+                        </div>
+                        
+                        <div class="item-inner">
+                            <p class="item-category"><a class="article-category-link" href="/categories/Learning/">Learning</a><i class="icon fa fa-angle-right"></i><a class="article-category-link" href="/categories/Learning/Learning-Highcharts/">Learning Highcharts</a></p>
+                            <p class="item-title"><a href="/Learning/Learning-Highcharts/Pie-Charts/preparing-a-donut-chart-multiple-series/" class="title">第五章 04.準備一個甜甜圈圖——複合序列</a></p>
+                            <p class="item-date"><time datetime="2015-05-17T21:00:00.000Z" itemprop="datePublished">2015-05-18</time></p>
+                        </div>
+                    </li>
+                
+            </ul>
+        </div>
+    </div>
+
+            
+                
+    <div class="widget-wrap widget-list">
+        <h3 class="widget-title">歸檔</h3>
+        <div class="widget">
+            <ul class="archive-list"><li class="archive-list-item"><a class="archive-list-link" href="/archives/2015/05/">五月 2015</a><span class="archive-list-count">35</span></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2013/10/">十月 2013</a><span class="archive-list-count">2</span></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2013/04/">四月 2013</a><span class="archive-list-count">5</span></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2013/03/">三月 2013</a><span class="archive-list-count">3</span></li></ul>
+        </div>
+    </div>
+
+
+            
+                
+    <div class="widget-wrap widget-list">
+        <h3 class="widget-title">標籤</h3>
+        <div class="widget">
+            <ul class="tag-list"><li class="tag-list-item"><a class="tag-list-link" href="/tags/Highcharts/">Highcharts</a><span class="tag-list-count">36</span></li></ul>
+        </div>
+    </div>
+
+
+            
+                
+    <div class="widget-wrap widget-float">
+        <h3 class="widget-title">標簽雲</h3>
+        <div class="widget tagcloud">
+            <a href="/tags/Highcharts/" style="font-size: NaNpx;">Highcharts</a>
+        </div>
+    </div>
+
+
+            
+                
+    <div class="widget-wrap widget-list">
+        <h3 class="widget-title">連接</h3>
+        <div class="widget">
+            <ul>
+                
+                    <li>
+                        <a href="http://hexo.io">Hexo</a>
+                    </li>
+                
+            </ul>
+        </div>
+    </div>
+
+
+            
+        
+    </div>
+</aside>
+                </div>
+            </div>
+        </div>
+        <footer id="footer">
+    <div class="container">
+        <div class="container-inner">
+            <a id="back-to-top" href="javascript:;"><i class="icon fa fa-angle-up"></i></a>
+            <div class="credit">
+                <h1 class="logo-wrap">
+                    <a href="/" class="logo"></a>
+                </h1>
+                <p>&copy; 2016 Paul Lu</p>
+                <p>Powered by <a href="//hexo.io/" target="_blank">Hexo</a>. Theme by <a href="//github.com/ppoffice" target="_blank">PPOffice</a></p>
+            </div>
+        </div>
+    </div>
+</footer>
+        
+    
+    <script>
+    var disqus_shortname = 'retailscm';
+    
+    
+    var disqus_url = 'http://www.retailscm.com/Learning/Learning-Highcharts/Highcharts-configurations/framing-the-chart-with-axes/';
+    
+    (function() {
+    var dsq = document.createElement('script');
+    dsq.type = 'text/javascript';
+    dsq.async = true;
+    dsq.src = '//' + disqus_shortname + '.disqus.com/embed.js';
+    (document.getElementsByTagName('head')[0] || document.getElementsByTagName('body')[0]).appendChild(dsq);
+    })();
+    </script>
+
+
+
+    
+        <script src="/vendor/fancybox/jquery.fancybox.pack.js" type="text/javascript"></script>
+    
+
+    
+        <script src="/vendor/scrollLoading/jquery.scrollLoading.js" type="text/javascript"></script>
+        <script src="/vendor/scrollLoading/main.js" type="text/javascript"></script>
+    
+
+
+<!-- Custom Scripts -->
+<script src="/js/main.js" type="text/javascript"></script>
+
+    </div>
+</body>
+</html>
