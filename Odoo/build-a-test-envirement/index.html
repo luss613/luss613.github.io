@@ -3,27 +3,24 @@
 <head>
     <meta charset="utf-8">
     
-    <title>第四章 04.將一個長條圖轉為水平刻度圖 | 科技零售</title>
+    <title>建立Odoo的測試環境 | 科技零售</title>
     <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1">
     
-        <meta name="keywords" content="Highcharts" />
+        <meta name="keywords" content="" />
     
-    <meta name="description" content="科技零售(RetailSCM.com) Learning Highcharts中文教程版權保留，網路轉載請註明來源，謝絕紙質媒體轉載，謝謝。
-將一個長條圖轉為水平刻度圖水平刻度圖通常用於表示當前閥值，因此意味著y軸上的極值是固定在兩端的。另一個特點是x軸上只能顯示當前時間的一個值(一個維度)。
-下面我們會來學習如何將一個長條圖轉換為一個水平刻度圖。基本的概念是將繪圖區域減小到與長條圖為相同大小，因">
+    <meta name="description" content="今天財務部在請假功能教育訓練的時候，跟我說請假單無法送出，我實際進入系統測試后，發現原來我本機開發環境和測試環境的Odoo主程式版本不同。所以在我本機開發環境的請假存檔和送出是合併的功能，但是在測試環境上的版本是切開的。
+目前我只有將二次開發的Module進Bitbucket進行版控，但是主程式并沒有列入版控，這樣切了兩個環境出來的確會有可能出現問題。遇到問題就要解決啊，正好上週特助有在找我看VM">
 <meta property="og:type" content="article">
-<meta property="og:title" content="第四章 04.將一個長條圖轉為水平刻度圖">
-<meta property="og:url" content="http://www.retailscm.com/Learning/Learning-Highcharts/Bar-and-column-charts/converting-a-single-bar-chart-into-a-horizontal-gauge-chart/index.html">
+<meta property="og:title" content="建立Odoo的測試環境">
+<meta property="og:url" content="http://www.retailscm.com/Odoo/build-a-test-envirement/index.html">
 <meta property="og:site_name" content="科技零售">
-<meta property="og:description" content="科技零售(RetailSCM.com) Learning Highcharts中文教程版權保留，網路轉載請註明來源，謝絕紙質媒體轉載，謝謝。
-將一個長條圖轉為水平刻度圖水平刻度圖通常用於表示當前閥值，因此意味著y軸上的極值是固定在兩端的。另一個特點是x軸上只能顯示當前時間的一個值(一個維度)。
-下面我們會來學習如何將一個長條圖轉換為一個水平刻度圖。基本的概念是將繪圖區域減小到與長條圖為相同大小，因">
-<meta property="og:image" content="/images/learning_highcharts/chart4-4-1.jpg">
+<meta property="og:description" content="今天財務部在請假功能教育訓練的時候，跟我說請假單無法送出，我實際進入系統測試后，發現原來我本機開發環境和測試環境的Odoo主程式版本不同。所以在我本機開發環境的請假存檔和送出是合併的功能，但是在測試環境上的版本是切開的。
+目前我只有將二次開發的Module進Bitbucket進行版控，但是主程式并沒有列入版控，這樣切了兩個環境出來的確會有可能出現問題。遇到問題就要解決啊，正好上週特助有在找我看VM">
+<meta property="og:image" content="/images/post/build-test-env.jpg">
 <meta name="twitter:card" content="summary">
-<meta name="twitter:title" content="第四章 04.將一個長條圖轉為水平刻度圖">
-<meta name="twitter:description" content="科技零售(RetailSCM.com) Learning Highcharts中文教程版權保留，網路轉載請註明來源，謝絕紙質媒體轉載，謝謝。
-將一個長條圖轉為水平刻度圖水平刻度圖通常用於表示當前閥值，因此意味著y軸上的極值是固定在兩端的。另一個特點是x軸上只能顯示當前時間的一個值(一個維度)。
-下面我們會來學習如何將一個長條圖轉換為一個水平刻度圖。基本的概念是將繪圖區域減小到與長條圖為相同大小，因">
+<meta name="twitter:title" content="建立Odoo的測試環境">
+<meta name="twitter:description" content="今天財務部在請假功能教育訓練的時候，跟我說請假單無法送出，我實際進入系統測試后，發現原來我本機開發環境和測試環境的Odoo主程式版本不同。所以在我本機開發環境的請假存檔和送出是合併的功能，但是在測試環境上的版本是切開的。
+目前我只有將二次開發的Module進Bitbucket進行版控，但是主程式并沒有列入版控，這樣切了兩個環境出來的確會有可能出現問題。遇到問題就要解決啊，正好上週特助有在找我看VM">
     
 
     
@@ -129,90 +126,47 @@ ga('send', 'pageview');
                         <div class="main-body-header">
     <h1 class="header">
     
-    <a class="page-title-link" href="/categories/Learning/">Learning</a><i class="icon fa fa-angle-right"></i><a class="page-title-link" href="/categories/Learning/Learning-Highcharts/">Learning Highcharts</a><i class="icon fa fa-angle-right"></i><a class="page-title-link" href="/categories/Learning/Learning-Highcharts/Bar-and-column-charts/">Bar and column charts</a>
+    <a class="page-title-link" href="/categories/Odoo/">Odoo</a>
     </h1>
 </div>
                         <div class="main-body-content">
-                            <article id="post-converting-a-single-bar-chart-into-a-horizontal-gauge-chart" class="article article-single article-type-post" itemscope itemprop="blogPost">
+                            <article id="post-build-a-test-envirement" class="article article-single article-type-post" itemscope itemprop="blogPost">
     <div class="article-inner">
         
             <header class="article-header">
                 
     
         <h1 class="article-title" itemprop="name">
-        第四章 04.將一個長條圖轉為水平刻度圖
+        建立Odoo的測試環境
         </h1>
     
 
             </header>
         
         <div class="article-subtitle">
-            <a href="/Learning/Learning-Highcharts/Bar-and-column-charts/converting-a-single-bar-chart-into-a-horizontal-gauge-chart/" class="article-date">
-    <time datetime="2015-05-16T21:00:00.000Z" itemprop="datePublished">2015-05-17</time>
+            <a href="/Odoo/build-a-test-envirement/" class="article-date">
+    <time datetime="2016-07-25T15:00:40.000Z" itemprop="datePublished">2016-07-25</time>
 </a>
             
-    <ul class="article-tag-list"><li class="article-tag-list-item"><a class="article-tag-list-link" href="/tags/Highcharts/">Highcharts</a></li></ul>
-
         </div>
         <div class="article-entry" itemprop="articleBody">
-            <h1 id="科技零售(RetailSCM-com)_Learning_Highcharts中文教程">科技零售(RetailSCM.com) Learning Highcharts中文教程</h1><p><em><span style="color: #808080;">版權保留，網路轉載請註明來源，謝絕紙質媒體轉載，謝謝。</span></em></p>
-<h2 id="將一個長條圖轉為水平刻度圖">將一個長條圖轉為水平刻度圖</h2><p>水平刻度圖通常用於表示當前閥值，因此意味著y軸上的極值是固定在兩端的。另一個特點是x軸上只能顯示當前時間的一個值(一個維度)。</p>
-<p>下面我們會來學習如何將一個長條圖轉換為一個水平刻度圖。基本的概念是將繪圖區域減小到與長條圖為相同大小，因此我們要同時為繪圖區域和長條圖設置固定的大小，並且不要考慮容器的尺寸。為了達成這點，我們需要設定chart.width和chart.height為一些需要的值，然後我們對繪圖區的邊框和背景色美化，使之看起來類似與一個容器壓力表：</p>
-<pre><code><span class="tag">chart</span>: {
-    <span class="attribute">renderTo</span>: <span class="string">'container'</span>,
-    <span class="attribute">type</span>: <span class="string">'bar'</span>,
-    <span class="attribute">plotBorderWidth</span>: <span class="number">2</span>,
-    <span class="attribute">plotBackgroundColor</span>: <span class="string">'#D6D6EB'</span>,
-    <span class="attribute">plotBorderColor</span>: <span class="string">'#D8D8D8'</span>,
-    <span class="attribute">plotShadow</span>: true,
-    <span class="attribute">spacingBottom</span>: <span class="number">43</span>,
-    <span class="attribute">width</span>: <span class="number">350</span>,
-    <span class="attribute">height</span>: <span class="number">120</span>
-},
-</code></pre><p>然後我們設定y軸的標籤為不顯示，並設定一個固定的百分比間隔：</p>
-<a id="more"></a>
-<pre><code><span class="tag">xAxis</span>: {
-    <span class="tag">categories</span>: <span class="attr_selector">[ 'US' ]</span>,
-    <span class="tag">tickLength</span>: <span class="tag">0</span>
-},
-<span class="tag">yAxis</span>: {
-    <span class="tag">title</span>: {
-        <span class="tag">text</span>: <span class="tag">null</span>
-    },
-    <span class="tag">labels</span>: {
-        <span class="attribute">y</span>: <span class="number">20</span>
-    },
-    <span class="attribute">min</span>: <span class="number">0</span>,
-    <span class="attribute">max</span>: <span class="number">100</span>,
-    <span class="attribute">tickInterval</span>: <span class="number">20</span>,
-    <span class="attribute">minorTickInterval</span>: <span class="number">10</span>,
-    <span class="attribute">tickWidth</span>: <span class="number">1</span>,
-    <span class="attribute">tickLength</span>: <span class="number">8</span>,
-    <span class="attribute">minorTickLength</span>: <span class="number">5</span>,
-    <span class="attribute">minorTickWidth</span>: <span class="number">1</span>,
-    <span class="attribute">minorGridLineWidth</span>: <span class="number">0</span>
-},
-</code></pre><p>最後一步是設置長條圖的寬度以完美的貼合繪圖區域，其餘的設定是為了給長條圖設定一個SVG的漸變效果，如下：</p>
-<pre><code><span class="atom">series</span>: [{
-    <span class="atom">borderColor</span>: <span class="string">'#7070B8'</span>,
-    <span class="atom">borderRadius</span>: <span class="number">3</span>,
-    <span class="atom">borderWidth</span>: <span class="number">1</span>,
-    <span class="atom">color</span>: {
-        <span class="atom">linearGradient</span>:
-            { <span class="atom">x1</span>: <span class="number">0</span>, <span class="atom">y1</span>: <span class="number">0</span>, <span class="atom">x2</span>: <span class="number">1</span>, <span class="atom">y2</span>: <span class="number">0</span> },
-        <span class="atom">stops</span>: [
-            [ <span class="number">0</span>, <span class="string">'#D6D6EB'</span> ],
-            [ <span class="number">0.3</span>, <span class="string">'#5C5CAD'</span> ],
-            [ <span class="number">0.45</span>, <span class="string">'#5C5C9C'</span> ],
-            [ <span class="number">0.55</span>, <span class="string">'#5C5C9C'</span> ],
-            [ <span class="number">0.7</span>, <span class="string">'#5C5CAD'</span> ],
-            [ <span class="number">1</span>, <span class="string">'#D6D6EB'</span>] ]
-    },
-    <span class="atom">pointWidth</span>: <span class="number">50</span>,
-    <span class="atom">data</span>: [ <span class="number">48.9</span> ]
-}]
-</code></pre><p>下面為裝飾過的最終刻度圖效果：</p>
-<p><a href="/images/learning_highcharts/chart4-4-1.jpg"><img src="/images/learning_highcharts/chart4-4-1.jpg" alt="chart4-4-1"></a></p>
+            <p>今天財務部在請假功能教育訓練的時候，跟我說請假單無法送出，我實際進入系統測試后，發現原來我本機開發環境和測試環境的Odoo主程式版本不同。所以在我本機開發環境的請假存檔和送出是合併的功能，但是在測試環境上的版本是切開的。</p>
+<p>目前我只有將二次開發的Module進Bitbucket進行版控，但是主程式并沒有列入版控，這樣切了兩個環境出來的確會有可能出現問題。遇到問題就要解決啊，正好上週特助有在找我看VM的租金的部分，我也在想如何可以減少租金成本，看起來也許可以把正式環境和測試環境的主程式共用，而將二開的部份分開。</p>
+<p>下午測試了一下，解法記錄如下：</p>
+<ol>
+<li>copy /etc下的odoo-server.conf，修改其中的addons, data_dir, logfile, 還有port為測試環境所使用的設定(如果有網路安全設定，不要忘記開啟，我好像一直會犯這個很蠢的錯)</li>
+<li>修改新的conf文件中dbfilter，僅顯示特定的測試賬套，例如可用test_開頭的，避免使用到測試環境登入正式的賬套</li>
+<li>可將正式庫的賬套做限定，并取消可選賬套的功能，未來全部測試導入到測試環境執行</li>
+<li>chown上面新增的conf owner為odoo</li>
+<li>copy /etc/init.d下的odoo-server，修改NAME, DESC兩個參數為測試所使用的標示，CONFIGFILE修改為上面所複製出的新文件</li>
+<li>sudo update-rc.d odoo-server-test defaults，將odoo-server-test（依據5所產生的實際執行文件名稱替換）加入開機自動執行</li>
+<li>申請域名或修改域名指向，修改Nginx rewrite，將測試域名rewrite新的測試用port</li>
+</ol>
+<p>完工。</p>
+<p>以上做法的好處是測試環境和正式環境的主程式的版本保持一致，不會發生測試完成后上線卻遇到問題的狀況，雖然我這裡還未發生，但未雨綢繆的能力還是要有的。另外正式環境想要複製一份賬套出來到測試環境也很方便，只要複製出的新賬套名字為test_開頭即可。</p>
+<p>至於我的開發環境和正式環境的程式版本一致化則就有很多方法來做了。目前正式環境還只有我一個人的管理，不要手賤亂pull應該版本就可以相對穩定，真的擔心也可以另外fork一個版本出來，正式環境的git remote url set為fork的版本。</p>
+<p>測試環境準備好之後，下面就再麻煩財務部的同仁們幫忙測試看看吧~XD</p>
+<p><a href="/images/post/build-test-env.jpg"><img src="/images/post/build-test-env.jpg" alt="Testing Envirement"></a></p>
 
         </div>
         <footer class="article-footer">
@@ -220,7 +174,7 @@ ga('send', 'pageview');
 
 
 
-    <a data-url="http://www.retailscm.com/Learning/Learning-Highcharts/Bar-and-column-charts/converting-a-single-bar-chart-into-a-horizontal-gauge-chart/" data-id="cir277gr0001ve0zt3bpvazta" class="article-share-link"><i class="fa fa-share"></i>分享到</a>
+    <a data-url="http://www.retailscm.com/Odoo/build-a-test-envirement/" data-id="cir277gq60001e0zthi6h2hp7" class="article-share-link"><i class="fa fa-share"></i>分享到</a>
 <script>
     (function ($) {
         $('body').on('click', function() {
@@ -340,20 +294,10 @@ ga('send', 'pageview');
         
 <nav id="article-nav">
     
-        <a href="/Learning/Learning-Highcharts/Bar-and-column-charts/sticking-the-charts-together/" id="article-nav-newer" class="article-nav-link-wrap">
-        <strong class="article-nav-caption">下一篇</strong>
-        <p class="article-nav-title">
-        
-            第四章 05.複合圖表
-        
-        </p>
-        <i class="icon fa fa-chevron-right" id="icon-chevron-right"></i>
-    </a>
     
-    
-        <a href="/Learning/Learning-Highcharts/Bar-and-column-charts/constructing-a-mirror-chart/" id="article-nav-older" class="article-nav-link-wrap">
+        <a href="/Odoo/hello-odoo/" id="article-nav-older" class="article-nav-link-wrap">
         <strong class="article-nav-caption">上一篇</strong>
-        <p class="article-nav-title">第四章 03.創建一個鏡圖(mirror chart)</p>
+        <p class="article-nav-title">Hello Odoo</p>
         <i class="icon fa fa-chevron-left" id="icon-chevron-left"></i>
         </a>
     
@@ -551,7 +495,7 @@ ga('send', 'pageview');
     var disqus_shortname = 'retailscm';
     
     
-    var disqus_url = 'http://www.retailscm.com/Learning/Learning-Highcharts/Bar-and-column-charts/converting-a-single-bar-chart-into-a-horizontal-gauge-chart/';
+    var disqus_url = 'http://www.retailscm.com/Odoo/build-a-test-envirement/';
     
     (function() {
     var dsq = document.createElement('script');

@@ -4,7 +4,7 @@
   <subtitle><![CDATA[PP Studio]]></subtitle>
   <link href="/atom.xml" rel="self"/>
   <link href="http://www.retailscm.com/"/>
-  <updated>2016-07-24T11:22:52.000Z</updated>
+  <updated>2016-07-25T15:38:30.000Z</updated>
   <id>http://www.retailscm.com/</id>
   
   <author>
@@ -13,6 +13,39 @@
   </author>
   
   <generator uri="http://hexo.io/">Hexo</generator>
+  
+  <entry>
+    <title><![CDATA[建立Odoo的測試環境]]></title>
+    <link href="http://www.retailscm.com/Odoo/build-a-test-envirement/"/>
+    <id>http://www.retailscm.com/Odoo/build-a-test-envirement/</id>
+    <published>2016-07-25T15:00:40.000Z</published>
+    <updated>2016-07-25T15:38:30.000Z</updated>
+    <content type="html"><![CDATA[<p>今天財務部在請假功能教育訓練的時候，跟我說請假單無法送出，我實際進入系統測試后，發現原來我本機開發環境和測試環境的Odoo主程式版本不同。所以在我本機開發環境的請假存檔和送出是合併的功能，但是在測試環境上的版本是切開的。</p>
+<p>目前我只有將二次開發的Module進Bitbucket進行版控，但是主程式并沒有列入版控，這樣切了兩個環境出來的確會有可能出現問題。遇到問題就要解決啊，正好上週特助有在找我看VM的租金的部分，我也在想如何可以減少租金成本，看起來也許可以把正式環境和測試環境的主程式共用，而將二開的部份分開。</p>
+<p>下午測試了一下，解法記錄如下：</p>
+<ol>
+<li>copy /etc下的odoo-server.conf，修改其中的addons, data_dir, logfile, 還有port為測試環境所使用的設定(如果有網路安全設定，不要忘記開啟，我好像一直會犯這個很蠢的錯)</li>
+<li>修改新的conf文件中dbfilter，僅顯示特定的測試賬套，例如可用test_開頭的，避免使用到測試環境登入正式的賬套</li>
+<li>可將正式庫的賬套做限定，并取消可選賬套的功能，未來全部測試導入到測試環境執行</li>
+<li>chown上面新增的conf owner為odoo</li>
+<li>copy /etc/init.d下的odoo-server，修改NAME, DESC兩個參數為測試所使用的標示，CONFIGFILE修改為上面所複製出的新文件</li>
+<li>sudo update-rc.d odoo-server-test defaults，將odoo-server-test（依據5所產生的實際執行文件名稱替換）加入開機自動執行</li>
+<li>申請域名或修改域名指向，修改Nginx rewrite，將測試域名rewrite新的測試用port</li>
+</ol>
+<p>完工。</p>
+<p>以上做法的好處是測試環境和正式環境的主程式的版本保持一致，不會發生測試完成后上線卻遇到問題的狀況，雖然我這裡還未發生，但未雨綢繆的能力還是要有的。另外正式環境想要複製一份賬套出來到測試環境也很方便，只要複製出的新賬套名字為test_開頭即可。</p>
+<p>至於我的開發環境和正式環境的程式版本一致化則就有很多方法來做了。目前正式環境還只有我一個人的管理，不要手賤亂pull應該版本就可以相對穩定，真的擔心也可以另外fork一個版本出來，正式環境的git remote url set為fork的版本。</p>
+<p>測試環境準備好之後，下面就再麻煩財務部的同仁們幫忙測試看看吧~XD</p>
+<p><a href="/images/post/build-test-env.jpg"><img src="/images/post/build-test-env.jpg" alt="Testing Envirement"></a></p>
+]]></content>
+    <summary type="html">
+    <![CDATA[<p>今天財務部在請假功能教育訓練的時候，跟我說請假單無法送出，我實際進入系統測試后，發現原來我本機開發環境和測試環境的Odoo主程式版本不同。所以在我本機開發環境的請假存檔和送出是合併的功能，但是在測試環境上的版本是切開的。</p>
+<p>目前我只有將二次開發的Module進B]]>
+    </summary>
+    
+      <category term="Odoo" scheme="http://www.retailscm.com/categories/Odoo/"/>
+    
+  </entry>
   
   <entry>
     <title><![CDATA[Hello Odoo]]></title>
@@ -2588,33 +2621,6 @@ series: <span class="preprocessor">[</span>{
 });</span>
 </code></pre><p>如下圖所呈現：</p>]]>
     
-    </summary>
-    
-      <category term="Highcharts" scheme="http://www.retailscm.com/tags/Highcharts/"/>
-    
-      <category term="Learning" scheme="http://www.retailscm.com/categories/Learning/"/>
-    
-      <category term="Learning Highcharts" scheme="http://www.retailscm.com/categories/Learning/Learning-Highcharts/"/>
-    
-      <category term="Line area and scatter charts" scheme="http://www.retailscm.com/categories/Learning/Learning-Highcharts/Line-area-and-scatter-charts/"/>
-    
-  </entry>
-  
-  <entry>
-    <title><![CDATA[第三章 折線圖，面積圖和散點圖]]></title>
-    <link href="http://www.retailscm.com/Learning/Learning-Highcharts/Line-area-and-scatter-charts/line-area-and-scatter-charts/"/>
-    <id>http://www.retailscm.com/Learning/Learning-Highcharts/Line-area-and-scatter-charts/line-area-and-scatter-charts/</id>
-    <published>2015-05-15T18:00:00.000Z</published>
-    <updated>2015-05-17T08:07:17.000Z</updated>
-    <content type="html"><![CDATA[<h1 id="科技零售(RetailSCM-com)_Learning_Highcharts中文教程">科技零售(RetailSCM.com) Learning Highcharts中文教程</h1><p><em><span style="color: #808080;">版權保留，網路轉載請註明來源，謝絕紙質媒體轉載，謝謝。</span></em></p>
-<h2 id="第三章_折線圖，面積圖和散點圖">第三章 折線圖，面積圖和散點圖</h2><p>在這一章中，我們將通過對線圖，面積圖和散點圖的繪圖選項的探索，來進一步學習。 我們還會學習如何創建疊加圖表和投影圖表。然後嘗試畫出一些美化過的圖表。 以使我們有機會利用更多的繪圖選項。這一章內容包括：</p>
-<p><a href="/Learning/Learning-Highcharts/Line-area-and-scatter-charts/introducing-line-charts/" title="01.折線圖介紹">折線圖介紹</a></p>
-<p><a href="/Learning/Learning-Highcharts/Line-area-and-scatter-charts/sketching-an-area-chart/" title="02.繪製面積圖">繪製面積圖</a></p>
-<p><a href="/Learning/Learning-Highcharts/Line-area-and-scatter-charts/mixing-line-and-area-series/" title="03.折線圖和面積圖的組合">折線圖和面積圖結合</a></p>
-<p><a href="/Learning/Learning-Highcharts/Line-area-and-scatter-charts/combining-scatter-and-area-series/" title="04.散點圖和面積圖的組合">散點圖和面積圖結合</a></p>
-]]></content>
-    <summary type="html">
-    <![CDATA[<h1 id="科技零售(RetailSCM-com)_Learning_Highcharts中文教程">科技零售(RetailSCM.com) Learning Highcharts中文教程</h1><p><em><span style="color: #808080;">版權]]>
     </summary>
     
       <category term="Highcharts" scheme="http://www.retailscm.com/tags/Highcharts/"/>

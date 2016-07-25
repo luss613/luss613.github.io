@@ -2,6 +2,11 @@
 <urlset xmlns="http://www.sitemaps.org/schemas/sitemap/0.9">
   
   <url>
+    <loc>http://www.retailscm.com/Odoo/build-a-test-envirement/</loc>
+    <lastmod>2016-07-25T15:38:30.000Z</lastmod>
+  </url>
+  
+  <url>
     <loc>http://www.retailscm.com/Odoo/hello-odoo/</loc>
     <lastmod>2016-07-24T11:22:52.000Z</lastmod>
   </url>
