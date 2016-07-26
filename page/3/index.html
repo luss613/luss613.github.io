@@ -143,6 +143,82 @@ ga('send', 'pageview');
         <article class="article article-summary">
     <div class="article-summary-inner">
         
+        <a href="/Learning/Learning-Highcharts/Line-area-and-scatter-charts/introducing-line-charts/" class="thumbnail">
+    
+    
+        <span style="background-image:url(/images/learning_highcharts/chart3-1-1.jpg)" alt="第三章 01.折線圖介紹" class="thumbnail-image"></span>
+    
+    
+        
+<span class="comment-counter">
+    <i class="fa fa-comments-o"></i>
+    
+        <span class="disqus-comment-count" data-disqus-url="http://www.retailscm.com/Learning/Learning-Highcharts/Line-area-and-scatter-charts/introducing-line-charts/">0</span>
+    
+</span>
+
+    
+</a>
+        
+        <div class="article-meta">
+            <p class="category">
+            <a class="article-category-link" href="/categories/Learning/">Learning</a><i class="icon fa fa-angle-right"></i><a class="article-category-link" href="/categories/Learning/Learning-Highcharts/">Learning Highcharts</a>
+            </p>
+            <p class="date"><time datetime="2015-05-15T19:00:00.000Z" itemprop="datePublished">2015-05-16</time></p>
+        </div>
+        
+    
+        <h1 class="article-title" itemprop="name">
+        <a href="/Learning/Learning-Highcharts/Line-area-and-scatter-charts/introducing-line-charts/">第三章 01.折線圖介紹</a>
+        </h1>
+    
+
+        <p class="article-excerpt">
+            科技零售(RetailSCM.com) Learning Highcharts中文教程版權保留，網路轉載請註明來源，謝絕紙質媒體轉載，謝謝。
+折線圖介紹首先我們從一個折線圖表開始，來選用World Bank 組織（www.worldbank.org)提供的數據之一。下面的代碼片段創建了一個簡單的折線圖，表現了日本過去三十年中65歲以上人口所佔全部人口的百分比：
+var chart = new Highcharts.Chart({
+    chart: {
+        renderTo: 'container'
+    },
+    title: {
+        text: 'Population ages 65 and over (% of total)',
+    },
+    credits: {
+        position: {
+            align: 'left',
+            x: 20
+        },
+        text: 'Data from The World Bank'
+    },
+    yAxis: {
+        title: {
+            text: 'Percentage %'
+        }
+    },
+    xAxis: {
+        categories: ['1980', '1981', '1982', ... ],
+        labels: {
+            step: 5
+        }
+    },
+    series: [{
+        name: 'Japan - 65 and over',
+        data: [ 9, 9, 9, 10, 10, 10, 10 ... ]
+    }]
+});
+如下圖所呈現：
+        </p>
+    </div>
+</article>
+    
+
+    
+    
+    
+    
+        <article class="article article-summary">
+    <div class="article-summary-inner">
+        
         <a href="/Learning/Learning-Highcharts/Line-area-and-scatter-charts/line-area-and-scatter-charts/" class="thumbnail">
     
     
@@ -183,10 +259,14 @@ ga('send', 'pageview');
     </div>
 </article>
     
+        </div>
+    
 
     
     
     
+    
+        <div class="article-row">
     
         <article class="article article-summary">
     <div class="article-summary-inner">
@@ -234,14 +314,10 @@ stops：給出一組顏色的序列來填充他們在漸變方向的某一位置
     </div>
 </article>
     
-        </div>
-    
 
     
     
     
-    
-        <div class="article-row">
     
         <article class="article article-summary">
     <div class="article-summary-inner">
@@ -289,10 +365,14 @@ easing：jQuery提供的動畫類型，各種動畫都可以透過導入jQuery U
     </div>
 </article>
     
+        </div>
+    
 
     
     
     
+    
+        <div class="article-row">
     
         <article class="article article-summary">
     <div class="article-summary-inner">
@@ -346,14 +426,10 @@ tooltip : {
     </div>
 </article>
     
-        </div>
-    
 
     
     
     
-    
-        <div class="article-row">
     
         <article class="article article-summary">
     <div class="article-summary-inner">
@@ -397,10 +473,14 @@ tooltip : {
     </div>
 </article>
     
+        </div>
+    
 
     
     
     
+    
+        <div class="article-row">
     
         <article class="article article-summary">
     <div class="article-summary-inner">
@@ -449,14 +529,10 @@ series屬性是一組包含了數據和series特定選項的配置對象數組�
     </div>
 </article>
     
-        </div>
-    
 
     
     
     
-    
-        <div class="article-row">
     
         <article class="article article-summary">
     <div class="article-summary-inner">
@@ -499,10 +575,14 @@ series屬性是一組包含了數據和series特定選項的配置對象數組�
     </div>
 </article>
     
+        </div>
+    
 
     
     
     
+    
+        <div class="article-row">
     
         <article class="article article-summary">
     <div class="article-summary-inner">
@@ -551,14 +631,10 @@ chart: {
     </div>
 </article>
     
-        </div>
-    
 
     
     
     
-    
-        <div class="article-row">
     
         <article class="article article-summary">
     <div class="article-summary-inner">
@@ -597,58 +673,6 @@ chart: {
             科技零售(RetailSCM.com) Learning Highcharts中文教程版權保留，網路轉載請註明來源，謝絕紙質媒體轉載，謝謝。
 配置選項在Highcharts配置對象中，組件在最前端相互配合作為呈現整個圖表的基礎。下面的列表是在整合Highcharts圖表中起主要作用的組件，如果需要參考全部配置的說明，可至Highcharts官網API說明 
 http://api.highchart
-        </p>
-    </div>
-</article>
-    
-
-    
-    
-    
-    
-        <article class="article article-summary">
-    <div class="article-summary-inner">
-        
-        <a href="/Learning/Learning-Highcharts/Highcharts-configurations/highcharts-configurations/" class="thumbnail">
-    
-    
-        <span class="thumbnail-image thumbnail-none"></span>
-    
-    
-        
-<span class="comment-counter">
-    <i class="fa fa-comments-o"></i>
-    
-        <span class="disqus-comment-count" data-disqus-url="http://www.retailscm.com/Learning/Learning-Highcharts/Highcharts-configurations/highcharts-configurations/">0</span>
-    
-</span>
-
-    
-</a>
-        
-        <div class="article-meta">
-            <p class="category">
-            <a class="article-category-link" href="/categories/Learning/">Learning</a><i class="icon fa fa-angle-right"></i><a class="article-category-link" href="/categories/Learning/Learning-Highcharts/">Learning Highcharts</a>
-            </p>
-            <p class="date"><time datetime="2015-05-13T11:36:33.000Z" itemprop="datePublished">2015-05-13</time></p>
-        </div>
-        
-    
-        <h1 class="article-title" itemprop="name">
-        <a href="/Learning/Learning-Highcharts/Highcharts-configurations/highcharts-configurations/">第二章 Highcharts配置</a>
-        </h1>
-    
-
-        <p class="article-excerpt">
-            科技零售(RetailSCM.com) Learning Highcharts中文教程版權保留，網路轉載請註明來源，謝絕紙質媒體轉載，謝謝。
-第二章 Highcharts配置，涵蓋了常用的配置選項，包括示例，並介紹了圖表佈局（chart layout）是如何工作的。
-配置選項
-了解圖表佈局(layout)
-軸在圖表中的應用
-重溫series的配置
-探索PlotOptions
-提示框的樣式
-動態圖表
         </p>
     </div>
 </article>
@@ -733,7 +757,7 @@ http://api.highchart
     <div class="widget-wrap widget-list">
         <h3 class="widget-title">分類</h3>
         <div class="widget">
-            <ul class="category-list"><li class="category-list-item"><a class="category-list-link" href="/categories/Learning/">Learning</a><span class="category-list-count">36</span><ul class="category-list-child"><li class="category-list-item"><a class="category-list-link" href="/categories/Learning/Learning-Highcharts/">Learning Highcharts</a><span class="category-list-count">36</span><ul class="category-list-child"><li class="category-list-item"><a class="category-list-link" href="/categories/Learning/Learning-Highcharts/Bar-and-column-charts/">Bar and column charts</a><span class="category-list-count">6</span></li><li class="category-list-item"><a class="category-list-link" href="/categories/Learning/Learning-Highcharts/Highcharts-APIs/">Highcharts APIs</a><span class="category-list-count">3</span></li><li class="category-list-item"><a class="category-list-link" href="/categories/Learning/Learning-Highcharts/Highcharts-configurations/">Highcharts configurations</a><span class="category-list-count">9</span></li><li class="category-list-item"><a class="category-list-link" href="/categories/Learning/Learning-Highcharts/Line-area-and-scatter-charts/">Line area and scatter charts</a><span class="category-list-count">5</span></li><li class="category-list-item"><a class="category-list-link" href="/categories/Learning/Learning-Highcharts/Pie-Charts/">Pie Charts</a><span class="category-list-count">5</span></li><li class="category-list-item"><a class="category-list-link" href="/categories/Learning/Learning-Highcharts/Web-Charts/">Web Charts</a><span class="category-list-count">6</span></li></ul></li></ul></li><li class="category-list-item"><a class="category-list-link" href="/categories/Odoo/">Odoo</a><span class="category-list-count">2</span></li><li class="category-list-item"><a class="category-list-link" href="/categories/Oracle/">Oracle</a><span class="category-list-count">1</span></li><li class="category-list-item"><a class="category-list-link" href="/categories/WEB2-0/">WEB2.0</a><span class="category-list-count">2</span><ul class="category-list-child"><li class="category-list-item"><a class="category-list-link" href="/categories/WEB2-0/Bootstrap/">Bootstrap</a><span class="category-list-count">1</span></li><li class="category-list-item"><a class="category-list-link" href="/categories/WEB2-0/jQuery/">jQuery</a><span class="category-list-count">1</span></li></ul></li><li class="category-list-item"><a class="category-list-link" href="/categories/Yii/">Yii</a><span class="category-list-count">2</span></li><li class="category-list-item"><a class="category-list-link" href="/categories/業務案例/">業務案例</a><span class="category-list-count">1</span></li><li class="category-list-item"><a class="category-list-link" href="/categories/行業動態/">行業動態</a><span class="category-list-count">2</span></li><li class="category-list-item"><a class="category-list-link" href="/categories/隨筆/">隨筆</a><span class="category-list-count">1</span></li></ul>
+            <ul class="category-list"><li class="category-list-item"><a class="category-list-link" href="/categories/Learning/">Learning</a><span class="category-list-count">36</span><ul class="category-list-child"><li class="category-list-item"><a class="category-list-link" href="/categories/Learning/Learning-Highcharts/">Learning Highcharts</a><span class="category-list-count">36</span><ul class="category-list-child"><li class="category-list-item"><a class="category-list-link" href="/categories/Learning/Learning-Highcharts/Bar-and-column-charts/">Bar and column charts</a><span class="category-list-count">6</span></li><li class="category-list-item"><a class="category-list-link" href="/categories/Learning/Learning-Highcharts/Highcharts-APIs/">Highcharts APIs</a><span class="category-list-count">3</span></li><li class="category-list-item"><a class="category-list-link" href="/categories/Learning/Learning-Highcharts/Highcharts-configurations/">Highcharts configurations</a><span class="category-list-count">9</span></li><li class="category-list-item"><a class="category-list-link" href="/categories/Learning/Learning-Highcharts/Line-area-and-scatter-charts/">Line area and scatter charts</a><span class="category-list-count">5</span></li><li class="category-list-item"><a class="category-list-link" href="/categories/Learning/Learning-Highcharts/Pie-Charts/">Pie Charts</a><span class="category-list-count">5</span></li><li class="category-list-item"><a class="category-list-link" href="/categories/Learning/Learning-Highcharts/Web-Charts/">Web Charts</a><span class="category-list-count">6</span></li></ul></li></ul></li><li class="category-list-item"><a class="category-list-link" href="/categories/Odoo/">Odoo</a><span class="category-list-count">3</span></li><li class="category-list-item"><a class="category-list-link" href="/categories/Oracle/">Oracle</a><span class="category-list-count">1</span></li><li class="category-list-item"><a class="category-list-link" href="/categories/WEB2-0/">WEB2.0</a><span class="category-list-count">2</span><ul class="category-list-child"><li class="category-list-item"><a class="category-list-link" href="/categories/WEB2-0/Bootstrap/">Bootstrap</a><span class="category-list-count">1</span></li><li class="category-list-item"><a class="category-list-link" href="/categories/WEB2-0/jQuery/">jQuery</a><span class="category-list-count">1</span></li></ul></li><li class="category-list-item"><a class="category-list-link" href="/categories/Yii/">Yii</a><span class="category-list-count">2</span></li><li class="category-list-item"><a class="category-list-link" href="/categories/業務案例/">業務案例</a><span class="category-list-count">1</span></li><li class="category-list-item"><a class="category-list-link" href="/categories/行業動態/">行業動態</a><span class="category-list-count">2</span></li><li class="category-list-item"><a class="category-list-link" href="/categories/隨筆/">隨筆</a><span class="category-list-count">1</span></li></ul>
         </div>
     </div>
 
@@ -744,6 +768,25 @@ http://api.highchart
         <h3 class="widget-title">最新文章</h3>
         <div class="widget">
             <ul id="recent-post" class="">
+                
+                    <li>
+                        
+                        <div class="item-thumbnail">
+                            <a href="/Odoo/free-ssl/" class="thumbnail">
+    
+    
+        <span style="background-image:url(/images/post/padlock-lock-chain-key-39624.jpeg)" alt="申請免費SSL證書" class="thumbnail-image"></span>
+    
+    
+</a>
+                        </div>
+                        
+                        <div class="item-inner">
+                            <p class="item-category"><a class="article-category-link" href="/categories/Odoo/">Odoo</a></p>
+                            <p class="item-title"><a href="/Odoo/free-ssl/" class="title">申請免費SSL證書</a></p>
+                            <p class="item-date"><time datetime="2016-07-26T11:55:23.000Z" itemprop="datePublished">2016-07-26</time></p>
+                        </div>
+                    </li>
                 
                     <li>
                         
@@ -821,25 +864,6 @@ http://api.highchart
                         </div>
                     </li>
                 
-                    <li>
-                        
-                        <div class="item-thumbnail">
-                            <a href="/Learning/Learning-Highcharts/Highcharts-APIs/highcharts-apis/" class="thumbnail">
-    
-    
-        <span class="thumbnail-image thumbnail-none"></span>
-    
-    
-</a>
-                        </div>
-                        
-                        <div class="item-inner">
-                            <p class="item-category"><a class="article-category-link" href="/categories/Learning/">Learning</a><i class="icon fa fa-angle-right"></i><a class="article-category-link" href="/categories/Learning/Learning-Highcharts/">Learning Highcharts</a></p>
-                            <p class="item-title"><a href="/Learning/Learning-Highcharts/Highcharts-APIs/highcharts-apis/" class="title">第七章 Highcharts APIs</a></p>
-                            <p class="item-date"><time datetime="2015-05-18T17:00:00.000Z" itemprop="datePublished">2015-05-19</time></p>
-                        </div>
-                    </li>
-                
             </ul>
         </div>
     </div>
@@ -849,7 +873,7 @@ http://api.highchart
     <div class="widget-wrap widget-list">
         <h3 class="widget-title">歸檔</h3>
         <div class="widget">
-            <ul class="archive-list"><li class="archive-list-item"><a class="archive-list-link" href="/archives/2016/07/">七月 2016</a><span class="archive-list-count">2</span></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2015/05/">五月 2015</a><span class="archive-list-count">35</span></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2013/10/">十月 2013</a><span class="archive-list-count">2</span></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2013/04/">四月 2013</a><span class="archive-list-count">5</span></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2013/03/">三月 2013</a><span class="archive-list-count">3</span></li></ul>
+            <ul class="archive-list"><li class="archive-list-item"><a class="archive-list-link" href="/archives/2016/07/">七月 2016</a><span class="archive-list-count">3</span></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2015/05/">五月 2015</a><span class="archive-list-count">35</span></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2013/10/">十月 2013</a><span class="archive-list-count">2</span></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2013/04/">四月 2013</a><span class="archive-list-count">5</span></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2013/03/">三月 2013</a><span class="archive-list-count">3</span></li></ul>
         </div>
     </div>
 

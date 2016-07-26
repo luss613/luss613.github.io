@@ -4,7 +4,7 @@
   <subtitle><![CDATA[PP Studio]]></subtitle>
   <link href="/atom.xml" rel="self"/>
   <link href="http://www.retailscm.com/"/>
-  <updated>2016-07-25T15:38:30.000Z</updated>
+  <updated>2016-07-26T12:31:42.000Z</updated>
   <id>http://www.retailscm.com/</id>
   
   <author>
@@ -13,6 +13,35 @@
   </author>
   
   <generator uri="http://hexo.io/">Hexo</generator>
+  
+  <entry>
+    <title><![CDATA[申請免費SSL證書]]></title>
+    <link href="http://www.retailscm.com/Odoo/free-ssl/"/>
+    <id>http://www.retailscm.com/Odoo/free-ssl/</id>
+    <published>2016-07-26T11:55:23.000Z</published>
+    <updated>2016-07-26T12:31:42.000Z</updated>
+    <content type="html"><![CDATA[<p><a href="/images/post/padlock-lock-chain-key-39624.jpeg"><img src="/images/post/padlock-lock-chain-key-39624.jpeg" alt="Free SSL Certificate"></a></p>
+<p>很久以來，我經手的系統並沒有設定HTTPS不是因為不考慮安全，而是避免讓使用者要面對一個安全性警告之後，要額外確認。但要每年花一筆額外的費用購買SSL證書這個“非必要”支出，又很難對去申請下來這筆預算。往往可有可無的事情就會被延後執行。</p>
+<p>今年換了新工作，老闆很在意HTTPS的安全協議，老婆又轉寄了一個可以免費申請SSL證書的連接給我，當然現在就是能加上SSL的我全都加上咯。甚至連我的Blog也加上了SSL，為什麼要加？就免錢啊，不加白不加&gt;”&lt;</p>
+<p>免費的SSL申請過程如下：</p>
+<ol>
+<li>到<a href="https://buy.wosign.com/free/#ssl" target="_blank" rel="external">https://buy.wosign.com/free/#ssl</a>，這是免費的SSL申請網站<br><a href="/images/post/apply-ssl-cert.png"><img src="/images/post/apply-ssl-cert.png" alt="WoSign.com"></a></li>
+<li>點左上角免費註冊，來取得一個網站賬號</li>
+<li>輸入域名，系統會校驗域名是否可申請SSL證書(如Azure提供的二級域名則不可申請SSL證書)，自己的域名是都沒關係<br>英文的頁面有提醒可以申請5個域名2年的免費使用，之後是每年1.99美金，也是白菜價啦<br>For Free SSL Certificate, it support 5 domain names for 2 years period; if you need more domains support, then each domain will be charged US$1.99 per year.The difference between the Free SSL Certificate and charged DV SSL Certificate is the issuer, the Free SSL issuer is “WoSign CA Free SSL Certificate G2”, but the charged SSL issuer is “WoSign Class 1 DV Server CA G2”.</li>
+<li>中英文選擇是當使用者查看網站SSL證書內容的時候，顯示的是英文還是中文，依據你的使用者對象自行決定咯</li>
+<li>選擇所屬國家后，輸入賬號，密碼及隨機碼，提交申請</li>
+<li>系統會提示驗證你的域名所有權，可以選擇郵件驗證或下載一個html放在此域名的web根目錄下點網頁的驗證按鈕來驗證</li>
+<li>輸入12~16位的密碼，用於稍後從網站下載的證書壓縮檔的密碼<br><a href="/images/post/ssl-cert-password.png"><img src="/images/post/ssl-cert-password.png" alt="WoSign.com"></a></li>
+<li>將網站產生的文件下載回來解壓，裡面就有各HTTP Server所使用到的SSL證書檔案了</li>
+</ol>
+]]></content>
+    <summary type="html">
+    <![CDATA[<p><a href="/images/post/padlock-lock-chain-key-39624.jpeg"><img src="/images/post/padlock-lock-chain-key-39624.jpeg" alt="Free SSL Certific]]>
+    </summary>
+    
+      <category term="Odoo" scheme="http://www.retailscm.com/categories/Odoo/"/>
+    
+  </entry>
   
   <entry>
     <title><![CDATA[建立Odoo的測試環境]]></title>
@@ -2436,190 +2465,6 @@ series: <span class="preprocessor">[</span>{ <span class="attribute">...</span>,
     <![CDATA[<h1 id="科技零售(RetailSCM-com)_Learning_Highcharts中文教程">科技零售(RetailSCM.com) Learning Highcharts中文教程</h1><p><em><span style="color: #808080;">版權保留，網路轉載請註明來源，謝絕紙質媒體轉載，謝謝。</span></em></p>
 <h2 id="繪製面積圖">繪製面積圖</h2><p>在本節，我們會將前一個例子修改成一個設定有格調的面積曲線圖（基於Kristin Clute的風能海報設計風格）。 結合使用 area 和 spline 屬性將會生成面積曲線圖，主要的數據線被繪製成一個雲形曲線，曲線下的區域被漸變且有透明效果的類似顏色填充。 如圖：</p>
 <p><a href="/images/learning_highcharts/chart3-2-1.jpg"><img src="/images/learning_highcharts/chart3-2-1.jpg" alt="chart3-2-1"></a></p>]]>
-    
-    </summary>
-    
-      <category term="Highcharts" scheme="http://www.retailscm.com/tags/Highcharts/"/>
-    
-      <category term="Learning" scheme="http://www.retailscm.com/categories/Learning/"/>
-    
-      <category term="Learning Highcharts" scheme="http://www.retailscm.com/categories/Learning/Learning-Highcharts/"/>
-    
-      <category term="Line area and scatter charts" scheme="http://www.retailscm.com/categories/Learning/Learning-Highcharts/Line-area-and-scatter-charts/"/>
-    
-  </entry>
-  
-  <entry>
-    <title><![CDATA[第三章 01.折線圖介紹]]></title>
-    <link href="http://www.retailscm.com/Learning/Learning-Highcharts/Line-area-and-scatter-charts/introducing-line-charts/"/>
-    <id>http://www.retailscm.com/Learning/Learning-Highcharts/Line-area-and-scatter-charts/introducing-line-charts/</id>
-    <published>2015-05-15T19:00:00.000Z</published>
-    <updated>2015-05-17T07:58:57.000Z</updated>
-    <content type="html"><![CDATA[<h1 id="科技零售(RetailSCM-com)_Learning_Highcharts中文教程">科技零售(RetailSCM.com) Learning Highcharts中文教程</h1><p><em><span style="color: #808080;">版權保留，網路轉載請註明來源，謝絕紙質媒體轉載，謝謝。</span></em></p>
-<h2 id="折線圖介紹">折線圖介紹</h2><p>首先我們從一個折線圖表開始，來選用World Bank 組織（www.worldbank.org)提供的數據之一。下面的代碼片段創建了一個簡單的折線圖，表現了日本過去三十年中65歲以上人口所佔全部人口的百分比：</p>
-<pre><code><span class="built_in">var</span> chart <span class="subst">=</span> <span class="literal">new</span> Highcharts<span class="built_in">.</span>Chart({
-    chart: {
-        renderTo: <span class="string">'container'</span>
-    },
-    title: {
-        text: <span class="string">'Population ages 65 and over (% of total)'</span>,
-    },
-    credits: {
-        position: {
-            align: <span class="string">'left'</span>,
-            x: <span class="number">20</span>
-        },
-        text: <span class="string">'Data from The World Bank'</span>
-    },
-    yAxis: {
-        title: {
-            text: <span class="string">'Percentage %'</span>
-        }
-    },
-    xAxis: {
-        categories: <span class="preprocessor">[</span><span class="string">'1980'</span>, <span class="string">'1981'</span>, <span class="string">'1982'</span>, <span class="attribute">...</span> <span class="preprocessor">]</span><span class="markup">,
-        labels: {
-            step: 5
-        }
-    },
-    series: </span><span class="preprocessor">[</span>{
-        name: <span class="string">'Japan - 65 and over'</span>,
-        <span class="built_in">data</span>: <span class="preprocessor">[</span> <span class="number">9</span>, <span class="number">9</span>, <span class="number">9</span>, <span class="number">10</span>, <span class="number">10</span>, <span class="number">10</span>, <span class="number">10</span> <span class="attribute">...</span> <span class="preprocessor">]</span><span class="markup">
-    }]
-});</span>
-</code></pre><p>如下圖所呈現：</p>
-<a id="more"></a>
-<p><a href="/images/learning_highcharts/chart3-1-1.jpg"><img src="/images/learning_highcharts/chart3-1-1.jpg" alt="chart3-1-1"></a></p>
-<p>除了在 categories屬性中手動定義年份，還可以使用 series中的 pointStart選項來初始化x軸的第一個點的值。因此我們在 xAxis中無任何配置但在seies中定義了 pointStart，代碼如下：</p>
-<pre><code>xAxis：{
-},
-series: [{
-    pointStart : <span class="number">1980</span>, 
-    <span class="property">name</span>: 'Japan - <span class="number">65</span> <span class="keyword">and</span> <span class="keyword">over</span>',
-    data: [ <span class="number">9</span>, <span class="number">9</span>, <span class="number">9</span>, <span class="number">10</span>, <span class="number">10</span>, <span class="number">10</span>, <span class="number">10</span> ... ]
-}]
-</code></pre><p>雖然這是個簡單的例子，但 Highcharts仍會使用 numberFormat方法來格式化x軸的標籤增加千分位符號，下面是x軸千分位符號的呈現結果：</p>
-<p><a href="/images/learning_highcharts/chart3-1-2.jpg"><img src="/images/learning_highcharts/chart3-1-2.jpg" alt="chart3-1-2"></a></p>
-<p>為瞭解決這個問題，我們需要重寫標籤的 formatter選項，這很簡單，只要返回一個標籤值來繞開默認 numberFormat方法的調用就可以了。 此外，還需要將 allowDecimal選項置為false.因為，當調整圖表大小時會延長x軸，小數就會顯示出來。</p>
-<p>下面是使用 pointStart來控制x軸年份值得最終版本：</p>
-<pre><code>xAxis: {
-    labels:{
-        formatter: <span class="function"><span class="keyword">function</span><span class="params">()</span> </span>{
-            <span class="comment">// 'this' keyword is the label object</span>
-            <span class="keyword">return</span> <span class="keyword">this</span>.value;
-        }
-    },
-    allowDecimals: <span class="literal">false</span>
-},
-series: [{
-    pointStart: <span class="number">1980</span>,
-    name: <span class="string">'Japan - 65 and over'</span>,
-    data: [ <span class="number">9</span>, <span class="number">9</span>, <span class="number">9</span>, <span class="number">10</span>, <span class="number">10</span>, <span class="number">10</span>, <span class="number">10</span> ... ]
-}]
-</code></pre><h2 id="擴展到多個series的折線圖">擴展到多個series的折線圖</h2><p>下面我們新增加幾個series折線，並把日本的折線增加到6個像素寬，代碼如下：</p>
-<pre><code><span class="atom">series</span>: [{
-    <span class="atom">lineWidth</span>: <span class="number">6</span>,
-    <span class="atom">name</span>: <span class="string">'Japan'</span>,
-    <span class="atom">data</span>: [ <span class="number">9</span>, <span class="number">9</span>, <span class="number">9</span>, <span class="number">10</span>, <span class="number">10</span>, <span class="number">10</span>, <span class="number">10</span> ... ]
-}, {
-    <span class="name">Name</span>: <span class="string">'Singapore'</span>,
-    <span class="atom">data</span>: [ <span class="number">5</span>, <span class="number">5</span>, <span class="number">5</span>, <span class="number">5</span>, ... ]
-}, {
-    ...
-}]
-</code></pre><p>日本series的人口數成為了圖表中的關注焦點，如圖：</p>
-<p><a href="/images/learning_highcharts/chart3-1-3.jpg"><img src="/images/learning_highcharts/chart3-1-3.jpg" alt="chart3-1-3"></a></p>
-<p>我們來繼續更加複雜的一些的折線圖。為了展示反轉的折線圖，使用 chart.inverted 選項將y軸和x軸置為相反的方向。 然後改變坐標軸的顏色匹配相同series的顏色。同時，禁用了所有series的數據點標記，最後添加 yAxis：1 屬性用來使第二個series坐標軸與第二個y軸陣列數據匹配，這樣就得到了上下兩個不同顏色，不同刻度的y坐標軸，如下：</p>
-<pre><code><span class="string">chart:</span> {
-<span class="label">    renderTo:</span> <span class="string">'container'</span>,
-<span class="label">    inverted:</span> <span class="literal">true</span>,
-},
-<span class="string">yAxis:</span> [{
-<span class="label">    title:</span> {
-<span class="label">        text:</span> <span class="string">'Percentage %'</span>
-    },
-<span class="label">    lineWidth:</span> <span class="number">2</span>,
-<span class="label">    lineColor:</span> <span class="string">'#4572A7'</span>
-}, {
-<span class="label">    title:</span> {
-<span class="label">        text:</span> <span class="string">'Age'</span>
-    },
-<span class="label">    opposite:</span> <span class="literal">true</span>,
-<span class="label">    lineWidth:</span> <span class="number">2</span>,
-<span class="label">    lineColor:</span> <span class="string">'#AA4643'</span>
-}],
-<span class="string">plotOptions:</span> {
-<span class="label">    series:</span> {
-<span class="label">        marker:</span> {
-<span class="label">            enabled:</span> <span class="literal">false</span>
-        }
-    }
-},
-<span class="string">series:</span> [{
-<span class="label">    name:</span> <span class="string">'Japan - 65 and over'</span>,
-<span class="label">    type:</span> <span class="string">'spline'</span>,
-<span class="label">    data:</span> [ <span class="number">9</span>, <span class="number">9</span>, <span class="number">9</span>, ... ]
-}, {
-<span class="label">    name:</span> <span class="string">'Japan - Life Expectancy'</span>,
-<span class="label">    yAxis:</span> <span class="number">1</span>,
-<span class="label">    data:</span> [ <span class="number">76</span>, <span class="number">76</span>, <span class="number">77</span>, ... ]
-}]
-</code></pre><p>下圖是反轉並有2個Y軸的例子：</p>
-<p><a href="/images/learning_highcharts/chart3-1-4.jpg"><img src="/images/learning_highcharts/chart3-1-4.jpg" alt="chart3-1-4"></a></p>
-<p>上圖中數據的表示看起來可能有點奇怪，因為我們通常對於把的時間標籤交換成到了y軸並且數據的走勢不容易理解。其實 inverted 選項 一般是用來展示不連續的數據格式或用於柱狀圖中。我們從上圖中獲取的資訊是這樣的： 12%的日本人口在65歲及以上，1990年的平均壽命是79歲。</p>
-<p>通過設置 plotOptions.series.marker.enabled 為 false 可以關閉所有數據點的標記，如果想為一個特定的series展示數據點標記，我們可以關閉全域的標記並打開那個特定series的標記屬性。</p>
-<pre><code>plotOptions: {
-    series: {
-        marker: {
-            enabled: <span class="literal">false</span>
-        }
-    }
-},
-series: <span class="preprocessor">[</span>{
-    marker: {
-        enabled: <span class="literal">true</span>
-    },
-    name: <span class="string">'Japan - 65 and over'</span>,
-    <span class="keyword">type</span>: <span class="string">'spline'</span>,
-    <span class="built_in">data</span>: <span class="preprocessor">[</span> <span class="number">9</span>, <span class="number">9</span>, <span class="number">9</span>, <span class="attribute">...</span> <span class="preprocessor">]</span><span class="markup">
-}, {</span>
-</code></pre><p>下面的圖表展示了只有65及以上的series才會有數據點標記的例子：</p>
-<p><a href="/images/learning_highcharts/chart3-1-5.jpg"><img src="/images/learning_highcharts/chart3-1-5.jpg" alt="chart3-1-5"></a></p>
-]]></content>
-    <summary type="html">
-    <![CDATA[<h1 id="科技零售(RetailSCM-com)_Learning_Highcharts中文教程">科技零售(RetailSCM.com) Learning Highcharts中文教程</h1><p><em><span style="color: #808080;">版權保留，網路轉載請註明來源，謝絕紙質媒體轉載，謝謝。</span></em></p>
-<h2 id="折線圖介紹">折線圖介紹</h2><p>首先我們從一個折線圖表開始，來選用World Bank 組織（www.worldbank.org)提供的數據之一。下面的代碼片段創建了一個簡單的折線圖，表現了日本過去三十年中65歲以上人口所佔全部人口的百分比：</p>
-<pre><code><span class="built_in">var</span> chart <span class="subst">=</span> <span class="literal">new</span> Highcharts<span class="built_in">.</span>Chart({
-    chart: {
-        renderTo: <span class="string">'container'</span>
-    },
-    title: {
-        text: <span class="string">'Population ages 65 and over (% of total)'</span>,
-    },
-    credits: {
-        position: {
-            align: <span class="string">'left'</span>,
-            x: <span class="number">20</span>
-        },
-        text: <span class="string">'Data from The World Bank'</span>
-    },
-    yAxis: {
-        title: {
-            text: <span class="string">'Percentage %'</span>
-        }
-    },
-    xAxis: {
-        categories: <span class="preprocessor">[</span><span class="string">'1980'</span>, <span class="string">'1981'</span>, <span class="string">'1982'</span>, <span class="attribute">...</span> <span class="preprocessor">]</span><span class="markup">,
-        labels: {
-            step: 5
-        }
-    },
-    series: </span><span class="preprocessor">[</span>{
-        name: <span class="string">'Japan - 65 and over'</span>,
-        <span class="built_in">data</span>: <span class="preprocessor">[</span> <span class="number">9</span>, <span class="number">9</span>, <span class="number">9</span>, <span class="number">10</span>, <span class="number">10</span>, <span class="number">10</span>, <span class="number">10</span> <span class="attribute">...</span> <span class="preprocessor">]</span><span class="markup">
-    }]
-});</span>
-</code></pre><p>如下圖所呈現：</p>]]>
     
     </summary>
     
